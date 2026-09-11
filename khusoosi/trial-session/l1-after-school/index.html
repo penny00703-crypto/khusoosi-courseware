@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>After School Fun!</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{font-family:'Noto Sans Arabic','Segoe UI',sans-serif;color:#3E2723;background:#1a1a2e;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
+
+/* 16:9 固定舞台 1280x720，JS 等比缩放适配任意窗口 */
+#app{position:relative;width:1280px;height:720px;flex-shrink:0;background:#F5E6C8;overflow:hidden;transform-origin:center center}
+
+.screen{position:absolute;top:0;left:0;width:100%;height:100%;display:none;opacity:0;transition:opacity .4s ease;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;z-index:1}
+.screen.active{display:flex;opacity:1;z-index:10}
+.bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.dim{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;background:rgba(0,0,0,.35);pointer-events:none}
+.ly{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 40px 92px 40px}
+
+.t1{font-family:'Nunito',sans-serif;font-size:40px;font-weight:800;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5);text-align:center}
+.t2{font-family:'Nunito',sans-serif;font-size:24px;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4);text-align:center}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 40px;border:none;border-radius:30px;font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;cursor:pointer;transition:all .3s;background:linear-gradient(135deg,#C9A227,#B8941F);color:#fff;box-shadow:0 4px 16px rgba(201,162,39,.4)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,162,39,.5)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-gn{background:linear-gradient(135deg,#4CAF50,#2E7D32);box-shadow:0 4px 16px rgba(46,125,50,.3);color:#fff}
+.btn-rd{background:linear-gradient(135deg,#EF5350,#C62828);color:#fff}
+.btn-bl{background:linear-gradient(135deg,#42A5F5,#1E88E5);color:#fff}
+
+.tag{display:inline-block;padding:6px 18px;border-radius:20px;font-size:12px;font-weight:700;background:linear-gradient(135deg,#C9A227,#B8941F);color:#fff}
+.source{font-size:11px;color:rgba(255,255,255,.75);text-align:center;margin-top:6px;font-family:'Nunito',sans-serif;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.card-d{background:rgba(27,77,62,.92);color:#fff;border-radius:24px;padding:28px}
+.bub{position:relative;background:#fff;border-radius:16px;padding:14px 18px;color:#3E2723;font-size:15px;box-shadow:0 4px 16px rgba(0,0,0,.1);line-height:1.5}
+.bub::after{content:'';position:absolute;bottom:-10px;right:24px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:10px solid #fff}
+.bub-l::after{right:auto;left:24px}
+.bub-you{background:#E8F5E9}
+.bub-you::after{border-top-color:#E8F5E9}
+
+.nav{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:#fff;border-radius:30px;padding:6px 16px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:100;direction:ltr}
+.nb{padding:8px 16px;border:none;border-radius:20px;background:#1B4D3E;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.nb:hover{background:#C9A227}
+.nb:disabled{opacity:.3;cursor:not-allowed}
+.np{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#3E2723;min-width:60px;text-align:center}
+
+.sc{background:#fff;border-radius:16px;border:3px solid transparent;padding:14px;text-align:center;cursor:pointer;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.08);position:relative}
+.sc:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.sc.on{border-color:#C9A227;transform:translateY(-6px);box-shadow:0 12px 32px rgba(201,162,39,.25)}
+.sc .ck{position:absolute;top:8px;right:8px;width:24px;height:24px;background:#2E7D32;border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.sc.on .ck{display:flex}
+
+.ch-s{max-height:110px;width:auto;object-fit:contain;flex-shrink:0}
+
+.fbb{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) scale(0);background:#2E7D32;color:#fff;padding:14px 32px;border-radius:24px;font-weight:800;font-size:20px;z-index:1000;pointer-events:none;transition:transform .3s ease;direction:ltr;unicode-bidi:isolate;font-family:'Nunito',sans-serif}
+.fbb.s{transform:translate(-50%,-50%) scale(1)}
+
+.out{display:none;background:rgba(201,162,39,.15);border-radius:16px;padding:14px 24px;margin:8px auto;max-width:520px;width:100%;text-align:center}
+.out.v{display:block}
+.out p{font-size:18px;font-weight:700;color:#3E2723;font-family:'Nunito',sans-serif}
+
+.vocab-wrap{background:rgba(255,255,255,.92);border-radius:24px;padding:22px 32px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15);max-width:460px;width:100%}
+.vocab-word{font-family:'Nunito',sans-serif;font-size:42px;font-weight:800;color:#1B4D3E;margin-bottom:4px}
+.vocab-pho{font-family:'Nunito',sans-serif;font-size:16px;color:#8D6E63;margin-bottom:4px}
+.vocab-ar{font-size:20px;color:#3E2723;font-weight:600;margin-bottom:10px}
+.vocab-sent{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:#3E2723;background:rgba(201,162,39,.12);border-radius:12px;padding:10px 14px;margin-top:10px}
+
+.pronounce-btn{width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#C9A227,#B8941F);color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(201,162,39,.4);display:flex;align-items:center;justify-content:center;transition:all .2s;margin:0 auto}
+.pronounce-btn:hover{transform:scale(1.1)}
+.pronounce-btn:active{transform:scale(.95)}
+
+.mc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:440px;width:100%;direction:ltr}
+.mc-btn{background:#fff;border:3px solid #E0E0E0;border-radius:16px;padding:14px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.mc-btn:hover{border-color:#C9A227;transform:translateY(-2px)}
+.mc-btn.ok{border-color:#2E7D32;background:#E8F5E9;color:#2E7D32}
+.mc-btn.no{border-color:#C62828;background:#FFEBEE;color:#C62828}
+.mc-btn.right{border-color:#2E7D32;background:#E8F5E9;color:#2E7D32}
+.mc-btn.wrong{border-color:#C62828;background:#FFEBEE;color:#C62828}
+.mc-btn.on{border-color:#C9A227;background:#FFF8E1}
+
+.mood-btn{padding:12px 24px;border:none;border-radius:24px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;color:#fff}
+.mood-btn:hover{transform:scale(1.05)}
+.mood-btn.on{transform:scale(1.1);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+
+.mb{padding:10px 20px;border:none;border-radius:20px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s}
+.mb:hover{transform:translateY(-2px)}
+.mb.on{outline:3px solid #F39C12;outline-offset:2px;transform:scale(1.04)}
+
+.dots{display:flex;gap:7px;justify-content:center;margin-bottom:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s}
+.dot.on{background:#C9A227;transform:scale(1.3)}
+.dot.done{background:#2E7D32}
+
+/* 语言方向隔离：英文一律 LTR 从左到右，阿拉伯语一律 RTL 从右到左 */
+[dir="ltr"]{direction:ltr;unicode-bidi:isolate}
+[dir="rtl"]{direction:rtl;unicode-bidi:isolate}
+.t1,.t2,.tag,.source,.vocab-word,.vocab-pho,.vocab-sent,.mc-btn,.mood-btn,.mb,.nb,.np,.sc,.prg{direction:ltr;unicode-bidi:isolate}
+.vocab-ar{direction:rtl;unicode-bidi:isolate}
+.btn{unicode-bidi:isolate}
+
+/* 阿拉伯语全翻译开关：默认隐藏，body.ar-on 时显示；每个翻译块独立 RTL 隔离，绝不影响英文语序 */
+.ar-t{display:none;direction:rtl;unicode-bidi:isolate;font-family:'Noto Sans Arabic',sans-serif}
+body.ar-on .ar-t{display:block}
+body.ar-on .ar-t.ar-i{display:inline}
+.fbb .en{display:block}
+.fbb .ar-t{font-size:14px;opacity:.9;margin-top:2px}
+#arBtn{position:fixed;top:14px;right:14px;z-index:300;border:none;cursor:pointer;font-family:'Noto Sans Arabic',sans-serif;font-size:15px;font-weight:800;padding:10px 18px;border-radius:24px;background:rgba(255,255,255,.92);color:#1B4D3E;box-shadow:0 4px 14px rgba(0,0,0,.25);display:inline-flex;align-items:center;gap:8px;transition:all .25s;direction:ltr}
+#arBtn:hover{transform:scale(1.05)}
+#arBtn.on{background:linear-gradient(135deg,#4CAF50,#2E7D32);color:#fff}
+/* 语法页信息密度最高，全翻译模式下紧凑化，防止溢出舞台 */
+body.ar-on #s13 .ly{padding-top:6px !important;padding-bottom:78px !important}
+body.ar-on #s13 .card{padding-top:8px !important;padding-bottom:8px !important}
+body.ar-on #s13 .ar-t{font-size:12px !important;margin-top:2px !important;margin-bottom:2px !important}
+
+/* 拼句子练习 */
+.tile{padding:12px 24px;border:3px solid #E0E0E0;border-radius:14px;background:#fff;font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#1B4D3E;cursor:pointer;transition:all .2s}
+.tile:hover{border-color:#C9A227;transform:translateY(-2px)}
+.tile:disabled{opacity:.3;cursor:default;transform:none}
+.asm{min-height:62px;background:#fff;border-radius:16px;padding:10px 16px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:540px;width:100%}
+.asm .slot{min-width:70px;border-bottom:4px dashed #C9A227;font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#1B4D3E;text-align:center;padding:2px 8px}
+.asm.shake{animation:shk .45s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+/* Role Play */
+.rp-log{display:flex;flex-direction:column;gap:10px;width:100%;min-height:290px;justify-content:flex-end}
+.prg{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:#C9A227;margin-bottom:8px}
+
+
+/* 精致导航按钮：左后退 右前进 */
+.nbtn{border:none;cursor:pointer;font-family:'Noto Sans Arabic','Nunito',sans-serif;font-size:16px;font-weight:800;color:#fff;padding:10px 22px;border-radius:24px;display:inline-flex;align-items:center;gap:8px;transition:all .25s;box-shadow:0 4px 14px rgba(0,0,0,.25);direction:ltr}
+.nbtn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.nbtn:active{transform:scale(.96)}
+.nbtn.nav-prev{background:linear-gradient(135deg,#C9A227,#A8871E)}
+.nbtn.nav-next{background:linear-gradient(135deg,#4CAF50,#2E7D32)}
+.nbtn .arw{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800}
+
+/* 主按钮：渐变金 */
+.btn-primary{border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;color:#fff;padding:12px 34px;border-radius:26px;background:linear-gradient(135deg,#C9A227,#B8941F);box-shadow:0 6px 18px rgba(201,162,39,.4);transition:all .25s;display:inline-flex;align-items:center;gap:8px;direction:ltr}
+.btn-primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 24px rgba(201,162,39,.5)}
+.btn-primary:active{transform:scale(.96)}
+.btn-primary.grn{background:linear-gradient(135deg,#4CAF50,#2E7D32);box-shadow:0 6px 18px rgba(46,125,50,.4)}
+.btn-primary.grn:hover{box-shadow:0 10px 24px rgba(46,125,50,.5)}
+
+/* 品牌 logo：固定在屏幕左上角，不遮挡任何内容 */
+.logo{position:absolute;top:14px;left:20px;height:38px;width:auto;z-index:20;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+
+/* ===== 打地鼠 Whack-a-Mole ===== */
+.mole-top{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:10px}
+.mole-prompt{direction:rtl;font-size:24px;font-weight:800;color:#3E2723;background:#fff;border-radius:18px;padding:10px 28px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.mole-prompt b{color:#C9A227;font-size:30px}
+.mole-score{direction:ltr;font-size:19px;font-weight:800;color:#fff;background:#1B4D3E;padding:10px 22px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.mole-score b{color:#FFD966}
+.mole-timer{width:520px;height:14px;background:rgba(255,255,255,.5);border-radius:999px;margin:10px auto 2px;overflow:hidden}
+.mole-timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#FFD966,#C9A227);border-radius:999px;transition:width .1s linear}
+#moleGrid{display:grid;grid-template-columns:repeat(3,210px);grid-auto-rows:160px;gap:12px 36px;justify-content:center;margin-top:6px;direction:ltr}
+.hole{position:relative;overflow:hidden;border-radius:20px 20px 0 0}
+.hole::after{content:"";position:absolute;bottom:0;left:6%;right:6%;height:26px;background:radial-gradient(ellipse at center,#5D4037 0%,#3E2723 70%);border-radius:50%}
+.mole{position:absolute;left:8%;right:8%;bottom:-110%;height:142px;border:none;cursor:pointer;background:linear-gradient(#fff,#FFF8E1);border-radius:22px 22px 0 0;box-shadow:0 -4px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;padding-top:8px;transition:bottom .3s cubic-bezier(.34,1.56,.64,1);font-family:'Nunito',sans-serif}
+.hole.up .mole{bottom:10px}
+.mole .em{font-size:44px;line-height:1.1}
+.mole span{font-size:20px;font-weight:800;color:#1B4D3E;direction:ltr}
+.mole.hit{background:#C8E6C9}
+.mole.shake{animation:mshake .4s}
+@keyframes mshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+.mole-end{position:absolute;inset:30px 60px 110px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(255,248,225,.97);border-radius:30px;z-index:30;text-align:center}
+.mole-end h2{direction:rtl;font-size:36px;color:#3E2723;font-weight:800}
+.mole-end .big{direction:ltr;font-size:56px;font-weight:800;color:#C9A227;font-family:'Nunito',sans-serif}
+.mole-end .stars{font-size:44px}
+/* ===== 热土豆 Hot Potato ===== */
+.hp-arena{position:relative;width:100%;max-width:760px;height:190px;margin-top:6px;direction:ltr}
+.hp-side{position:absolute;bottom:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'Nunito',sans-serif;font-weight:800;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5);font-size:15px}
+.hp-side .av{width:104px;height:104px;border-radius:50%;background:#fff;border:4px solid #C9A227;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.hp-side .av img{width:100%;height:100%;object-fit:cover}
+.hp-side .av .emo{font-size:54px;line-height:1}
+.hp-omar{left:10px}.hp-you{right:10px}
+#hpBomb{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-size:66px;line-height:1;transition:left .45s cubic-bezier(.34,1.3,.64,1),bottom .45s;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));z-index:5}
+#hpBomb.shakeb{animation:bshake .12s infinite}
+@keyframes bshake{0%,100%{transform:translateX(-50%) rotate(-6deg)}50%{transform:translateX(-50%) rotate(6deg)}}
+.splat{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:72px;line-height:1;display:none;z-index:8;pointer-events:none;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+.splat.on{display:block;animation:splat .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes splat{0%{transform:translateX(-50%) scale(2.4);opacity:0}55%{transform:translateX(-50%) scale(.85,1.25);opacity:1}100%{transform:translateX(-50%) scale(1.2,.8)}}
+.splat .drip{position:absolute;font-size:26px;top:44px}
+.splat .d1{left:-16px}.splat .d2{right:-14px;top:52px}
+.hp-fuse{width:420px;height:12px;background:rgba(255,255,255,.5);border-radius:999px;margin:2px auto 8px;overflow:hidden}
+.hp-fuse i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#FFD966,#F57A1F);border-radius:999px;transition:width .1s linear}
+.hp-card{background:#fff;border-radius:20px;padding:12px 26px;box-shadow:0 8px 24px rgba(0,0,0,.2);text-align:center;max-width:560px;width:100%}
+.hp-q{font-family:'Nunito',sans-serif;font-size:23px;font-weight:800;color:#1B4D3E;direction:ltr}
+.hp-asm{min-height:46px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;direction:ltr;margin-top:6px}
+.hp-asm .slot{min-width:64px;border-bottom:4px dashed #C9A227;font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#1B4D3E;text-align:center;padding:2px 6px}
+.hp-bank{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;direction:ltr;margin-top:8px}
+.hp-stage.shake{animation:mshake .45s}
+/* ===== 彩带 ===== */
+.cf{position:fixed;top:-14px;width:10px;height:16px;z-index:500;pointer-events:none;animation:cfall linear forwards;border-radius:2px}
+@keyframes cfall{to{transform:translateY(820px) rotate(720deg);opacity:.6}}
+
+/* ===== 预加载进度 ===== */
+#loadWrap{width:100%;max-width:340px;margin:10px auto 0}
+#loadBar{height:10px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden}
+#loadBar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#FFD966,#C9A227);border-radius:999px;transition:width .2s}
+#loadTxt{font-size:13px;font-weight:700;color:#FFD966;margin-top:6px;text-align:center;direction:rtl}
+/* ===== 庆祝动效 ===== */
+.stars .pop{display:inline-block;opacity:0;animation:starpop .55s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes starpop{0%{transform:scale(0) rotate(-40deg);opacity:0}70%{transform:scale(1.5) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.mole-end.show{animation:endin .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes endin{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.cheer{height:120px;width:120px;border-radius:50%;object-fit:cover;border:4px solid #C9A227;background:#fff;animation:cheerb 1s ease infinite alternate;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+@keyframes cheerb{0%{transform:translateY(0) rotate(-4deg)}100%{transform:translateY(-12px) rotate(4deg)}}
+.mole-end .cheer-txt{direction:rtl;font-size:17px;font-weight:800;color:#1B4D3E;background:#E8F5E9;border-radius:14px;padding:6px 18px}
+</style>
+</head>
+<body>
+<div id="app">
+<img src="images/logo.png" alt="51Talk" class="logo">
+
+<!-- Screen 0: Pre-class reminder -->
+<div class="screen active" id="s0">
+<img src="images/bg-screen0.png?v=2" alt="" class="bg">
+<div class="dim"></div>
+<div class="ly" style="justify-content:center">
+<div class="card-d" style="width:100%;max-width:540px;text-align:center">
+<h2 dir="rtl" lang="ar" style="font-size:34px;margin-bottom:18px;font-weight:800">قبل أن نبدأ</h2>
+<div style="font-size:20px;line-height:2.1;margin-bottom:18px;text-align:right">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-size:26px;flex-shrink:0">🎤</span><span>تأكد من فتح الميكروفون والكاميرا</span></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-size:26px;flex-shrink:0">🌐</span><span>تأكد من أن الإنترنت يعمل جيداً</span></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><span style="font-size:26px;flex-shrink:0">🤫</span><span>اجلس في مكان هادئ ومريح</span></div>
+<div style="display:flex;align-items:center;gap:12px"><span style="font-size:26px;flex-shrink:0">✏️</span><span>حضّر الأدوات المدرسية اللازمة</span></div>
+</div>
+<p dir="rtl" lang="ar" style="font-size:16px;opacity:.75;margin-bottom:18px">مدة الحصة: 25 دقيقة</p>
+<div style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap">
+<button class="btn btn-bl" dir="rtl" lang="ar" style="font-size:17px;padding:12px 26px" onclick="testSound()">🔊 جرّب الصوت</button>
+<button class="btn" dir="rtl" lang="ar" style="font-size:22px" onclick="go(1)">فهمت، لنبدأ!</button>
+</div>
+<p id="sndOk" dir="rtl" lang="ar" style="font-size:15px;font-weight:700;color:#7CFC9A;margin-top:10px;opacity:0;transition:opacity .4s">✔ الصوت يعمل جيداً!</p>
+<div id="loadWrap"><div id="loadBar"><i id="loadFill"></i></div><p id="loadTxt" lang="ar">جاري تحميل الصور والأصوات... 0%</p></div>
+</div>
+</div>
+</div>
+
+<!-- Screen 1: Cover -->
+<div class="screen" id="s1">
+<img src="images/bg-screen1.png?v=2" alt="" class="bg">
+<div style="position:absolute;bottom:0;left:0;width:100%;height:25%;background:linear-gradient(to top,#F5E6C8,transparent);z-index:1;pointer-events:none"></div>
+<div class="ly" style="justify-content:flex-start;padding-top:100px">
+<div class="tag" style="margin-bottom:10px">WeCan Grade 3 · Unit 3 · Lesson 1<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">الصف الثالث · الوحدة 3 · الدرس 1</span></div>
+<h1 class="t1" style="margin-bottom:6px;font-size:48px">After School Fun!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:20px;font-weight:800;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5);margin-bottom:4px">أنشطة ما بعد المدرسة!</p>
+<p class="t2" style="opacity:.9;margin-bottom:6px">What do you like to do?</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:15px;color:#fff;opacity:.85;text-shadow:0 1px 6px rgba(0,0,0,.5);margin-bottom:6px">ماذا تحب أن تفعل؟</p>
+<p class="source">Source: WeCan G3 U3 L1 · Vocab: After-school activities · Target: I like... / Do you like...?</p>
+<div dir="ltr" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:24px;margin-bottom:24px">
+<div style="width:64px;height:64px;background:#fff;border-radius:50%;border:3px solid #C9A227;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:30px">⚽</div>
+<div style="width:64px;height:64px;background:#fff;border-radius:50%;border:3px solid #C9A227;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:30px">🏀</div>
+<div style="width:64px;height:64px;background:#fff;border-radius:50%;border:3px solid #C9A227;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:30px">🎮</div>
+<div style="width:64px;height:64px;background:#fff;border-radius:50%;border:3px solid #C9A227;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:30px">🎨</div>
+</div>
+<button class="btn" dir="ltr" lang="en" onclick="go(2)">Let's Start! <span class="ar-t ar-i" dir="rtl" lang="ar">هيا نبدأ!</span></button>
+</div>
+</div>
+
+<!-- Screen 2: Hello / Ice Breaker with Omar -->
+<div class="screen" id="s2">
+<img src="images/bg-screen2.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.15)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:10px">HELLO TIME!<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">وقت التحية!</span></div>
+<div dir="ltr" style="display:flex;align-items:center;gap:24px;width:100%;max-width:780px;margin-bottom:14px">
+<img src="images/char-omar.png" alt="Omar" style="height:290px;flex-shrink:0;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<div class="bub bub-l" style="text-align:left;max-width:440px">
+<strong dir="rtl" lang="ar" style="color:#1B4D3E;font-size:17px;display:block;text-align:right">عمر:</strong>
+<span dir="ltr" lang="en" style="font-size:21px;font-weight:700;display:block;margin-top:6px;font-family:'Nunito',sans-serif">Hi! I'm Omar. I'll learn with you today!</span>
+<span dir="rtl" lang="ar" style="font-size:15px;color:#8D6E63;display:block;text-align:right;margin-top:6px">مرحباً! أنا عمر. سأتعلم معك اليوم.</span>
+<button class="btn" dir="ltr" style="padding:8px 22px;font-size:15px;margin-top:10px" onclick="playFile('audio/hi_omar.mp3',\"Hi! I'm Omar. I'll learn with you today!\")">🔊 Listen <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:12px">استمع</span></button>
+</div>
+</div>
+</div>
+<div dir="ltr" style="display:flex;gap:14px;width:100%;max-width:780px;align-items:stretch">
+<div style="background:rgba(255,255,255,.95);border-radius:16px;padding:18px 20px;flex:1;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.15);display:flex;flex-direction:column;justify-content:center;gap:10px">
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#1B4D3E">What's your name?</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:2px">ما اسمك؟</p>
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:17px;color:#8D6E63">My name is ______.</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:2px">اسمي ______.</p>
+<button class="btn" style="padding:8px 22px;font-size:14px;align-self:center" onclick="say('what\'s your name')">🔊 Listen <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:12px">استمع</span></button>
+</div>
+<div style="background:rgba(255,255,255,.95);border-radius:16px;padding:18px 20px;flex:1;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.15);display:flex;flex-direction:column;justify-content:center;gap:10px">
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#1B4D3E">How are you?</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:2px">كيف حالك؟</p>
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:17px;color:#8D6E63">I'm happy, thank you!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:2px">أنا سعيد، شكراً!</p>
+<button class="btn" style="padding:8px 22px;font-size:14px;align-self:center" onclick="say('how are you')">🔊 Listen <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:12px">استمع</span></button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Screen 3: Lead-in -->
+<div class="screen" id="s3">
+<img src="images/bg-screen3.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.45)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:10px">LOOK!<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">انظر!</span></div>
+<h1 class="t1" style="margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,.7)">School is over!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">انتهت المدرسة!</p>
+<p class="t2" style="margin-bottom:8px;text-shadow:0 2px 6px rgba(0,0,0,.7)">What do you do after school?</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;color:#fff;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">ماذا تفعل بعد المدرسة؟</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · Lead-in</p>
+<div style="margin-top:16px">
+<button class="btn" dir="ltr" lang="en" onclick="go(4)">Let's Learn! <span class="ar-t ar-i" dir="rtl" lang="ar">هيا نتعلم!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 4: Vocab 1 - Football -->
+<div class="screen" id="s4">
+<img src="images/bg-screen4.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 1/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · football / كرة القدم</p>
+<div class="vocab-wrap">
+<div class="vocab-word">⚽ Football</div>
+<div class="vocab-pho">/ˈfʊtbɔːl/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">كرة القدم</div>
+<button class="pronounce-btn" onclick="say('football')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like football. / Do you like football?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب كرة القدم. / هل تحب كرة القدم؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 5: Vocab 2 - Reading -->
+<div class="screen" id="s5">
+<img src="images/bg-reading.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 2/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · reading / القراءة</p>
+<div class="vocab-wrap">
+<div class="vocab-word">📖 Reading</div>
+<div class="vocab-pho">/ˈriːdɪŋ/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">القراءة</div>
+<button class="pronounce-btn" onclick="say('reading')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like reading. / Do you like reading?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب القراءة. / هل تحب القراءة؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 6: Vocab 3 - Basketball -->
+<div class="screen" id="s6">
+<img src="images/bg-screen5.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 3/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · basketball / كرة السلة</p>
+<div class="vocab-wrap">
+<div class="vocab-word">🏀 Basketball</div>
+<div class="vocab-pho">/ˈbɑːskɪtbɔːl/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">كرة السلة</div>
+<button class="pronounce-btn" onclick="say('basketball')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like basketball. / Do you like basketball?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب كرة السلة. / هل تحب كرة السلة؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 7: Vocab 4 - Swimming -->
+<div class="screen" id="s7">
+<img src="images/bg-swimming.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 4/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · swimming / السباحة</p>
+<div class="vocab-wrap">
+<div class="vocab-word">🏊 Swimming</div>
+<div class="vocab-pho">/ˈswɪmɪŋ/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">السباحة</div>
+<button class="pronounce-btn" onclick="say('swimming')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like swimming. / Do you like swimming?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب السباحة. / هل تحب السباحة؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 8: Vocab 5 - Computer Games -->
+<div class="screen" id="s8">
+<img src="images/bg-screen6.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 5/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.24 · computer games / ألعاب الكمبيوتر</p>
+<div class="vocab-wrap">
+<div class="vocab-word" style="font-size:28px">🎮 Computer Games</div>
+<div class="vocab-pho">/kəmˈpjuːtə ɡeɪmz/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">ألعاب الكمبيوتر</div>
+<button class="pronounce-btn" onclick="say('computer games')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like computer games. / Do you like computer games?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب ألعاب الكمبيوتر. / هل تحب ألعاب الكمبيوتر؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 9: Vocab 6 - Drawing -->
+<div class="screen" id="s9">
+<img src="images/bg-drawing.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 6/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.25 · drawing / الرسم</p>
+<div class="vocab-wrap">
+<div class="vocab-word">✏️ Drawing</div>
+<div class="vocab-pho">/ˈdrɔːɪŋ/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">الرسم</div>
+<button class="pronounce-btn" onclick="say('drawing')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like drawing. / Do you like drawing?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب الرسم. / هل تحب الرسم؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 10: Vocab 7 - Painting -->
+<div class="screen" id="s10">
+<img src="images/bg-screen7.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span><span class="dot"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 7/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.25 · painting / التلوين</p>
+<div class="vocab-wrap">
+<div class="vocab-word">🎨 Painting</div>
+<div class="vocab-pho">/ˈpeɪntɪŋ/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">التلوين</div>
+<button class="pronounce-btn" onclick="say('painting')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like painting. / Do you like painting?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب التلوين. / هل تحب التلوين؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 11: Vocab 8 - Dancing -->
+<div class="screen" id="s11">
+<img src="images/bg-dancing.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot on"></span></div>
+<div class="tag" style="margin-bottom:6px">NEW WORD 8/8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">كلمة جديدة</span></div>
+<p class="source">Source: WeCan G3 U3 L1 · P.25 · dancing / الرقص</p>
+<div class="vocab-wrap">
+<div class="vocab-word">💃 Dancing</div>
+<div class="vocab-pho">/ˈdɑːnsɪŋ/</div>
+<div class="vocab-ar" dir="rtl" lang="ar">الرقص</div>
+<button class="pronounce-btn" onclick="say('dancing')" title="Play">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+</button>
+<div class="vocab-sent">I like dancing. / Do you like dancing?<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:4px">أنا أحب الرقص. / هل تحب الرقص؟</div></div>
+</div>
+<div dir="ltr" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+<button class="mb btn-gn" onclick="say('Yes, I do!')">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>
+<button class="mb btn-rd" onclick='say("No, I don&apos;t.")'>No, I don't. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 12: Practice 1 - Whack the Activity (打地鼠词汇游戏) -->
+<div class="screen" id="s12">
+<img src="images/bg-screen8.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.35)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:4px">PRACTICE 1<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">تمرين</span></div>
+<h1 class="t1" style="font-size:32px;margin-bottom:2px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Whack the Activity!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:15px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:0">اضرب النشاط!</p>
+<p class="t2" style="font-size:15px;margin-bottom:0;text-shadow:0 2px 6px rgba(0,0,0,.6)">Tap the correct word before time runs out!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:13px;color:#fff;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:0">اضغط على الكلمة الصحيحة قبل انتهاء الوقت!</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.24-25 · Vocabulary Game</p>
+<div class="mole-top">
+<div class="mole-prompt" dir="rtl" lang="ar">اضغط على كلمة: <b id="moleWord">...</b></div>
+<div class="mole-score">Score: <b id="moleScore">0</b> / 8<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">النقاط</span></div>
+</div>
+<div class="mole-timer"><i id="moleBar"></i></div>
+<div id="moleGrid"></div>
+<div class="mole-end" id="moleEnd">
+<img class="cheer" src="images/char-omar-face.png" alt="Omar" onerror="this.style.display='none'">
+<div class="stars" id="moleStars"></div>
+<div class="cheer-txt" lang="ar">عمر يصفّق لك! 👏</div>
+<h2 id="moleEndNote">أحسنت يا بطل!</h2>
+<div class="big" id="moleFinal">0 / 8</div>
+<button class="btn-primary grn" onclick="next()">Next ▶ <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">التالي</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 17: Grammar - Do you like...? (all English, no audio) -->
+<div class="screen" id="s13">
+<img src="images/bg-screen8.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.3)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:6px">GRAMMAR TIME!<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">وقت القواعد!</span></div>
+<h1 class="t1" style="font-size:32px;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Do you like ... ?</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">هل تحب ...؟</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.25 · Grammar: Do you like...? Yes, I do. / No, I don't.</p>
+<div dir="ltr" lang="en" style="display:flex;gap:18px;width:100%;max-width:980px;margin-top:10px;font-family:'Nunito',sans-serif">
+<div class="card" style="flex:1.2;padding:14px 22px">
+<div style="font-size:17px;font-weight:800;color:#C9A227;margin-bottom:8px">❓ ASK <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:14px">اسأل</span></div>
+<div style="font-size:15px;font-weight:700;color:#8D6E63;margin-bottom:4px">Do you like + <span style="color:#C62828">noun</span> ?</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:13px;font-weight:600;color:#8D6E63;margin-bottom:4px;text-align:right">هل تحب + اسم؟</div>
+<div style="font-size:21px;font-weight:800;color:#1B4D3E;margin-bottom:8px">Do you like <span style="color:#C9A227">football</span>? ⚽</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:700;color:#1B4D3E;margin-bottom:8px;text-align:right">هل تحب كرة القدم؟ ⚽</div>
+<div style="font-size:15px;font-weight:700;color:#8D6E63;margin-bottom:4px">Do you like + <span style="color:#C62828">verb-ing</span> ?</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:13px;font-weight:600;color:#8D6E63;margin-bottom:4px;text-align:right">هل تحب + فعل <span dir="ltr">-ing</span>؟</div>
+<div style="font-size:21px;font-weight:800;color:#1B4D3E;margin-bottom:8px">Do you like <span style="color:#C9A227">swimming</span>? 🏊</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:700;color:#1B4D3E;margin-bottom:8px;text-align:right">هل تحب السباحة؟ 🏊</div>
+<div style="background:#FFF8E1;border:2px dashed #C9A227;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;color:#8D6E63;line-height:1.9"><span style="color:#C9A227">verb → verb-ing</span><br>swim → <b style="color:#1B4D3E">swimming</b> · dance → <b style="color:#1B4D3E">dancing</b> · paint → <b style="color:#1B4D3E">painting</b><div class="ar-t" dir="rtl" lang="ar" style="text-align:right;font-size:13px;margin-top:4px;font-weight:600">الفعل يأخذ <span dir="ltr">-ing</span> في النهاية</div></div>
+</div>
+<div class="card" style="flex:1;padding:14px 22px;text-align:center">
+<div style="font-size:17px;font-weight:800;color:#C9A227;margin-bottom:10px">💬 ANSWER <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:14px">أجب</span></div>
+<div style="background:#E8F5E9;border:2px solid #4CAF50;border-radius:12px;padding:10px 14px;margin-bottom:10px">
+<div style="font-size:23px;font-weight:800;color:#2E7D32">✔ Yes, I do.</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:700;color:#2E7D32;margin-top:2px">نعم.</div>
+<div style="font-size:14px;font-weight:700;color:#8D6E63;margin-top:2px">I like swimming.</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:13px;font-weight:600;color:#8D6E63;margin-top:2px">أنا أحب السباحة.</div>
+</div>
+<div style="background:#FFEBEE;border:2px solid #EF5350;border-radius:12px;padding:10px 14px;margin-bottom:8px">
+<div style="font-size:23px;font-weight:800;color:#C62828">✘ No, I don't.</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:700;color:#C62828;margin-top:2px">لا.</div>
+<div style="font-size:14px;font-weight:700;color:#8D6E63;margin-top:2px">don't = do not</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:13px;font-weight:600;color:#8D6E63;margin-top:2px"><span dir="ltr">don't</span> هي اختصار <span dir="ltr">do not</span></div>
+</div>
+</div>
+</div>
+<div dir="ltr" lang="en" class="card" style="width:100%;max-width:980px;margin-top:14px;padding:10px 22px;text-align:center;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;color:#1B4D3E">⭐ Remember!&nbsp; like + <span style="color:#C62828">noun</span> → I like <span style="color:#C9A227">football</span>. ⚽&nbsp;&nbsp;·&nbsp;&nbsp;like + <span style="color:#C62828">verb-ing</span> → I like <span style="color:#C9A227">reading</span>. 📖<div class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:700;color:#1B4D3E;margin-top:6px">⭐ تذكّر! بعد <span dir="ltr">like</span> نستخدم اسمًا أو فعلًا بصيغة <span dir="ltr">-ing</span></div></div>
+</div>
+</div>
+
+
+<!-- Screen 14: Practice 2 - Hot Potato (热土豆语法游戏) -->
+<div class="screen" id="s14">
+<img src="images/bg-screen9.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.35)"></div>
+<div class="ly" style="justify-content:center" id="hpStage">
+<div class="tag" style="margin-bottom:4px">PRACTICE 2<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">تمرين</span></div>
+<h1 class="t1" style="font-size:32px;margin-bottom:2px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Hot Potato!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:15px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:0">البطاطس الساخنة!</p>
+<p class="t2" style="font-size:15px;margin-bottom:0;text-shadow:0 2px 6px rgba(0,0,0,.6)">Answer fast — pass the hot potato to Omar!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:13px;color:#fff;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:0">أجب بسرعة — مرّر البطاطس الساخنة إلى عمر!</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.25-26 · Grammar Game: Do you like...? / I like...</p>
+<div style="display:flex;align-items:center;gap:16px;margin-top:4px">
+<div class="mole-score">Score: <b id="hpScore">0</b> / 6<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">النقاط</span></div>
+<div class="mole-score" style="background:#7A4E2D">Round: <b id="hpRound">1</b> / 6<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">الجولة</span></div>
+</div>
+<div class="hp-arena">
+<div class="hp-side hp-omar"><div class="splat" id="hpSplatOmar">🥔<span class="drip d1">🟡</span><span class="drip d2">🟡</span></div><div class="av"><img src="images/char-omar-face.png" alt="Omar" onerror="this.outerHTML='<span class=emo>👦</span>'"></div><span>Omar</span></div>
+<div id="hpBomb">🥔</div>
+<div class="hp-side hp-you"><div class="splat" id="hpSplatYou">🥔<span class="drip d1">🟡</span><span class="drip d2">🟡</span></div><div class="av"><span class="emo">🧒</span></div><span>You<span class="ar-t ar-i" dir="rtl" lang="ar"> · أنت</span></span></div>
+</div>
+<div class="hp-fuse"><i id="hpFuse"></i></div>
+<div class="hp-card" id="hpCard">
+<p class="hp-q" id="hpQ">...</p>
+<div class="mc-grid" id="hpOpts" style="max-width:520px;margin-top:8px"></div>
+<div class="hp-asm" id="hpAsm" style="display:none"></div>
+<div class="hp-bank" id="hpBank" style="display:none"></div>
+</div>
+<div class="mole-end" id="hpEnd">
+<img class="cheer" src="images/char-omar-face.png" alt="Omar" onerror="this.style.display='none'">
+<div class="stars" id="hpStars"></div>
+<div class="cheer-txt" lang="ar">عمر يصفّق لك! 👏</div>
+<h2 id="hpEndNote">نجت البطاطس! أحسنت!</h2>
+<div class="big" id="hpFinal">0 / 6</div>
+<button class="btn-primary grn" onclick="next()">Next ▶ <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">التالي</span></button>
+</div>
+</div>
+</div>
+
+<!-- Screen 21: Role Play with Omar -->
+<div class="screen" id="s15">
+<img src="images/bg-screen2.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.2)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:6px">ROLE PLAY<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">لعب الأدوار</span></div>
+<h1 class="t1" style="font-size:32px;margin-bottom:10px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Talk with Omar!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">تحدث مع عمر!</p>
+<div dir="ltr" style="display:flex;gap:20px;align-items:flex-end;width:100%;max-width:820px">
+<img src="images/char-omar.png" alt="Omar" style="height:380px;flex-shrink:0;filter:drop-shadow(0 8px 14px rgba(0,0,0,.25))">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,.92);border-radius:20px;padding:16px 20px;box-shadow:0 8px 24px rgba(0,0,0,.2)">
+<div class="rp-log" id="rpLog"></div>
+<div id="rpAct" dir="ltr" style="display:flex;gap:10px;min-height:52px;justify-content:center;align-items:center"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Screen 22: Output - My Favorites -->
+<div class="screen" id="s16">
+<img src="images/bg-screen11.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.4)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:6px">OUTPUT<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">عبّر عن نفسك</span></div>
+<h1 class="t1" style="font-size:36px;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,.7)">My Favorites!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">أنشطتي المفضلة!</p>
+<p class="t2" style="font-size:16px;margin-bottom:4px;text-shadow:0 2px 6px rgba(0,0,0,.6)">Choose two activities you like.</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;color:#fff;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">اختر نشاطين تحبهما.</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.26 · Task: Say what you like</p>
+<div dir="ltr" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;margin-bottom:12px;width:100%;max-width:700px">
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob1" onclick="pickFav(1)" >⚽ Football<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">كرة القدم</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob2" onclick="pickFav(2)">🏀 Basketball<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">كرة السلة</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob3" onclick="pickFav(3)">🎮 Computer Games<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">ألعاب الكمبيوتر</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob4" onclick="pickFav(4)">🎨 Painting<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">التلوين</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob5" onclick="pickFav(5)">📖 Reading<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">القراءة</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob6" onclick="pickFav(6)">🏊 Swimming<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">السباحة</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob7" onclick="pickFav(7)">✏️ Drawing<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">الرسم</span></button>
+<button class="mb" style="background:linear-gradient(135deg,#2E7D32,#1B4D3E);height:86px;font-size:17px;line-height:1.3" id="ob8" onclick="pickFav(8)">💃 Dancing<span class="ar-t" dir="rtl" lang="ar" style="font-size:13px;opacity:.9">الرقص</span></button>
+</div>
+<div class="card" style="width:100%;max-width:540px;text-align:center;padding:14px 20px" dir="ltr">
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:20px;color:#1B4D3E;font-weight:600">I like <span style="display:inline-block;min-width:200px;border-bottom:2px dashed #1B4D3E" id="fav">______ and ______</span>.</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:6px">أنا أحب ______ و ______.</p>
+</div>
+</div>
+</div>
+
+<!-- Screen 23: Exit Ticket -->
+<div class="screen" id="s17">
+<img src="images/bg-screen12.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.35)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:8px">EXIT TICKET<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">تذكرة الخروج</span></div>
+<h1 class="t1" style="margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Exit Ticket!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">تذكرة الخروج!</p>
+<p class="t2" style="margin-bottom:4px;text-shadow:0 2px 6px rgba(0,0,0,.6)">Show me what you learned!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;color:#fff;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">أرِني ما تعلمته!</p>
+<p class="source">Source: WeCan G3 U3 L1 · P.24-26 · Review Quiz</p>
+<div class="card" style="width:100%;max-width:480px;text-align:center;margin-top:12px;margin-bottom:12px;padding:16px">
+<div id="q19">
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:700;color:#1B4D3E;margin-bottom:12px">1. Do you like swimming?</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:2px">هل تحب السباحة؟</p>
+<div class="mc-grid">
+<button class="mc-btn" onclick="quizAns(this,true)">Yes, I do.</button>
+<button class="mc-btn" onclick="quizAns(this,false)">Yes, I am.</button>
+<button class="mc-btn" onclick="quizAns(this,false)">Yes, you do.</button>
+<button class="mc-btn" onclick="quizAns(this,false)">Yes, it is.</button>
+</div>
+</div>
+</div>
+<button class="btn-primary" id="goReport" onclick="go(18)" style="display:none">See Report <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">عرض النتيجة</span></button>
+<div id="f19" class="fbb"><span class="en">Correct!</span><span class="ar-t" dir="rtl" lang="ar">صحيح!</span></div>
+</div>
+</div>
+
+<!-- Screen 24: Summary -->
+<div class="screen" id="s18">
+<img src="images/bg-screen12.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.4)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:6px">TODAY WE LEARNED<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">ماذا تعلمنا اليوم</span></div>
+<h1 class="t1" style="font-size:34px;margin-bottom:4px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Lesson Summary!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">ملخص الدرس!</p>
+<p class="source">Source: WeCan G3 U3 L1 · Full Lesson Summary</p>
+<div dir="ltr" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:820px;margin-top:14px;margin-bottom:10px">
+<div class="card" style="padding:10px"><div style="font-size:28px">⚽</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Football</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">كرة القدم</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">🏀</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Basketball</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">كرة السلة</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">🎮</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Computer Games</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">ألعاب الكمبيوتر</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">🎨</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Painting</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">التلوين</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">📖</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Reading</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">القراءة</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">🏊</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Swimming</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">السباحة</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">✏️</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Drawing</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">الرسم</div></div>
+<div class="card" style="padding:10px"><div style="font-size:28px">💃</div><div style="font-weight:700;color:#1B4D3E;font-family:'Nunito'">Dancing</div><div dir="rtl" lang="ar" style="font-size:12px;color:#666">الرقص</div></div>
+</div>
+<div class="card" style="padding:12px 24px;text-align:center" dir="ltr">
+<div style="font-weight:700;color:#1B4D3E;font-family:'Nunito';font-size:16px">Do you like ____? → Yes, I do. / No, I don't.</div><div class="ar-t" dir="rtl" lang="ar" style="font-size:13px;font-weight:600;color:#8D6E63;margin-top:4px">هل تحب ____؟ → نعم. / لا.</div>
+</div>
+<button class="btn-primary" onclick="go(19)" style="margin-top:14px">Next <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">التالي</span></button>
+</div>
+</div>
+
+<!-- Screen 25: Teacher Feedback -->
+<div class="screen" id="s19">
+<img src="images/bg-screen12.png?v=2" alt="" class="bg">
+<div class="dim" style="background:rgba(0,0,0,.35)"></div>
+<div class="ly" style="justify-content:center">
+<div class="tag" style="margin-bottom:10px">FEEDBACK<span class="ar-t ar-i"> · </span><span class="ar-t ar-i" dir="rtl" lang="ar">ملاحظات المعلم</span></div>
+<h1 class="t1" dir="ltr" lang="en" style="margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,.7)">Lesson Complete!</h1><p class="ar-t" dir="rtl" lang="ar" style="font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);margin-top:2px">اكتمل الدرس!</p>
+<div style="display:flex;gap:16px;align-items:center">
+<img src="images/char-omar-face.png" alt="Omar" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.3)">
+<div class="card" style="text-align:center;max-width:420px;padding:20px 24px">
+<div style="font-size:22px;color:#F39C12;margin-bottom:10px">★★★★★</div>
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:#1B4D3E;margin-bottom:8px">Excellent work, Omar!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:15px;font-weight:700;color:#1B4D3E;margin-bottom:6px">عمل ممتاز يا عمر!</p>
+<p dir="ltr" lang="en" style="font-family:'Nunito',sans-serif;font-size:14px;color:#333;line-height:1.6">Great pronunciation today! You said "football" and "basketball" perfectly. Keep practicing "Do you like..." at home!</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#555;line-height:1.7;margin-top:6px">نطق رائع اليوم! قلت <span dir="ltr">"football"</span> و<span dir="ltr">"basketball"</span> بشكل مثالي. واصل التدرب على <span dir="ltr">"Do you like..."</span> في المنزل!</p>
+<button class="btn-primary" onclick="go(0)" style="margin-top:14px">Restart <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">إعادة</span></button>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+<button id="arBtn" onclick="toggleAr()" title="عرض / إخفاء الترجمة العربية">🌐 <span dir="rtl" lang="ar">العربية</span></button>
+
+<div class="nav">
+<button class="nbtn nav-prev" id="pv" onclick="prev()"><span class="arw">◀</span><span dir="rtl" lang="ar">السابق</span></button>
+<span class="np" id="pg">1 / 26</span>
+<button class="nbtn nav-next" id="nx" onclick="next()"><span dir="rtl" lang="ar">التالي</span><span class="arw">▶</span></button>
+</div>
+
+<script>
+const total=20;
+let cur=0;
+let curAudio=null;
+
+/* ---------- Audio: child-voice mp3 primary, TTS fallback ---------- */
+const AUDIO={
+ 'football':'football','reading':'reading','basketball':'basketball','swimming':'swimming',
+ 'computer games':'computer_games','drawing':'drawing','painting':'painting','dancing':'dancing',
+ 'yes, i do':'yes_i_do',"no, i don't":'no_i_dont',
+ "what's your name":'whats_your_name','how are you':'how_are_you','my name is omar':'my_name_omar',"hi! i'm omar. i'll learn with you today":'hi_omar',
+ 'correct':'correct','try again':'try_again','great job':'great_job','good try':'good_try',
+  'i like dancing':'sent_dancing','do you like reading':'sent_reading_q'
+};
+function stopAll(){
+ if(curAudio){try{curAudio.pause();curAudio.currentTime=0;}catch(e){}curAudio=null;}
+ if(window.speechSynthesis){speechSynthesis.cancel();}
+}
+function playFile(src,fallbackText){
+ stopAll();
+ const a=new Audio(src);
+ curAudio=a;
+ a.play().catch(function(){
+   curAudio=null;
+   if(fallbackText){fallbackSpeak(fallbackText);}
+ });
+}
+function fallbackSpeak(text){
+ if(!window.speechSynthesis)return;
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='en-US';u.rate=0.85;u.pitch=1.5;
+ speechSynthesis.speak(u);
+}
+function say(text){
+ const key=(text||'').toLowerCase().replace(/[.!?]+$/,'').trim();
+ if(AUDIO[key]){playFile('audio/'+AUDIO[key]+'.mp3',text);}
+ else{stopAll();fallbackSpeak(text);}
+}
+function sayAr(text){
+ stopAll();
+ if(!window.speechSynthesis)return;
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='ar-SA';u.rate=0.8;u.pitch=1.7;
+ const vs=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf('ar')===0;});
+ if(vs.length){u.voice=vs[0];}
+ speechSynthesis.speak(u);
+}
+if(window.speechSynthesis){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();};}
+
+/* ---------- 资源预加载：课前页后台拉取全部图片与音频，后续页面秒开 ---------- */
+(function(){
+ const BASE='';
+ const imgs=['images/logo.png','images/char-omar.png','images/char-omar-face.png','images/char-ahmed.png'];
+ for(let i=0;i<=12;i++){imgs.push('images/bg-screen'+i+'.png?v=2');}
+ ['dancing','drawing','reading','swimming'].forEach(function(n){imgs.push('images/bg-'+n+'.png');});
+ const auds=['football','reading','basketball','swimming','computer_games','drawing','painting','dancing',
+  'yes_i_do','no_i_dont','whats_your_name','how_are_you','my_name_omar','hi_omar','correct','try_again',
+  'great_job','good_try','sent_dancing','sent_reading_q','do_you_like_swimming','mood_happy'].map(function(n){return 'audio/'+n+'.mp3';});
+ const all=imgs.concat(auds);
+ let done=0;
+ const fill=document.getElementById('loadFill'),txt=document.getElementById('loadTxt');
+ function tick(){
+   done++;
+   const pct=Math.round(done/all.length*100);
+   if(fill){fill.style.width=pct+'%';}
+   if(txt){txt.textContent=pct>=100?'✔ الدرس جاهز! كل الصور والأصوات محمّلة':'جاري تحميل الصور والأصوات... '+pct+'%';}
+ }
+ all.forEach(function(u){
+   fetch(BASE+u).then(function(r){return r.blob();}).then(tick).catch(tick);
+ });
+})();
+
+/* ---------- Navigation ---------- */
+function go(n){
+ stopAll();
+ if(n<0||n>=total)return;
+ document.getElementById('s'+cur).classList.remove('active');
+ cur=n;
+ document.getElementById('s'+cur).classList.add('active');
+ document.getElementById('pg').textContent=(cur+1)+' / '+total;
+ if(cur===0){document.getElementById('pv').style.visibility='hidden';document.getElementById('nx').style.visibility='hidden';}
+ else if(cur===total-1){document.getElementById('pv').style.visibility='visible';document.getElementById('nx').style.visibility='hidden';}
+ else{document.getElementById('pv').style.visibility='visible';document.getElementById('nx').style.visibility='visible';}
+ if(cur===2){setTimeout(function(){playFile('audio/hi_omar.mp3',"Hi! I'm Omar. I'll learn with you today!");},400);}
+ if(cur===12){startMole();}
+ if(cur===14){startHot();}
+ if(cur===15){startRP();}
+}
+/* ---------- Arabic full-translation toggle (session only, default OFF) ---------- */
+function toggleAr(){
+ document.body.classList.toggle('ar-on');
+ document.getElementById('arBtn').classList.toggle('on');
+}
+/* ---------- 音频稳健性：首次点按解锁自动播放限制 + 课前试音 ---------- */
+function unlockAudio(){
+ try{
+   var a=new Audio('audio/correct.mp3');a.volume=0.01;
+   var p=a.play();if(p&&p.then){p.then(function(){a.pause();}).catch(function(){});}
+ }catch(e){}
+ document.removeEventListener('pointerdown',unlockAudio);
+}
+document.addEventListener('pointerdown',unlockAudio);
+function testSound(){
+ unlockAudio();
+ playFile('audio/correct.mp3','correct');
+ var b=document.getElementById('sndOk');
+ if(b){b.style.opacity='1';setTimeout(function(){b.style.opacity='0';},1600);}
+}
+function next(){if(cur<total-1)go(cur+1);}
+function prev(){if(cur>0)go(cur-1);}
+document.addEventListener('keydown',function(e){
+ if(e.key==='ArrowRight'){next();}
+ else if(e.key==='ArrowLeft'){prev();}
+});
+
+
+/* ---------- Generic answer (single screen) ---------- */
+function ans(btn,ok){
+ if(ok){
+   btn.classList.add('right');
+   say('correct');
+   showF('f15','Correct!','صحيح!');
+   setTimeout(next,1000);
+ }else{
+   btn.classList.add('wrong');
+   say('try again');
+   setTimeout(function(){btn.classList.remove('wrong');},600);
+ }
+}
+
+/* ---------- Practice 1: Whack the Activity (打地鼠) ---------- */
+const MOLE_WORDS=[
+ {en:'football',disp:'Football',em:'⚽',ar:'كرة القدم'},
+ {en:'reading',disp:'Reading',em:'📖',ar:'القراءة'},
+ {en:'basketball',disp:'Basketball',em:'🏀',ar:'كرة السلة'},
+ {en:'swimming',disp:'Swimming',em:'🏊',ar:'السباحة'},
+ {en:'computer games',disp:'Computer Games',em:'🎮',ar:'ألعاب الكمبيوتر'},
+ {en:'drawing',disp:'Drawing',em:'✏️',ar:'الرسم'},
+ {en:'painting',disp:'Painting',em:'🎨',ar:'التلوين'},
+ {en:'dancing',disp:'Dancing',em:'💃',ar:'الرقص'}
+];
+const MOLE_HOLES=6, MOLE_SECS=8.4;
+let moleOrder=[],moleRound=0,moleScore=0,moleLock=false,moleTimer=null,moleBarTimer=null;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function confetti(){
+ const colors=['#C9A227','#4CAF50','#42A5F5','#EF5350','#FFD966','#AB47BC'];
+ for(let i=0;i<130;i++){
+   const d=document.createElement('div');
+   d.className='cf';
+   d.style.left=(Math.random()*100)+'vw';
+   d.style.background=colors[i%colors.length];
+   d.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+   d.style.transform='rotate('+(Math.random()*360)+'deg)';
+   document.body.appendChild(d);
+   setTimeout(function(){d.remove();},3400);
+ }
+}
+function moleStopTimers(){clearTimeout(moleTimer);clearInterval(moleBarTimer);}
+function startMole(){
+ moleStopTimers();
+ document.getElementById('moleGrid').innerHTML=Array.from({length:MOLE_HOLES},function(){return '<div class="hole"></div>';}).join('');
+ moleOrder=shuffle(MOLE_WORDS.slice());
+ moleRound=0;moleScore=0;moleLock=false;
+ document.getElementById('moleScore').textContent='0';
+ const me0=document.getElementById('moleEnd');me0.style.display='none';me0.classList.remove('show');
+ document.getElementById('moleGrid').style.visibility='visible';
+ nextMoleRound();
+}
+function nextMoleRound(){
+ moleStopTimers();
+ if(moleRound>=8){
+   document.getElementById('moleGrid').style.visibility='hidden';
+   document.getElementById('moleWord').textContent='انتهت اللعبة!';
+   document.getElementById('moleBar').style.width='0%';
+   document.getElementById('moleFinal').textContent=moleScore+' / 8';
+   document.getElementById('moleStars').innerHTML=starsHTML(moleScore>=7?3:(moleScore>=5?2:1));
+   document.getElementById('moleEndNote').textContent=moleScore>=6?'ممتاز! ذاكرة قوية!':'جيد! لنراجع الكلمات مرة أخرى';
+   const me=document.getElementById('moleEnd');
+   me.style.display='flex';me.classList.add('show');
+   celebrate(moleScore>=6);
+   return;
+ }
+ moleLock=false;
+ const correct=moleOrder[moleRound];
+ const others=shuffle(MOLE_WORDS.filter(function(w){return w!==correct;})).slice(0,3);
+ const opts=shuffle([correct].concat(others));
+ document.getElementById('moleWord').textContent='«'+correct.ar+'»';
+ const holes=shuffle(Array.prototype.slice.call(document.querySelectorAll('#moleGrid .hole')));
+ document.querySelectorAll('#moleGrid .hole').forEach(function(h){h.innerHTML='';h.classList.remove('up');});
+ opts.forEach(function(w,i){
+   const h=holes[i];
+   h.innerHTML='<button class="mole" data-en="'+w.en+'"><span class="em">'+w.em+'</span><span>'+w.disp+'</span></button>';
+   setTimeout(function(){h.classList.add('up');},60);
+ });
+ document.querySelectorAll('#moleGrid .mole').forEach(function(m){
+   m.addEventListener('click',function(){
+     if(moleLock)return;
+     if(m.getAttribute('data-en')===correct.en){
+       moleLock=true;moleScore++;
+       document.getElementById('moleScore').textContent=moleScore;
+       m.classList.add('hit');
+       say(correct.en);
+       moleRound++;
+       moleStopTimers();
+       moleTimer=setTimeout(nextMoleRound,900);
+     }else{
+       m.classList.remove('shake');void m.offsetWidth;m.classList.add('shake');
+     }
+   });
+ });
+ const bar=document.getElementById('moleBar');let pct=100;
+ bar.style.width='100%';
+ moleBarTimer=setInterval(function(){pct-=100/(MOLE_SECS*10);bar.style.width=Math.max(0,pct)+'%';},100);
+ moleTimer=setTimeout(function(){moleRound++;nextMoleRound();},MOLE_SECS*1000);
+}
+
+/* ---------- Practice 2: Hot Potato (热土豆) ---------- */
+const HP=[
+ {type:'qa',q:'Do you like basketball? 🏀',opts:['Yes, I do.','No, I am not.','I am fine.','Thank you.'],ans:'Yes, I do.',sayIt:'yes, i do',secs:9},
+ {type:'fill',q:'I like ______ . 📖',opts:['reading','dancing','football'],ans:'reading',sayIt:'reading',secs:9},
+ {type:'build',target:['I','like','swimming','.'],sayIt:'swimming',secs:12},
+ {type:'qa',q:'Do you like painting? 🎨',opts:["No, I don't.","No, I am not.","Yes, I am.","No, it isn't."],ans:"No, I don't.",sayIt:"no, i don't",secs:9},
+ {type:'fill',q:'Do you like ______ ? 🏀',opts:['swimming','basketball','painting'],ans:'basketball',sayIt:'basketball',secs:9},
+ {type:'build',target:['Do','you','like','reading','?'],sayIt:'do you like reading',secs:12}
+];
+let hpI=0,hpScore=0,hpLock=false,hpTimer=null,hpFuseTimer=null,hpPick=[],hpBank=[];
+function hpBeep(freq,dur,vol){
+ try{
+   const ctx=window._hpCtx||(window._hpCtx=new (window.AudioContext||window.webkitAudioContext)());
+   const o=ctx.createOscillator(),g=ctx.createGain();
+   o.type='square';o.frequency.value=freq;
+   g.gain.setValueAtTime(vol||0.06,ctx.currentTime);
+   g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+   o.connect(g);g.connect(ctx.destination);
+   o.start();o.stop(ctx.currentTime+dur);
+ }catch(e){}
+}
+function hpBoomSnd(){hpBeep(260,0.12,0.16);setTimeout(function(){hpBeep(150,0.18,0.14);},90);setTimeout(function(){hpBeep(90,0.25,0.12);},180);}
+function fanfareSnd(){
+ const seq=[[523,0],[659,140],[784,280],[1047,420],[784,600],[1047,740],[1319,900]];
+ seq.forEach(function(nd){
+   setTimeout(function(){
+     try{
+       const ctx=window._hpCtx||(window._hpCtx=new (window.AudioContext||window.webkitAudioContext)());
+       const o=ctx.createOscillator(),g=ctx.createGain();
+       o.type='triangle';o.frequency.value=nd[0];
+       g.gain.setValueAtTime(0.16,ctx.currentTime);
+       g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);
+       o.connect(g);g.connect(ctx.destination);
+       o.start();o.stop(ctx.currentTime+0.35);
+     }catch(e){}
+   },nd[1]);
+ });
+}
+function celebrate(ok){
+ confetti();
+ fanfareSnd();
+ if(ok){say('great job');}else{say('good try');}
+ setTimeout(fanfareSnd,1300);
+}
+function starsHTML(n){
+ let h='';
+ for(let i=0;i<3;i++){h+='<span class="pop" style="animation-delay:'+(0.15+i*0.3)+'s">'+(i<n?'⭐':'🌟')+'</span>';}
+ return h;
+}
+function hpStopTimers(){clearTimeout(hpTimer);clearInterval(hpFuseTimer);}
+function startHot(){
+ hpStopTimers();
+ hpI=0;hpScore=0;
+ document.getElementById('hpScore').textContent='0';
+ const he0=document.getElementById('hpEnd');he0.style.display='none';he0.classList.remove('show');
+ document.getElementById('hpCard').style.visibility='visible';
+ hpRound();
+}
+function hpRound(){
+ hpStopTimers();hpLock=false;hpPick=[];
+ const bomb=document.getElementById('hpBomb');
+ document.getElementById('hpSplatOmar').classList.remove('on');
+ document.getElementById('hpSplatYou').classList.remove('on');
+ bomb.style.display='block';bomb.textContent='🥔';bomb.style.left='78%';bomb.style.bottom='26px';bomb.classList.add('shakeb');
+ if(hpI>=HP.length){
+   bomb.classList.remove('shakeb');
+   document.getElementById('hpFuse').style.width='0%';
+   document.getElementById('hpQ').textContent='Game Over!';
+   document.getElementById('hpOpts').innerHTML='';
+   document.getElementById('hpAsm').style.display='none';
+   document.getElementById('hpBank').style.display='none';
+   document.getElementById('hpFinal').textContent=hpScore+' / 6';
+   document.getElementById('hpStars').innerHTML=starsHTML(hpScore>=5?3:(hpScore>=3?2:1));
+   document.getElementById('hpEndNote').textContent=hpScore>=4?'ممتاز! مرّرتَ كل البطاطس!':'جيد! لنحاول مرة أخرى';
+   const he=document.getElementById('hpEnd');
+   he.style.display='flex';he.classList.add('show');
+   celebrate(hpScore>=4);
+   return;
+ }
+ const d=HP[hpI];
+ document.getElementById('hpRound').textContent=hpI+1;
+ document.getElementById('hpQ').textContent=d.type==='build'?'Build the sentence! ركّب الجملة!':d.q;
+ const optsBox=document.getElementById('hpOpts');
+ const asm=document.getElementById('hpAsm'),bank=document.getElementById('hpBank');
+ if(d.type==='build'){
+   optsBox.innerHTML='';optsBox.style.display='none';
+   asm.style.display='flex';bank.style.display='flex';
+   hpBank=shuffle(d.target.slice());
+   hpRenderAsm(d);hpRenderBank(d);
+ }else{
+   asm.style.display='none';bank.style.display='none';
+   optsBox.style.display='grid';optsBox.innerHTML='';
+   shuffle(d.opts.slice()).forEach(function(o){
+     const b=document.createElement('button');
+     b.className='mc-btn';b.textContent=o;b.setAttribute('dir','ltr');
+     b.onclick=function(){hpAns(b,o===d.ans,d);};
+     optsBox.appendChild(b);
+   });
+ }
+ const fuse=document.getElementById('hpFuse');let pct=100;const secs=d.secs;let ticked=0;
+ fuse.style.width='100%';
+ hpFuseTimer=setInterval(function(){
+   pct-=100/(secs*10);fuse.style.width=Math.max(0,pct)+'%';
+   const left=Math.ceil(pct/100*secs);
+   if(left<=3&&left>=1&&ticked!==left){ticked=left;hpBeep(880,0.09,0.08);}
+ },100);
+ hpTimer=setTimeout(function(){hpExplode(d);},secs*1000);
+}
+function hpRenderAsm(d){
+ const asm=document.getElementById('hpAsm');asm.innerHTML='';
+ for(let i=0;i<d.target.length;i++){
+   const sl=document.createElement('div');sl.className='slot';
+   sl.textContent=hpPick[i]||'';
+   sl.onclick=function(){if(hpLock)return;if(hpPick[i]!==undefined){hpBank.push(hpPick[i]);hpPick.splice(i,1);hpRenderAsm(d);hpRenderBank(d);}};
+   asm.appendChild(sl);
+ }
+}
+function hpRenderBank(d){
+ const bank=document.getElementById('hpBank');bank.innerHTML='';
+ hpBank.forEach(function(w,idx){
+   const b=document.createElement('button');
+   b.className='mb';b.style.background='linear-gradient(135deg,#C9A227,#A8871E)';b.style.fontSize='19px';b.style.padding='10px 20px';
+   b.textContent=w;b.setAttribute('dir','ltr');
+   b.onclick=function(){
+     if(hpLock)return;
+     hpPick.push(w);hpBank.splice(idx,1);
+     hpRenderAsm(d);hpRenderBank(d);
+     if(hpPick.length===d.target.length){
+       if(hpPick.join(' ')===d.target.join(' ')){hpCorrect(d);}
+       else{
+         hpBeep(200,0.15,0.1);
+         asmShake(d);
+       }
+     }
+   };
+   bank.appendChild(b);
+ });
+}
+function asmShake(d){
+ const asm=document.getElementById('hpAsm');
+ asm.classList.add('shake');
+ setTimeout(function(){
+   asm.classList.remove('shake');
+   hpBank=hpBank.concat(hpPick);hpPick=[];
+   hpRenderAsm(d);hpRenderBank(d);
+ },600);
+}
+function hpPass(){
+ const bomb=document.getElementById('hpBomb');
+ bomb.classList.remove('shakeb');
+ bomb.style.left='9%';bomb.style.bottom='110px';
+ setTimeout(function(){
+   bomb.style.display='none';
+   hpBoomSnd();
+   document.getElementById('hpSplatOmar').classList.add('on');
+ },480);
+}
+function hpCorrect(d){
+ hpLock=true;hpStopTimers();hpScore++;
+ document.getElementById('hpScore').textContent=hpScore;
+ say(d.sayIt);
+ hpPass();
+ hpI++;
+ hpTimer=setTimeout(hpRound,1400);
+}
+function hpAns(btn,ok,d){
+ if(hpLock)return;
+ if(ok){
+   btn.classList.add('right');
+   hpCorrect(d);
+ }else{
+   btn.classList.add('wrong');
+   hpSplatYou();
+ }
+}
+function hpExplode(d){
+ hpSplatYou();
+}
+function hpSplatYou(){
+ if(hpLock)return;
+ hpStopTimers();hpLock=true;
+ const bomb=document.getElementById('hpBomb');
+ bomb.classList.remove('shakeb');bomb.style.display='none';
+ hpBoomSnd();
+ document.getElementById('hpSplatYou').classList.add('on');
+ document.getElementById('hpStage').classList.add('shake');
+ setTimeout(function(){
+   document.getElementById('hpStage').classList.remove('shake');
+   bomb.style.display='block';bomb.textContent='🥔';
+   hpI++;hpRound();
+ },1400);
+}
+
+/* ---------- Role Play with Omar ---------- */
+function rpBubbles(html,keep){
+ const log=document.getElementById('rpLog');
+ if(!keep){log.innerHTML='';}
+ const d=document.createElement('div');
+ d.innerHTML=html;
+ while(d.firstChild){log.appendChild(d.firstChild);}
+ log.scrollTop=log.scrollHeight;
+}
+function rpAct(html){
+ const a=document.getElementById('rpAct');
+ a.innerHTML=html;
+}
+function startRP(){
+ rpBubbles('<div style="display:flex;justify-content:flex-start"><div class="bub bub-l" dir="ltr" lang="en" style="max-width:280px;text-align:left">Hi! What\'s your name?<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">مرحباً! ما اسمك؟</span></div></div>',false);
+ rpAct('<button class="mb" dir="ltr" lang="en" onclick="rp2()" style="padding:12px 20px;font-size:17px;background:linear-gradient(135deg,#2E7D32,#1B4D3E)">My name is ______. 🎤 <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">اسمي ______.</span></button>');
+}
+function rp2(){
+ rpBubbles('<div style="display:flex;justify-content:flex-end"><div class="bub bub-you" dir="ltr" lang="en" style="max-width:280px;text-align:left">My name is ______.<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">اسمي ______.</span></div></div>',true);
+ rpAct('<button class="btn-primary" onclick="rp3()">Next ▶ <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">التالي</span></button>');
+}
+function rp3(){
+ rpBubbles('<div style="display:flex;justify-content:flex-start"><div class="bub bub-l" dir="ltr" lang="en" style="max-width:280px;text-align:left">Do you like swimming?<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">هل تحب السباحة؟</span></div></div>',true);
+ rpAct('<button class="mb btn-gn" dir="ltr" onclick="rp4(true)" style="padding:12px 18px">Yes, I do! <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">نعم!</span></button>'+
+       '<button class="mb btn-rd" dir="ltr" onclick="rp4(false)" style="padding:12px 18px">No, I don\'t. <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">لا!</span></button>');
+}
+function rp4(yes){
+ if(yes){
+   rpBubbles('<div style="display:flex;justify-content:flex-end"><div class="bub bub-you" dir="ltr" lang="en" style="max-width:280px;text-align:left">Yes, I do!<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">نعم!</span></div></div>',true);
+   setTimeout(function(){
+     rpBubbles('<div style="display:flex;justify-content:flex-start"><div class="bub bub-l" dir="ltr" lang="en" style="max-width:280px;text-align:left">I like swimming too!<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">أنا أيضاً أحب السباحة!</span></div></div>',true);
+     rpEnd();
+   },900);
+ }else{
+   rpBubbles('<div style="display:flex;justify-content:flex-end"><div class="bub bub-you" dir="ltr" lang="en" style="max-width:280px;text-align:left">No, I don\'t.<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">لا!</span></div></div>',true);
+   setTimeout(function(){
+     rpBubbles('<div style="display:flex;justify-content:flex-start"><div class="bub bub-l" dir="ltr" lang="en" style="max-width:280px;text-align:left">That\'s OK! I like reading.<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">لا بأس! أنا أحب القراءة.</span></div></div>',true);
+     rpEnd();
+   },900);
+ }
+}
+function rpEnd(){
+ rpAct('<button class="btn-primary" onclick="rp5()">Next ▶ <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">التالي</span></button>');
+}
+function rp5(){
+ rpBubbles('<div style="display:flex;justify-content:flex-start"><div class="bub bub-l" dir="ltr" lang="en" style="max-width:280px;text-align:left">Great talking with you! ⭐<span class="ar-t" dir="rtl" lang="ar" style="font-size:12px;color:#8D6E63;margin-top:4px;text-align:right">سعدت بالحديث معك! ⭐</span></div></div>',true);
+ rpAct('<button class="btn-primary grn" onclick="next()">Finish ▶ <span class="ar-t ar-i" dir="rtl" lang="ar" style="font-size:13px">إنهاء</span></button>');
+}
+
+/* ---------- Output: pick 2 favorites ---------- */
+const FAV={1:'football',2:'basketball',3:'computer games',4:'painting',5:'reading',6:'swimming',7:'drawing',8:'dancing'};
+let favs=[];
+function pickFav(i){
+ const b=document.getElementById('ob'+i);
+ const idx=favs.indexOf(i);
+ if(idx>-1){favs.splice(idx,1);b.classList.remove('on');}
+ else{
+   if(favs.length>=2){
+     const old=favs.shift();
+     document.getElementById('ob'+old).classList.remove('on');
+   }
+   favs.push(i);b.classList.add('on');
+   say(FAV[i]);
+ }
+ const el=document.getElementById('fav');
+ if(favs.length===0){el.textContent='______ and ______';}
+ else if(favs.length===1){el.textContent=FAV[favs[0]]+' and ______';}
+ else{el.textContent=FAV[favs[0]]+' and '+FAV[favs[1]];}
+}
+
+/* ---------- Exit quiz (3 questions) ---------- */
+const QUIZ=[
+ {q:'1. Do you like swimming?',a:'Yes, I do.',wrong:['Yes, I am.','Yes, you do.','Yes, it is.'],qar:'هل تحب السباحة؟'},
+ {q:'2. Do you like painting?',a:"No, I don't.",wrong:['No, I am not.',"No, you don't.","No, it isn't."],qar:'هل تحب التلوين؟'},
+ {q:'3. Which one is "الرسم"?',a:'Drawing',wrong:['Dancing','Reading','Swimming'],qar:'أيّ كلمة تعني "الرسم"؟'}
+];
+let qzI=0,qzScore=0,qzLock=false;
+function quizAns(btn,ok){
+ if(qzLock)return;
+ if(ok){
+   qzLock=true;
+   qzScore++;
+   btn.classList.add('right');
+   say('correct');
+   showF('f19','Correct!','صحيح!');
+   setTimeout(function(){
+     qzI++;
+     if(qzI<QUIZ.length){renderQuiz();}
+     else{endQuiz();}
+   },900);
+ }else{
+   btn.classList.add('wrong');
+   say('try again');
+   setTimeout(function(){btn.classList.remove('wrong');},600);
+ }
+}
+function renderQuiz(){
+ qzLock=false;
+ const d=QUIZ[qzI];
+ const box=document.getElementById('q19');
+ let opts=[d.a].concat(d.wrong).sort(function(){return Math.random()-0.5;});
+ let h='<p dir="ltr" lang="en" style="font-family:\'Nunito\',sans-serif;font-size:20px;font-weight:700;color:#1B4D3E;margin-bottom:12px">'+d.q+'</p><p class="ar-t" dir="rtl" lang="ar" style="font-size:14px;font-weight:600;color:#8D6E63;margin-top:-6px;margin-bottom:10px">'+d.qar+'</p><div class="mc-grid">';
+ opts.forEach(function(o){
+   h+='<button class="mc-btn" dir="ltr" onclick="quizAns(this,'+(o===d.a)+')">'+o+'</button>';
+ });
+ h+='</div>';
+ box.innerHTML=h;
+}
+function endQuiz(){
+ const box=document.getElementById('q19');
+ const stars=qzScore>=3?'⭐⭐⭐':(qzScore>=2?'⭐⭐':'⭐');
+ box.innerHTML='<div style="font-size:40px;margin-bottom:8px">'+stars+'</div>'+
+ '<p dir="ltr" lang="en" style="font-family:\'Nunito\',sans-serif;font-size:22px;font-weight:700;color:#1B4D3E">You got '+qzScore+' / 3!</p>'+
+ '<p dir="rtl" lang="ar" style="font-size:15px;color:#666;margin-top:6px;font-family:\'Noto Sans Arabic\'">أحسنت! أجبت على '+qzScore+' من 3</p>';
+ document.getElementById('goReport').style.display='inline-block';
+ if(qzScore>=2){say('great job');}else{say('good try');}
+}
+
+/* ---------- Feedback bubble ---------- */
+function showF(id,msg,ar){
+ const f=document.getElementById(id);
+ if(!f)return;
+ const en=f.querySelector('.en');if(en){en.textContent=msg;}else{f.textContent=msg;}
+ const at=f.querySelector('.ar-t');if(at){at.textContent=ar||'';}
+ f.classList.add('s');
+ setTimeout(function(){f.classList.remove('s');},1200);
+}
+
+/* ---------- Fit stage ---------- */
+function fitStage(){
+ const s=document.getElementById('app');
+ const sc=Math.min(window.innerWidth/1280,window.innerHeight/720);
+ s.style.transform='scale('+sc+')';
+}
+window.addEventListener('resize',fitStage);
+fitStage();
+
+/* 深度链接：#ar 打开即启用全翻译（仅本次会话），#p=N 直达第 N 屏 */
+(function(){
+ var h=location.hash||'';
+ if(h.indexOf('ar')>-1){document.body.classList.add('ar-on');var b=document.getElementById('arBtn');if(b){b.classList.add('on');}}
+ var m=h.match(/p=(\d+)/);
+ if(m){go(Math.min(total-1,Math.max(0,parseInt(m[1],10))));}
+})();
+</script>
+</body>
+</html>

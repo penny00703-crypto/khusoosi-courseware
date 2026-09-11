@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مطبخ المرح · Crazy Kitchen</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; overflow:hidden; background:#33223F;
+    font-family:"Trebuchet MS","Segoe UI",Tahoma,Arial,sans-serif; }
+  body { background-image:radial-gradient(circle at 20% 30%, #45305A 0, transparent 45%),
+        radial-gradient(circle at 80% 75%, #45305A 0, transparent 45%); }
+
+  /* ===== 等比缩放舞台 1280x720 ===== */
+  #stage { position:absolute; left:50%; top:50%; width:1280px; height:720px;
+    transform:translate(-50%,-50%); transform-origin:center center;
+    background:#FFF7EC; border-radius:18px; overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.5); }
+
+  .page { position:absolute; inset:0; display:none; padding:26px 44px 96px;
+    background:#FFF7EC;
+    background-image:radial-gradient(#FFE7C2 1.6px, transparent 1.6px);
+    background-size:34px 34px; }
+  .page.active { display:block; animation:pageIn .35s ease; }
+  @keyframes pageIn { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+  /* ===== 通用组件 ===== */
+  .ar { direction:rtl; unicode-bidi:isolate; }
+  .en { direction:ltr; unicode-bidi:isolate; }
+  .timepill { position:absolute; top:20px; inset-inline-end:24px; background:#7C5CBF; color:#fff;
+    font-size:15px; font-weight:700; padding:6px 16px; border-radius:999px; box-shadow:0 3px 0 #5E4399;
+    direction:rtl; z-index:5; }
+  .pagetag { display:inline-block; background:#FFE3C2; color:#B45A12; font-weight:800;
+    border-radius:999px; padding:6px 20px; font-size:17px; }
+
+  .btn { border:none; cursor:pointer; font-family:inherit; font-weight:800; color:#fff;
+    border-radius:999px; transition:transform .12s, filter .12s; user-select:none; }
+  .btn:active { transform:scale(.94); }
+  .btn-orange { background:linear-gradient(#FFA45C,#F57A1F); box-shadow:0 5px 0 #C85F10; }
+  .btn-teal   { background:linear-gradient(#2BC4BE,#10948E); box-shadow:0 5px 0 #0B6E6A; }
+  .btn:hover { filter:brightness(1.06); }
+
+  .speak-btn { display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer;
+    background:#12A5A0; color:#fff; font-weight:800; font-size:16px; padding:8px 18px;
+    border-radius:999px; box-shadow:0 4px 0 #0B6E6A; transition:transform .12s; font-family:inherit; }
+  .speak-btn:active { transform:scale(.92); }
+  .speak-btn .spk { width:16px; height:16px; position:relative; display:inline-block; }
+  .speak-btn .spk::before { content:""; position:absolute; left:0; top:4px; width:5px; height:8px;
+    background:#fff; border-radius:2px; }
+  .speak-btn .spk::after { content:""; position:absolute; left:5px; top:1px; width:9px; height:14px;
+    border:3px solid #fff; border-left:none; border-radius:0 12px 12px 0; }
+
+  .card { background:#fff; border-radius:24px; box-shadow:0 10px 26px rgba(120,72,20,.14); }
+
+  /* ===== 底部导航 ===== */
+  #navbar { position:absolute; left:0; right:0; bottom:0; height:72px; z-index:50;
+    background:linear-gradient(#FFFDF8,#FFEFD8); border-top:3px solid #FFD9A8;
+    display:flex; align-items:center; justify-content:center; gap:26px; }
+  .navbtn { width:200px; height:48px; font-size:19px; display:flex; align-items:center;
+    justify-content:center; gap:10px; }
+  .navbtn:disabled { opacity:.35; cursor:default; filter:grayscale(.6); }
+  #pageInd { min-width:110px; text-align:center; font-weight:800; color:#8A5A2B; font-size:18px;
+    background:#fff; border:2px solid #FFD9A8; border-radius:999px; padding:8px 0; }
+
+  /* ===== P1 课前通知页 ===== */
+  #p1 { background:linear-gradient(160deg,#FFF3DE,#FFE1EE 55%,#DFF4FF); }
+  .notice-wrap { height:100%; display:flex; flex-direction:column; align-items:center; direction:rtl; }
+  .notice-title { font-size:44px; font-weight:900; color:#4A2C1A; margin-top:6px; }
+  .notice-sub { font-size:20px; color:#9A6234; font-weight:700; margin:4px 0 14px; }
+  .check-list { width:760px; display:flex; flex-direction:column; gap:10px; }
+  .check-item { display:flex; align-items:center; gap:16px; background:#fff; border-radius:18px;
+    padding:12px 22px; box-shadow:0 6px 16px rgba(120,72,20,.12); border-inline-start:8px solid #12A5A0; }
+  .check-item .num { width:40px; height:40px; border-radius:50%; background:#12A5A0; color:#fff;
+    font-size:20px; font-weight:900; display:flex; align-items:center; justify-content:center; flex:none; }
+  .check-item p { font-size:22px; font-weight:800; color:#4A2C1A; }
+  #startBtn { margin-top:18px; font-size:26px; padding:16px 58px; }
+
+  /* ===== P2 破冰 ===== */
+  #p2 { padding:0; background:none; }
+  #p2 .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  #p2 .veil { position:absolute; inset:0; background:linear-gradient(rgba(60,32,8,.18), rgba(60,32,8,.34)); }
+  .ice-card { position:absolute; left:64px; top:70px; width:560px; padding:28px 34px; }
+  .ice-ar { direction:rtl; font-size:30px; font-weight:900; color:#4A2C1A; }
+  .ice-en { direction:ltr; font-size:22px; color:#7A4E21; font-weight:800; margin-top:6px; }
+  .ice-chips { display:flex; flex-direction:column; gap:12px; margin-top:18px; direction:ltr; }
+  .ice-chip { display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:#FFF3DE; border-radius:16px; padding:10px 16px; font-size:20px; font-weight:800; color:#4A2C1A; }
+  #chefIce { position:absolute; right:90px; bottom:84px; width:330px; cursor:pointer;
+    filter:drop-shadow(0 16px 22px rgba(0,0,0,.3)); transition:transform .2s; transform-origin:bottom center; }
+  #chefIce:hover { transform:scale(1.04); }
+  .waving { animation:wave .7s ease; }
+  @keyframes wave { 0%{transform:rotate(0)} 25%{transform:rotate(-6deg) scale(1.05)}
+    50%{transform:rotate(5deg)} 75%{transform:rotate(-4deg)} 100%{transform:rotate(0)} }
+  .ice-hint { position:absolute; right:118px; bottom:96px; direction:rtl; color:#fff; font-weight:800;
+    font-size:17px; background:rgba(60,32,8,.55); padding:8px 18px; border-radius:999px; }
+
+  /* ===== P3 Free talk ===== */
+  .ft-foods { display:flex; gap:26px; justify-content:center; margin-top:14px; }
+  .ft-food { width:230px; padding:14px; text-align:center; }
+  .ft-food img { width:100%; height:170px; object-fit:contain; }
+  .ft-food .nm { direction:ltr; font-size:22px; font-weight:900; color:#4A2C1A; }
+  .ft-food .nm-ar { direction:rtl; font-size:16px; color:#9A6234; font-weight:700; }
+  .ft-qs { display:flex; flex-direction:column; gap:10px; margin-top:16px; align-items:center; }
+  .ft-q { display:flex; align-items:center; gap:14px; background:#fff; border-radius:16px;
+    padding:10px 20px; width:820px; box-shadow:0 6px 14px rgba(120,72,20,.12); }
+  .ft-q .q { direction:ltr; font-size:21px; font-weight:800; color:#173F5F; flex:1; }
+  .ft-q .qar { direction:rtl; font-size:16px; color:#9A6234; font-weight:700; }
+
+  /* ===== 单词页 ===== */
+  .wp-wrap { height:100%; display:flex; align-items:center; gap:40px; }
+  .wp-imgbox { width:430px; height:430px; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle,#fff 55%,#FFEFD2); border-radius:36px;
+    box-shadow:0 14px 30px rgba(120,72,20,.16); flex:none; }
+  .wp-imgbox img { width:86%; height:86%; object-fit:contain; }
+  .wp-info { flex:1; }
+  .wp-wordrow { display:flex; align-items:center; gap:18px; direction:ltr; }
+  .wp-word { font-size:64px; font-weight:900; color:#173F5F; letter-spacing:1px; }
+  .wp-ph { direction:ltr; font-size:26px; color:#B0722C; font-weight:700; margin-top:2px; }
+  .wp-ar { direction:rtl; display:inline-block; margin-top:12px; background:#FFE3C2; color:#8A4A0B;
+    font-size:30px; font-weight:900; padding:8px 30px; border-radius:999px; }
+  .wp-ex { direction:ltr; margin-top:18px; background:#fff; border-inline-start:8px solid #12A5A0;
+    border-radius:16px; padding:14px 20px; display:flex; align-items:center; gap:16px;
+    box-shadow:0 6px 14px rgba(120,72,20,.10); }
+  .wp-ex p { flex:1; font-size:23px; font-weight:800; color:#333; }
+  .wp-ex .ex-ar { direction:rtl; font-size:16px; color:#9A6234; font-weight:700; }
+  .wp-dots { position:absolute; bottom:88px; left:50%; transform:translateX(-50%); display:flex; gap:8px; direction:ltr; }
+  .wp-dots i { width:12px; height:12px; border-radius:50%; background:#F0D3AE; }
+  .wp-dots i.on { background:#F57A1F; transform:scale(1.3); }
+
+  /* ===== 打地鼠 ===== */
+  .mole-top { display:flex; align-items:center; justify-content:center; gap:22px; margin-top:2px; }
+  .mole-prompt { direction:rtl; font-size:26px; font-weight:900; color:#4A2C1A; background:#fff;
+    border-radius:18px; padding:12px 30px; box-shadow:0 6px 16px rgba(120,72,20,.14); }
+  .mole-prompt b { color:#D2600F; font-size:32px; }
+  .mole-score { direction:ltr; font-size:20px; font-weight:900; color:#0C7C78; background:#DFF7F5;
+    padding:10px 22px; border-radius:999px; }
+  .mole-timer { width:520px; height:14px; background:#F3DFC0; border-radius:999px; margin:12px auto 4px; overflow:hidden; }
+  .mole-timer i { display:block; height:100%; width:100%; background:linear-gradient(90deg,#FFC53D,#F57A1F);
+    border-radius:999px; transition:width .1s linear; }
+  #moleGrid { display:grid; grid-template-columns:repeat(3,220px); grid-auto-rows:170px; gap:14px 40px;
+    justify-content:center; margin-top:8px; }
+  .hole { position:relative; overflow:hidden; border-radius:20px 20px 0 0; }
+  .hole::after { content:""; position:absolute; bottom:0; left:6%; right:6%; height:26px;
+    background:radial-gradient(ellipse at center,#6B4226 0%,#4A2C1A 70%); border-radius:50%; }
+  .mole { position:absolute; left:10%; right:10%; bottom:-100%; height:150px; border:none; cursor:pointer;
+    background:linear-gradient(#fff,#FFF1DC); border-radius:22px 22px 0 0; box-shadow:0 -4px 14px rgba(0,0,0,.12);
+    display:flex; flex-direction:column; align-items:center; padding-top:8px;
+    transition:bottom .3s cubic-bezier(.34,1.56,.64,1); font-family:inherit; }
+  .hole.up .mole { bottom:10px; }
+  .mole img { height:88px; object-fit:contain; }
+  .mole span { direction:ltr; font-size:21px; font-weight:900; color:#173F5F; }
+  .mole.hit { background:#CDf0D3; }
+  .mole.shake { animation:shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+  .mole-end { position:absolute; inset:26px 44px 96px; display:none; flex-direction:column; align-items:center;
+    justify-content:center; gap:16px; background:rgba(255,247,236,.96); border-radius:30px; z-index:10; }
+  .mole-end h2 { direction:rtl; font-size:40px; color:#4A2C1A; }
+  .mole-end .big { direction:ltr; font-size:60px; font-weight:900; color:#D2600F; }
+
+  /* ===== 图文匹配 ===== */
+  .match-wrap { display:flex; gap:30px; justify-content:center; margin-top:12px; }
+  .match-col { display:flex; flex-direction:column; gap:12px; }
+  .m-img, .m-word { width:230px; border:4px solid transparent; cursor:pointer; transition:transform .15s, border-color .15s; }
+  .m-img { height:118px; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .m-img img { max-height:100%; max-width:100%; object-fit:contain; }
+  .m-word { height:64px; display:flex; align-items:center; justify-content:center; direction:ltr;
+    font-size:24px; font-weight:900; color:#173F5F; }
+  .m-img.sel, .m-word.sel { border-color:#F57A1F; transform:scale(1.05); }
+  .m-img.done, .m-word.done { opacity:0; pointer-events:none; transform:scale(.4); transition:all .5s; }
+  .m-img.shake, .m-word.shake { animation:shake .4s; }
+  .basket { width:200px; align-self:center; text-align:center; }
+  .basket-box { height:190px; border-radius:24px 24px 40px 40px; background:linear-gradient(#C77B3B,#9A5A22);
+    position:relative; overflow:hidden; display:flex; flex-wrap:wrap; align-items:flex-end;
+    justify-content:center; padding:10px; gap:4px; box-shadow:inset 0 -14px 0 rgba(0,0,0,.18); }
+  .basket-box::before { content:""; position:absolute; top:-26px; left:24px; right:24px; height:44px;
+    border:10px solid #9A5A22; border-bottom:none; border-radius:60px 60px 0 0; }
+  .basket-box img { width:44px; height:44px; object-fit:contain; animation:basketIn .5s ease; }
+  @keyframes basketIn { from{transform:translateY(-90px) scale(1.6); opacity:0;} to{transform:none; opacity:1;} }
+  .basket p { direction:rtl; margin-top:10px; font-weight:900; color:#8A5A2B; font-size:17px; }
+  .match-msg { text-align:center; direction:rtl; font-size:24px; font-weight:900; color:#0C7C78; height:34px; margin-top:6px; }
+
+  /* ===== 语法页 ===== */
+  .gr-wrap { display:flex; gap:26px; margin-top:12px; align-items:stretch; }
+  .gr-formula { width:430px; padding:22px 26px; display:flex; flex-direction:column; justify-content:center; gap:14px; }
+  .gr-badge { display:inline-flex; align-items:center; gap:10px; font-size:24px; font-weight:900; direction:rtl; }
+  .gr-badge .dot { width:44px; height:44px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; color:#fff; font-size:26px; font-weight:900; flex:none; }
+  .gr-badge.green .dot { background:#3FA34D; } .gr-badge.green { color:#2B7A37; }
+  .gr-badge.red .dot { background:#E5484D; } .gr-badge.red { color:#C33; }
+  .gr-badge.orange .dot { background:#F57A1F; border-radius:12px; clip-path:polygon(50% 0,100% 100%,0 100%); }
+  .gr-badge.orange { color:#C85F10; }
+  .gr-formula .fx { direction:ltr; background:#173F5F; color:#fff; font-size:22px; font-weight:800;
+    border-radius:14px; padding:14px 18px; text-align:center; }
+  .gr-formula .fx b { color:#FFC53D; }
+  .gr-ar-note { direction:rtl; font-size:18px; color:#6B4226; font-weight:700; background:#FFF3DE;
+    border-radius:12px; padding:10px 16px; }
+  .gr-exs { flex:1; display:flex; flex-direction:column; gap:12px; }
+  .gr-ex { display:flex; align-items:center; gap:14px; padding:12px 18px; direction:ltr; }
+  .gr-ex img { width:74px; height:74px; object-fit:contain; flex:none; }
+  .gr-ex p { flex:1; font-size:22px; font-weight:800; color:#333; }
+  .gr-ex p b { color:#D2600F; }
+  .gr-ex p b.hl { background:#FFF0B8; padding:0 6px; border-radius:6px; }
+
+  /* ===== 语法分类游戏 ===== */
+  .sort-stage { position:relative; margin-top:10px; }
+  .sort-card { width:720px; margin:0 auto; padding:22px 28px; text-align:center; direction:ltr; }
+  .sort-card p { font-size:27px; font-weight:900; color:#173F5F; }
+  .sort-card .speak-btn { margin-top:12px; }
+  .buckets { display:flex; justify-content:center; gap:120px; margin-top:18px; }
+  .bucket { width:340px; padding:16px 18px 22px; border-radius:26px 26px 44px 44px; cursor:pointer;
+    text-align:center; transition:transform .15s, filter .15s; border:none; font-family:inherit; }
+  .bucket:active { transform:scale(.95); }
+  .bucket.b-should { background:linear-gradient(#3FBF5A,#2B8C40); box-shadow:0 8px 0 #1F6B30; }
+  .bucket.b-better { background:linear-gradient(#FF9A4C,#E56B1F); box-shadow:0 8px 0 #B4500F; }
+  .bucket h3 { color:#fff; font-size:26px; font-weight:900; direction:ltr; }
+  .bucket p { color:#FFE9C7; font-size:19px; font-weight:800; direction:rtl; margin-top:4px; }
+  .bucket .tri { width:34px; height:30px; margin:0 auto 4px; background:#FFE9C7;
+    clip-path:polygon(50% 0,100% 100%,0 100%); display:flex; align-items:flex-end; justify-content:center;
+    color:#E56B1F; font-weight:900; font-size:18px; }
+  .sort-hud { display:flex; justify-content:center; gap:26px; margin-top:14px; direction:ltr;
+    font-size:20px; font-weight:900; color:#8A5A2B; }
+  .sort-msg { text-align:center; direction:rtl; font-size:22px; font-weight:900; height:30px; margin-top:4px; }
+  .oral-zone { display:none; margin-top:10px; }
+  .oral-zone.show { display:block; }
+  .oral-card { width:720px; margin:8px auto; padding:14px 22px; display:flex; align-items:center; gap:14px; direction:ltr; }
+  .oral-card p { flex:1; font-size:22px; font-weight:800; color:#333; }
+  .oral-card .hint { direction:rtl; font-size:16px; color:#9A6234; font-weight:700; }
+
+  /* ===== Role Play ===== */
+  .rp-wrap { display:flex; gap:30px; margin-top:8px; height:470px; }
+  .rp-imgbox { width:400px; flex:none; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px; }
+  .rp-imgbox img { max-width:340px; max-height:330px; object-fit:contain; transition:opacity .3s; }
+  .rp-stepword { direction:ltr; margin-top:8px; font-size:20px; font-weight:900; color:#B0722C; }
+  .rp-dialog { flex:1; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+  .bubble { display:flex; gap:12px; align-items:flex-start; padding:14px 18px; border-radius:20px; }
+  .bubble.teacher { background:#E4F6F5; border:3px solid #12A5A0; direction:ltr; }
+  .bubble.student { background:#FFF0DC; border:3px solid #F57A1F; direction:ltr; }
+  .bubble .who { flex:none; width:86px; font-size:15px; font-weight:900; text-align:center; }
+  .bubble.teacher .who { color:#0C7C78; } .bubble.student .who { color:#C85F10; }
+  .bubble .who i { display:block; font-style:normal; font-size:13px; color:#9A8A72; direction:rtl; }
+  .bubble .line { flex:1; font-size:22px; font-weight:800; color:#333; }
+  .bubble .acts { display:flex; flex-direction:column; gap:8px; }
+  .mini-btn { font-size:14px; padding:7px 14px; }
+  .rp-progress { display:flex; gap:8px; justify-content:center; margin-top:8px; }
+  .rp-progress i { width:34px; height:34px; border-radius:50%; background:#F0D3AE; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; font-style:normal; }
+  .rp-progress i.on { background:#3FA34D; }
+  .rp-done { position:absolute; inset:26px 44px 96px; display:none; flex-direction:column; align-items:center;
+    justify-content:center; gap:14px; background:rgba(255,247,236,.97); border-radius:30px; z-index:10; text-align:center; }
+  .rp-done img { width:250px; }
+  .rp-done h2 { direction:rtl; font-size:38px; color:#4A2C1A; }
+
+  /* ===== 总结页 ===== */
+  .sum-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:12px; }
+  .sum-word { display:flex; align-items:center; gap:10px; padding:8px 12px; cursor:pointer; transition:transform .15s; }
+  .sum-word:active { transform:scale(.93); }
+  .sum-word img { width:56px; height:56px; object-fit:contain; }
+  .sum-word .t { direction:ltr; font-size:19px; font-weight:900; color:#173F5F; line-height:1.1; }
+  .sum-word .t i { display:block; direction:rtl; font-style:normal; font-size:14px; color:#9A6234; font-weight:700; }
+  .sum-gram { display:flex; gap:16px; margin-top:14px; }
+  .sum-gram .card { flex:1; padding:12px 18px; direction:ltr; }
+  .sum-gram h4 { font-size:19px; color:#173F5F; }
+  .sum-gram p { font-size:17px; font-weight:700; color:#555; margin-top:4px; }
+  .sum-bonus { direction:rtl; margin-top:10px; font-size:17px; color:#8A5A2B; font-weight:800; text-align:center; }
+
+  /* ===== Exit Quiz ===== */
+  .quiz-card { width:820px; margin:10px auto 0; padding:26px 34px; text-align:center; }
+  .quiz-q { direction:rtl; font-size:28px; font-weight:900; color:#4A2C1A; }
+  .quiz-q.enq { direction:ltr; color:#173F5F; }
+  .quiz-hint { direction:rtl; font-size:17px; color:#9A6234; font-weight:700; margin-top:4px; }
+  .quiz-opts { display:flex; gap:18px; justify-content:center; margin-top:20px; }
+  .quiz-opt { min-width:210px; padding:16px 24px; font-size:24px; font-weight:900; color:#173F5F;
+    background:#FFF3DE; border:4px solid #FFD9A8; border-radius:18px; cursor:pointer;
+    direction:ltr; font-family:inherit; transition:all .15s; }
+  .quiz-opt:hover { transform:translateY(-3px); }
+  .quiz-opt.right { background:#CDf0D3; border-color:#3FA34D; color:#2B7A37; }
+  .quiz-opt.bad { background:#FBD5D6; border-color:#E5484D; color:#C33; animation:shake .4s; }
+  .quiz-hud { text-align:center; direction:ltr; margin-top:14px; font-size:19px; font-weight:900; color:#8A5A2B; }
+  .quiz-end { position:absolute; inset:26px 44px 96px; display:none; flex-direction:column; align-items:center;
+    justify-content:center; gap:14px; background:rgba(255,247,236,.97); border-radius:30px; z-index:10; }
+  .quiz-end h2 { direction:rtl; font-size:40px; color:#4A2C1A; }
+  .quiz-end .stars { font-size:64px; color:#FFC53D; letter-spacing:8px; direction:ltr; }
+  .quiz-end .score { direction:ltr; font-size:30px; font-weight:900; color:#D2600F; }
+
+  /* ===== 教师反馈页 ===== */
+  #p20 .fb-wrap { direction:rtl; height:100%; display:flex; flex-direction:column; gap:10px; }
+  .fb-row { display:flex; gap:16px; flex:1; }
+  .fb-box { flex:1; background:#fff; border-radius:20px; box-shadow:0 8px 20px rgba(120,72,20,.12);
+    padding:14px 18px; display:flex; flex-direction:column; }
+  .fb-box h3 { font-size:21px; font-weight:900; color:#173F5F; margin-bottom:8px; }
+  .fb-box h3 span { color:#B0722C; font-size:15px; font-weight:700; }
+  .fb-box textarea { flex:1; border:2px dashed #FFD9A8; border-radius:14px; padding:12px;
+    font-family:inherit; font-size:17px; font-weight:700; color:#4A2C1A; resize:none; outline:none;
+    direction:rtl; background:#FFFDF8; }
+  .fb-box textarea:focus { border-color:#F57A1F; }
+  .fb-foot { display:flex; align-items:center; justify-content:space-between; }
+  .fb-stars { direction:ltr; font-size:40px; color:#E8D5B5; cursor:pointer; letter-spacing:6px; user-select:none; }
+  .fb-stars .on { color:#FFC53D; }
+  #fbSave { font-size:19px; padding:12px 40px; }
+  #fbToast { position:absolute; bottom:90px; left:50%; transform:translateX(-50%); background:#3FA34D;
+    color:#fff; font-weight:900; font-size:19px; padding:10px 34px; border-radius:999px; display:none; z-index:20; }
+
+  /* ===== 阿语全翻译开关 ===== */
+  .ar-t { display:none; direction:rtl; unicode-bidi:isolate; }
+  body.ar-on .ar-t { display:block; }
+  body.ar-on .ar-t.ar-i { display:inline; }
+  .ar-t.ltr-sep { direction:ltr; }
+  #arBtn { position:fixed; top:14px; right:14px; z-index:9999; border:none; cursor:pointer;
+    font-family:inherit; font-weight:800; font-size:15px; color:#fff; padding:9px 18px;
+    border-radius:999px; background:linear-gradient(#9B7EDE,#7C5CBF); box-shadow:0 4px 0 #5E4399;
+    transition:transform .12s, filter .12s; }
+  #arBtn:active { transform:scale(.94); }
+  #arBtn:hover { filter:brightness(1.08); }
+  body.ar-on #arBtn { background:linear-gradient(#3FBF5A,#2B8C40); box-shadow:0 4px 0 #1F6B30; }
+
+  /* ===== 全局 logo 水印（舞台内、页面之外，每页可见） ===== */
+  .logo { position:absolute; top:14px; left:20px; height:38px; width:auto; z-index:60;
+    pointer-events:none; filter:drop-shadow(0 2px 6px rgba(0,0,0,.30)); }
+
+  /* ===== 隐藏每页左上角时间标签 ===== */
+  .timepill { display:none; }
+
+  /* ===== P1 课前须知：按钮行 + 试音确认 ===== */
+  .notice-btns { display:flex; gap:16px; align-items:center; justify-content:center;
+    flex-wrap:wrap; margin-top:18px; }
+  #startBtn { margin-top:0; }
+  #sndOk { font-size:16px; font-weight:800; color:#2B7A37; margin-top:12px;
+    opacity:0; transition:opacity .4s; }
+
+  /* ===== 各页翻译块样式 ===== */
+  .chip-text { display:flex; flex-direction:column; gap:2px; }
+  .chip-ar { font-size:15px; color:#9A6234; font-weight:700; }
+  .wp-ex-text { flex:1; }
+  .gx-text { flex:1; }
+  .gr-ex .ex-ar { font-size:15px; color:#9A6234; font-weight:700; margin-top:4px; }
+  .oral-ar { font-size:15px; color:#9A6234; font-weight:700; margin-top:4px; }
+  .rp-lines { flex:1; display:flex; flex-direction:column; gap:4px; }
+  .rp-ar { font-size:16px; color:#9A6234; font-weight:700; }
+  .rp-step-ar { font-size:15px; color:#9A6234; font-weight:700; margin-top:2px; }
+  .quiz-q-ar { font-size:17px; color:#9A6234; font-weight:700; margin-top:6px; }
+  .sum-gram .ex-ar { font-size:14px; color:#9A6234; font-weight:700; margin-top:6px; }
+
+  /* ===== 庆祝彩带 ===== */
+  #confetti { position:absolute; inset:0; pointer-events:none; z-index:40; display:none; }
+</style>
+</head>
+<body>
+<div id="stage">
+<img class="logo" src="assets/img/logo.png" alt="51Talk">
+
+  <!-- P1 课前通知页（全阿拉伯语） -->
+  <section class="page" id="p1">
+    <div class="notice-wrap">
+      <div class="notice-title">مطبخ المرح</div>
+      <div class="notice-sub">قبل أن نبدأ الدرس، تأكّد من هذه الأشياء الأربعة:</div>
+      <div class="check-list">
+        <div class="check-item"><span class="num">🎤</span><p>تأكد من فتح الميكروفون والكاميرا</p></div>
+        <div class="check-item"><span class="num">🌐</span><p>تأكد من أن الإنترنت يعمل جيداً</p></div>
+        <div class="check-item"><span class="num">🤫</span><p>اجلس في مكان هادئ ومريح</p></div>
+        <div class="check-item"><span class="num">✏️</span><p>حضّر الأدوات المدرسية اللازمة</p></div>
+      </div>
+      <div class="notice-btns">
+        <button class="btn btn-teal" id="sndTest" style="font-size:19px;padding:14px 34px">🔊 جرّب الصوت</button>
+        <button class="btn btn-orange" id="startBtn">أنا جاهز! هيّا نبدأ</button>
+      </div>
+      <p id="sndOk">✔ الصوت يعمل جيداً!</p>
+    </div>
+  </section>
+
+  <!-- P2 破冰 -->
+  <section class="page" id="p2">
+    <div class="timepill">٢ دقيقة · كسر الجليد</div>
+    <img class="bg" src="assets/img/kitchen_bg.jpg" alt="kitchen">
+    <div class="veil"></div>
+    <div class="card ice-card">
+      <div class="ice-ar">أهلًا يا طاهينا الصغير!</div>
+      <div class="ice-en">Welcome to the Crazy Kitchen, little chef!</div>
+      <div class="ice-chips">
+        <div class="ice-chip"><span class="chip-text">What's your name?<span class="ar-t chip-ar">ما اسمك؟</span></span>
+          <button class="speak-btn" data-say="What's your name?"><i class="spk"></i>Listen</button></div>
+        <div class="ice-chip"><span class="chip-text">My name is ____.&nbsp;<span class="ar-t chip-ar">اسمي هو...</span></span>
+          <button class="speak-btn" data-say="My name is ..."><i class="spk"></i>Listen</button></div>
+        <div class="ice-chip"><span class="chip-text">How are you today?<span class="ar-t chip-ar">كيف حالك اليوم؟</span></span>
+          <button class="speak-btn" data-say="How are you today?"><i class="spk"></i>Listen</button></div>
+        <div class="ice-chip"><span class="chip-text">I'm great! I'm ready to cook!<span class="ar-t chip-ar">أنا بخير! أنا مستعد للطبخ!</span></span>
+          <button class="speak-btn" data-say="I'm great! I'm ready to cook!"><i class="spk"></i>Listen</button></div>
+      </div>
+    </div>
+    <img id="chefIce" src="assets/img/chef.png" alt="chef">
+    <div class="ice-hint">اضغط على الطاهي ليُلوّح لك ويُرحّب بك</div>
+  </section>
+
+  <!-- P3 Free talk -->
+  <section class="page" id="p3">
+    <div class="timepill">٢ دقيقة · حوار حرّ</div>
+    <div style="text-align:center"><span class="pagetag">Free Talk · حديث حر مع المعلّم</span></div>
+    <div class="ft-foods">
+      <div class="card ft-food"><img src="assets/img/cookies.png" alt="cookies">
+        <div class="nm">Cookies</div><div class="nm-ar">بسكويت</div></div>
+      <div class="card ft-food"><img src="assets/img/pancakes.png" alt="pancakes">
+        <div class="nm">Pancakes</div><div class="nm-ar">فطائر البانكيك</div></div>
+      <div class="card ft-food"><img src="assets/img/pizza.png" alt="pizza">
+        <div class="nm">Pizza</div><div class="nm-ar">بيتزا</div></div>
+    </div>
+    <div class="ft-qs">
+      <div class="ft-q"><p class="q">What's your favorite food?</p><span class="qar">ما طعامك المفضّل؟</span>
+        <button class="speak-btn" data-say="What's your favorite food?"><i class="spk"></i>Listen</button></div>
+      <div class="ft-q"><p class="q">My favorite food is ____.</p><span class="qar">طعامي المفضّل هو...</span>
+        <button class="speak-btn" data-say="My favorite food is pizza."><i class="spk"></i>Listen</button></div>
+      <div class="ft-q"><p class="q">What's in your favorite food?</p><span class="qar">ما مكوّنات طعامك المفضّل؟</span>
+        <button class="speak-btn" data-say="What's in your favorite food?"><i class="spk"></i>Listen</button></div>
+    </div>
+  </section>
+
+  <!-- P4-P11 单词页（JS 渲染） -->
+  <section class="page word-page" id="p4" data-w="0"></section>
+  <section class="page word-page" id="p5" data-w="1"></section>
+  <section class="page word-page" id="p6" data-w="2"></section>
+  <section class="page word-page" id="p7" data-w="3"></section>
+  <section class="page word-page" id="p8" data-w="4"></section>
+  <section class="page word-page" id="p9" data-w="5"></section>
+  <section class="page word-page" id="p10" data-w="6"></section>
+  <section class="page word-page" id="p11" data-w="7"></section>
+
+  <!-- P12 打地鼠 -->
+  <section class="page" id="p12">
+    <div class="timepill">٢ دقيقة · لعبة الكلمات</div>
+    <div style="text-align:center"><span class="pagetag">اضرب الخلد! · Whack-a-Mole</span></div>
+    <div class="mole-top">
+      <div class="mole-prompt">اضغط على كلمة: <b id="moleWord">...</b></div>
+      <div class="mole-score">Score: <b id="moleScore">0</b> / 8<span class="ar-t ar-i ltr-sep"> · </span><span class="ar-t ar-i">النقاط</span></div>
+    </div>
+    <div class="mole-timer"><i id="moleBar"></i></div>
+    <div id="moleGrid"></div>
+    <div class="mole-end" id="moleEnd">
+      <h2>أحسنت يا شيف! أنهيتَ اللعبة</h2>
+      <div class="big" id="moleFinal">0 / 8</div>
+      <h2 id="moleEndNote">واصل التألّق!</h2>
+    </div>
+  </section>
+
+  <!-- P13 图文匹配 -->
+  <section class="page" id="p13">
+    <div class="timepill">٢ دقيقة · لعبة الكلمات</div>
+    <div style="text-align:center"><span class="pagetag">طابِق الصورة مع الكلمة · Match & Fetch!</span></div>
+    <div class="match-wrap">
+      <div class="match-col" id="matchImgs"></div>
+      <div class="basket">
+        <div class="basket-box" id="basketBox"></div>
+        <p>سلّة المكوّنات · اجمعها كلها!</p>
+      </div>
+      <div class="match-col" id="matchWords"></div>
+    </div>
+    <div class="match-msg" id="matchMsg"></div>
+  </section>
+
+  <!-- P14 语法 1: should -->
+  <section class="page" id="p14">
+    <div class="timepill">١٫٥ دقيقة · قواعد</div>
+    <div style="text-align:center"><span class="pagetag">قاعدة ١ · النصيحة بـ should</span></div>
+    <div class="gr-wrap">
+      <div class="card gr-formula">
+        <div class="gr-badge green"><span class="dot">✓</span> نصيحة · Advice</div>
+        <div class="fx">Subject + <b>should (not)</b> + Verb</div>
+        <div class="gr-ar-note">نستخدم <b>should</b> لنقدّم نصيحة لطيفة: «من الجيد أن تفعل هذا»</div>
+        <div class="gr-ar-note">بعد should دائمًا يأتي الفعل في صورته الأصلية</div>
+      </div>
+      <div class="gr-exs">
+        <div class="card gr-ex"><img src="assets/img/oven.png" alt="">
+          <div class="gx-text"><p>We <b class="hl">should</b> turn the oven on.</p><p class="ar-t ex-ar">يجب أن نشغّل الفرن.</p></div>
+          <button class="speak-btn" data-say="We should turn the oven on."><i class="spk"></i>Listen</button></div>
+        <div class="card gr-ex"><img src="assets/img/sugar.png" alt="">
+          <div class="gx-text"><p>You <b class="hl">should not</b> use too much sugar.</p><p class="ar-t ex-ar">لا ينبغي أن تستخدم الكثير من السكر.</p></div>
+          <button class="speak-btn" data-say="You should not use too much sugar."><i class="spk"></i>Listen</button></div>
+        <div class="card gr-ex"><img src="assets/img/flour.png" alt="">
+          <div class="gx-text"><p><b class="hl">Should</b> I use flour in the mixture?</p><p class="ar-t ex-ar">هل أستخدم الدقيق في الخليط؟</p></div>
+          <button class="speak-btn" data-say="Should I use flour in the mixture?"><i class="spk"></i>Listen</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P15 语法 2: had better -->
+  <section class="page" id="p15">
+    <div class="timepill">١٫٥ دقيقة · قواعد</div>
+    <div style="text-align:center"><span class="pagetag">قاعدة ٢ · التحذير بـ had better</span></div>
+    <div class="gr-wrap">
+      <div class="card gr-formula">
+        <div class="gr-badge orange"><span class="dot">!</span> تحذير · Warning</div>
+        <div class="fx">Subject + <b>had better (not)</b> + Verb</div>
+        <div class="gr-ar-note">نستخدم <b>had better</b> عندما يكون الأمر مهمًّا وخطيرًا: «من الأفضل أن... وإلا!»</div>
+        <div class="gr-ar-note">هي أقوى من should — استخدمها للتحذير من خطر</div>
+      </div>
+      <div class="gr-exs">
+        <div class="card gr-ex"><img src="assets/img/recipe.png" alt="">
+          <div class="gx-text"><p>We <b class="hl">had better</b> check the recipe again.</p><p class="ar-t ex-ar">من الأفضل أن نراجع الوصفة مرة أخرى.</p></div>
+          <button class="speak-btn" data-say="We had better check the recipe again."><i class="spk"></i>Listen</button></div>
+        <div class="card gr-ex"><img src="assets/img/cookies.png" alt="">
+          <div class="gx-text"><p>You <b class="hl">had better not</b> leave the cookies in the oven too long!</p><p class="ar-t ex-ar">من الأفضل ألا تترك البسكويت في الفرن طويلًا!</p></div>
+          <button class="speak-btn" data-say="You had better not leave the cookies in the oven too long!"><i class="spk"></i>Listen</button></div>
+        <div class="card gr-ex"><img src="assets/img/bowl.png" alt="">
+          <div class="gx-text"><p>You <b class="hl">had better not</b> make a mess!</p><p class="ar-t ex-ar">من الأفضل ألا تصنع فوضى!</p></div>
+          <button class="speak-btn" data-say="You had better not make a mess!"><i class="spk"></i>Listen</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P16 语法分类游戏 -->
+  <section class="page" id="p16">
+    <div class="timepill">٢٫٥ دقيقة · لعبة القواعد</div>
+    <div style="text-align:center"><span class="pagetag">إنذار المطبخ! · ضع الجملة في السلّة الصحيحة</span></div>
+    <div class="sort-stage">
+      <div class="card sort-card" id="sortCard">
+        <p id="sortSentence">...</p>
+        <button class="speak-btn" id="sortSpeak"><i class="spk"></i>Listen</button>
+      </div>
+      <div class="buckets">
+        <button class="bucket b-should" data-t="should">
+          <h3>should · نصيحة</h3><p>نصيحة لطيفة: من الجيد أن...</p>
+        </button>
+        <button class="bucket b-better" data-t="better">
+          <div class="tri">!</div>
+          <h3>had better · تحذير</h3><p>تحذير قوي: من الأفضل... وإلا!</p>
+        </button>
+      </div>
+      <div class="sort-hud"><span>Sentence <b id="sortIdx">1</b> / 6<span class="ar-t ar-i ltr-sep"> · </span><span class="ar-t ar-i">الجملة</span></span><span>Score: <b id="sortScore">0</b><span class="ar-t ar-i ltr-sep"> · </span><span class="ar-t ar-i">النقاط</span></span></div>
+      <div class="sort-msg" id="sortMsg"></div>
+      <div class="oral-zone" id="oralZone">
+        <div class="card oral-card"><p>Should I add the honey?</p><span class="hint">أجب بصوت عالٍ: Yes, you should!</span>
+          <button class="speak-btn" data-say="Should I add the honey? Yes, you should!"><i class="spk"></i>Listen</button></div>
+        <div class="card oral-card"><p>Should I eat all the cookies now?</p><span class="hint">أجب بصوت عالٍ: No, you shouldn't!</span>
+          <button class="speak-btn" data-say="Should I eat all the cookies now? No, you shouldn't!"><i class="spk"></i>Listen</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P17 Role Play -->
+  <section class="page" id="p17">
+    <div class="timepill">٣ دقائق · تمثيل الأدوار</div>
+    <div style="text-align:center"><span class="pagetag">هيّا نصنع البسكويت! · Role Play</span></div>
+    <div class="rp-wrap">
+      <div class="card rp-imgbox">
+        <img id="rpImg" src="assets/img/chef.png" alt="step">
+        <div class="rp-stepword" id="rpStepWord">Step 1 / 5</div><div class="ar-t rp-step-ar" id="rpStepWordAr"></div>
+      </div>
+      <div class="rp-dialog">
+        <div class="bubble teacher">
+          <div class="who">المعلّم<i>الشيف</i></div>
+          <div class="rp-lines"><div class="line" id="rpTeacher">...</div><div class="line ar-t rp-ar" id="rpTeacherAr"></div></div>
+          <div class="acts">
+            <button class="speak-btn mini-btn" id="rpTListen"><i class="spk"></i>Listen</button>
+          </div>
+        </div>
+        <div class="bubble student">
+          <div class="who">أنت<i>الطاهي الصغير</i></div>
+          <div class="rp-lines"><div class="line" id="rpStudent">...</div><div class="line ar-t rp-ar" id="rpStudentAr"></div></div>
+          <div class="acts">
+            <button class="speak-btn mini-btn" id="rpSListen"><i class="spk"></i>Slow</button>
+            <button class="btn btn-orange mini-btn" id="rpSaid">قلتُها!</button>
+          </div>
+        </div>
+        <div class="gr-ar-note" style="text-align:center">اقرأ جملتك بصوت عالٍ، ثم اضغط «قلتُها!» لنكمل صنع البسكويت</div>
+      </div>
+    </div>
+    <div class="rp-progress" id="rpProg"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div>
+    <div class="rp-done" id="rpDone">
+      <img src="assets/img/cookies.png" alt="cookies">
+      <h2>مبروك يا شيف! البسكويت جاهز</h2>
+      <h2 style="font-size:24px; color:#0C7C78">تحدّثتَ بالإنجليزية مثل طاهٍ محترف!</h2>
+    </div>
+  </section>
+
+  <!-- P18 总结 -->
+  <section class="page" id="p18">
+    <div class="timepill">١ دقيقة · ملخّص</div>
+    <div style="text-align:center"><span class="pagetag">بطاقة وصفتنا اليوم · Today's Recipe Card</span></div>
+    <div class="sum-grid" id="sumGrid"></div>
+    <div class="sum-gram">
+      <div class="card">
+        <h4>should · نصيحة</h4>
+        <p>Subject + <b>should (not)</b> + Verb — We should turn the oven on.</p>
+      </div>
+      <div class="card">
+        <h4>had better · تحذير</h4>
+        <p>Subject + <b>had better (not)</b> + Verb — You had better not make a mess!</p>
+      </div>
+    </div>
+    <div class="sum-bonus">كلمات إضافية: <b>oven</b> = فرن · <b>countertop</b> = سطح العمل في المطبخ</div>
+  </section>
+
+  <!-- P19 Exit Quiz -->
+  <section class="page" id="p19">
+    <div class="timepill">١٫٥ دقيقة · اختبار الخروج</div>
+    <div style="text-align:center"><span class="pagetag">اختبار صغير قبل النهاية · Exit Quiz</span></div>
+    <div class="card quiz-card" id="quizCard">
+      <div class="quiz-q" id="quizQ">...</div>
+      <div class="quiz-hint" id="quizHint"></div>
+      <div class="quiz-opts" id="quizOpts"></div>
+    </div>
+    <div class="quiz-hud">Question <b id="quizIdx">1</b> / 4 · Score: <b id="quizScore">0</b><span class="ar-t ar-i ltr-sep"> · </span><span class="ar-t ar-i">السؤال / النقاط</span></div>
+    <div class="quiz-end" id="quizEnd">
+      <h2 id="quizEndTitle">رائع!</h2>
+      <div class="stars" id="quizStars">★★★★</div>
+      <div class="score" id="quizFinal">0 / 4</div>
+      <button class="btn btn-teal" id="quizRetry" style="font-size:20px; padding:12px 40px;">أعد المحاولة</button>
+    </div>
+  </section>
+
+  <!-- P20 教师反馈（全阿拉伯语） -->
+  <section class="page" id="p20">
+    <div class="fb-wrap">
+      <div style="text-align:center"><span class="pagetag">تقرير المعلّم · تُكتب بعد الدرس</span></div>
+      <div class="fb-row">
+        <div class="fb-box">
+          <h3>أداء الطالب اليوم <span>· Performance</span></h3>
+          <textarea id="fb1" placeholder="مثال: شارك الطالب بحماس، ونطق الكلمات الثماني بشكل صحيح..."></textarea>
+        </div>
+        <div class="fb-box">
+          <h3>نقاط القوة <span>· Strengths</span></h3>
+          <textarea id="fb2" placeholder="مثال: ميّز بين should و had better بسرعة، تحدّث بجمل كاملة في تمثيل الأدوار..."></textarea>
+        </div>
+      </div>
+      <div class="fb-row">
+        <div class="fb-box">
+          <h3>نقاط تحتاج إلى تحسين <span>· Weak points</span></h3>
+          <textarea id="fb3" placeholder="مثال: يحتاج إلى تدريب أكثر على نطق flour و recipe..."></textarea>
+        </div>
+        <div class="fb-box">
+          <h3>خطّة المراجعة القادمة <span>· Next plan</span></h3>
+          <textarea id="fb4" placeholder="مثال: مراجعة الكلمات بلعبة البطاقات ٥ دقائق، ثم جمل should مع وصفة جديدة..."></textarea>
+        </div>
+      </div>
+      <div class="fb-foot">
+        <div class="fb-stars" id="fbStars">★★★★★</div>
+        <button class="btn btn-orange" id="fbSave">احفظ التقرير</button>
+      </div>
+    </div>
+    <div id="fbToast">تم الحفظ بنجاح</div>
+  </section>
+
+  <!-- 底部导航 -->
+  <nav id="navbar">
+    <button class="btn btn-teal navbtn" id="prevBtn">‹ السابق</button>
+    <div id="pageInd">1 / 20</div>
+    <button class="btn btn-orange navbtn" id="nextBtn">التالي ›</button>
+  </nav>
+
+  <canvas id="confetti"></canvas>
+</div>
+
+<button id="arBtn" title="إظهار / إخفاء الترجمة الكاملة">🌐 العربية</button>
+
+<script>
+/* ================= 数据 ================= */
+const WORDS = [
+  {en:"flour",     ph:"/ˈflaʊər/",    ar:"دقيق",          ex:"We need flour to make cookies.",           exAr:"نحتاج إلى الدقيق لصنع البسكويت.", img:"assets/img/flour.png"},
+  {en:"butter",    ph:"/ˈbʌtər/",     ar:"زبدة",          ex:"Butter makes the cookies soft.",           exAr:"الزبدة تجعل البسكويت طريًّا.", img:"assets/img/butter.png"},
+  {en:"sugar",     ph:"/ˈʃʊɡər/",     ar:"سُكَّر",         ex:"You should not use too much sugar.",       exAr:"لا ينبغي أن تستخدم الكثير من السكر.", img:"assets/img/sugar.png"},
+  {en:"honey",     ph:"/ˈhʌni/",      ar:"عَسَل",          ex:"Honey is sweet and yummy.",               exAr:"العسل حلو ولذيذ.", img:"assets/img/honey.png"},
+  {en:"chocolate", ph:"/ˈtʃɔːklət/",  ar:"شوكولاتة",      ex:"I like chocolate in my cookies.",          exAr:"أحب الشوكولاتة في البسكويت.", img:"assets/img/chocolate.png"},
+  {en:"yogurt",    ph:"/ˈjoʊɡərt/",   ar:"زبادي",         ex:"Yogurt with banana is my favorite topping.", exAr:"الزبادي مع الموز هو طبقة التزيين المفضلة لدي.", img:"assets/img/yogurt.png"},
+  {en:"topping",   ph:"/ˈtɒpɪŋ/",     ar:"طبقة التزيين",   ex:"The topping is on the pancakes.",          exAr:"طبقة التزيين فوق فطائر البانكيك.", img:"assets/img/topping.png"},
+  {en:"recipe",    ph:"/ˈresəpi/",    ar:"وَصفة",          ex:"Follow the recipe step by step.",          exAr:"اتبع الوصفة خطوة بخطوة.", img:"assets/img/recipe.png"}
+];
+const SORT = [
+  {s:"We should turn the oven on.", t:"should"},
+  {s:"You had better wash your hands.", t:"better"},
+  {s:"You should not use too much sugar.", t:"should"},
+  {s:"You had better not make a mess!", t:"better"},
+  {s:"We should get our ingredients ready first.", t:"should"},
+  {s:"You had better not leave the cookies in the oven too long!", t:"better"}
+];
+const RP = [
+  {t:"Welcome, little chef! Should we make cookies today?", s:"Yes, we should!", img:"assets/img/chef.png", step:"Step 1 · Say yes!", tAr:"أهلًا يا طاهيَنا الصغير! هل نصنع البسكويت اليوم؟", sAr:"نعم، يجب علينا ذلك!", stepAr:"الخطوة ١ · قُل نعم!"},
+  {t:"Great! What should I add first?", s:"You should add the flour and the butter.", img:"assets/img/bowl.png", step:"Step 2 · Mix it!", tAr:"رائع! ماذا يجب أن أضيف أولًا؟", sAr:"يجب أن تضيف الدقيق والزبدة.", stepAr:"الخطوة ٢ · اخلط!"},
+  {t:"Should I use a lot of sugar?", s:"No! We should not use too much sugar. We had better use honey!", img:"assets/img/honey.png", step:"Step 3 · Sweet idea!", tAr:"هل أستخدم الكثير من السكر؟", sAr:"لا! لا ينبغي أن نستخدم الكثير من السكر. من الأفضل أن نستخدم العسل!", stepAr:"الخطوة ٣ · فكرة حلوة!"},
+  {t:"The oven is cold. What should we do?", s:"We had better preheat the oven first.", img:"assets/img/oven.png", step:"Step 4 · Into the oven!", tAr:"الفرن بارد. ماذا يجب أن نفعل؟", sAr:"من الأفضل أن نسخّن الفرن أولًا.", stepAr:"الخطوة ٤ · إلى الفرن!"},
+  {t:"The cookies are ready! They smell great!", s:"Yay! We should share the cookies with my family!", img:"assets/img/cookies.png", step:"Step 5 · Cookies ready!", tAr:"البسكويت جاهز! رائحته رائعة!", sAr:"ياي! يجب أن نشارك البسكويت مع عائلتي!", stepAr:"الخطوة ٥ · البسكويت جاهز!"}
+];
+const QUIZ = [
+  {q:"ما معنى كلمة «عسل»؟", en:false, hint:"اختر الكلمة الإنجليزية الصحيحة", opts:["sugar","honey","butter"], a:1},
+  {q:"ما معنى كلمة «وصفة»؟", en:false, hint:"اختر الكلمة الإنجليزية الصحيحة", opts:["topping","oven","recipe"], a:2},
+  {q:"The oven is hot! You ___ touch it.", en:true, hint:"تحذير! الفرن ساخن وخطير", opts:["should","had better not"], a:1},
+  {q:"It's a good idea! We ___ check the recipe again.", en:true, hint:"نصيحة لطيفة", opts:["should","had better not"], a:0}
+];
+const TOTAL = 20;
+
+/* ================= 工具 ================= */
+const $ = id => document.getElementById(id);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* 等比缩放 */
+const stage = $("stage");
+function fit(){
+  const s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+window.addEventListener("resize", fit); fit();
+
+/* 英语发音：优先播放预生成童声音频，缺失时回退浏览器语音 */
+const TTS = {
+  "أهلًا بك في مطبخ المرح، يا طاهيّنا الصغير!": "assets/audio/tts/hello-ar.mp3",
+  "What's your name?": "assets/audio/tts/whats-your-name.mp3",
+  "My name is ...": "assets/audio/tts/my-name-is.mp3",
+  "How are you today?": "assets/audio/tts/how-are-you-today.mp3",
+  "I'm great! I'm ready to cook!": "assets/audio/tts/im-great-ready-to-cook.mp3",
+  "What's your favorite food?": "assets/audio/tts/whats-your-favorite-food.mp3",
+  "My favorite food is pizza.": "assets/audio/tts/my-favorite-food-is-pizza.mp3",
+  "What's in your favorite food?": "assets/audio/tts/whats-in-your-favorite-food.mp3",
+  "flour": "assets/audio/tts/flour.mp3",
+  "butter": "assets/audio/tts/butter.mp3",
+  "sugar": "assets/audio/tts/sugar.mp3",
+  "honey": "assets/audio/tts/honey.mp3",
+  "chocolate": "assets/audio/tts/chocolate.mp3",
+  "yogurt": "assets/audio/tts/yogurt.mp3",
+  "topping": "assets/audio/tts/topping.mp3",
+  "recipe": "assets/audio/tts/recipe.mp3",
+  "We need flour to make cookies.": "assets/audio/tts/we-need-flour.mp3",
+  "Butter makes the cookies soft.": "assets/audio/tts/butter-makes-cookies-soft.mp3",
+  "You should not use too much sugar.": "assets/audio/tts/no-too-much-sugar.mp3",
+  "Honey is sweet and yummy.": "assets/audio/tts/honey-is-sweet.mp3",
+  "I like chocolate in my cookies.": "assets/audio/tts/i-like-chocolate.mp3",
+  "Yogurt with banana is my favorite topping.": "assets/audio/tts/yogurt-banana-topping.mp3",
+  "The topping is on the pancakes.": "assets/audio/tts/topping-on-pancakes.mp3",
+  "Follow the recipe step by step.": "assets/audio/tts/follow-the-recipe.mp3",
+  "We should turn the oven on.": "assets/audio/tts/turn-oven-on.mp3",
+  "Should I use flour in the mixture?": "assets/audio/tts/should-i-use-flour.mp3",
+  "We had better check the recipe again.": "assets/audio/tts/check-recipe-again.mp3",
+  "You had better not leave the cookies in the oven too long!": "assets/audio/tts/dont-leave-cookies.mp3",
+  "You had better not make a mess!": "assets/audio/tts/dont-make-mess.mp3",
+  "You had better wash your hands.": "assets/audio/tts/wash-your-hands.mp3",
+  "We should get our ingredients ready first.": "assets/audio/tts/ingredients-ready.mp3",
+  "Should I add the honey? Yes, you should!": "assets/audio/tts/should-i-add-honey.mp3",
+  "Should I eat all the cookies now? No, you shouldn't!": "assets/audio/tts/should-i-eat-cookies.mp3",
+  "Welcome, little chef! Should we make cookies today?": "assets/audio/tts/rp-t1.mp3",
+  "Yes, we should!": "assets/audio/tts/rp-s1.mp3",
+  "Great! What should I add first?": "assets/audio/tts/rp-t2.mp3",
+  "You should add the flour and the butter.": "assets/audio/tts/rp-s2.mp3",
+  "Should I use a lot of sugar?": "assets/audio/tts/rp-t3.mp3",
+  "No! We should not use too much sugar. We had better use honey!": "assets/audio/tts/rp-s3.mp3",
+  "The oven is cold. What should we do?": "assets/audio/tts/rp-t4.mp3",
+  "We had better preheat the oven first.": "assets/audio/tts/rp-s4.mp3",
+  "The cookies are ready! They smell great!": "assets/audio/tts/rp-t5.mp3",
+  "Yay! We should share the cookies with my family!": "assets/audio/tts/rp-s5.mp3",
+};
+let VOICES = [];
+function loadVoices(){ VOICES = speechSynthesis.getVoices(); }
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+let curAudio = null;
+function speak(text, rate){
+  const f = TTS[text];
+  if(f){
+    try{
+      if(curAudio){ curAudio.pause(); curAudio = null; }
+      if("speechSynthesis" in window) speechSynthesis.cancel();
+      const a = new Audio(f);
+      a.playbackRate = (rate && rate < .75) ? .85 : 1;
+      curAudio = a;
+      a.play().catch(()=>{ curAudio = null; });
+      return;
+    }catch(e){}
+  }
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = rate || 0.82; u.pitch = 1.45;
+  const v = VOICES.find(v=>/en[-_]US/i.test(v.lang)&&/google/i.test(v.name))
+        || VOICES.find(v=>/^en/i.test(v.lang)&&/female|samantha|zira|aria|jenny|tessa/i.test(v.name))
+        || VOICES.find(v=>/en[-_]US/i.test(v.lang))
+        || VOICES.find(v=>/^en/i.test(v.lang));
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+
+/* 音效 */
+const SFX = {};
+["correct","wrong","pop","fanfare"].forEach(n=>{ SFX[n]="assets/audio/"+n+".mp3"; });
+function sfx(n){ try{ const a=new Audio(SFX[n]); a.volume=.85; a.play().catch(()=>{}); }catch(e){} }
+
+/* 通用朗读按钮 */
+document.querySelectorAll(".speak-btn[data-say]").forEach(b=>{
+  b.addEventListener("click", ()=> speak(b.dataset.say));
+});
+
+/* 彩带 */
+const cv = $("confetti"), cx = cv.getContext("2d");
+function confetti(){
+  cv.width = 1280; cv.height = 720; cv.style.display = "block";
+  const cols = ["#F57A1F","#12A5A0","#FFC53D","#E5484D","#7C5CBF","#3FA34D"];
+  const ps = Array.from({length:130},()=>({x:Math.random()*1280,y:-30-Math.random()*300,
+    w:8+Math.random()*8,h:10+Math.random()*10,c:cols[Math.floor(Math.random()*6)],
+    vy:2.5+Math.random()*3.5,vx:-1.5+Math.random()*3,r:Math.random()*Math.PI,vr:-.1+Math.random()*.2}));
+  const t0 = performance.now();
+  (function loop(t){
+    cx.clearRect(0,0,1280,720);
+    ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle=p.c;
+      cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); cx.restore(); });
+    if(t-t0 < 2800) requestAnimationFrame(loop); else cv.style.display="none";
+  })(t0);
+}
+
+/* ================= 翻页 ================= */
+let cur = 0;
+const enterHooks = {};
+function showPage(i){
+  cur = Math.max(0, Math.min(TOTAL-1, i));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("p"+(cur+1)).classList.add("active");
+  $("pageInd").textContent = (cur+1)+" / "+TOTAL;
+  $("prevBtn").disabled = cur===0;
+  $("nextBtn").disabled = cur===TOTAL-1;
+  if(enterHooks[cur+1]) enterHooks[cur+1]();
+}
+$("prevBtn").addEventListener("click", ()=>showPage(cur-1));
+$("nextBtn").addEventListener("click", ()=>showPage(cur+1));
+$("startBtn").addEventListener("click", ()=>{ sfx("correct"); showPage(1); });
+
+/* 课前试音 + 首次点按解锁音频自动播放限制 */
+function unlockAudio(){
+  try{
+    const a = new Audio("assets/audio/correct.mp3"); a.volume = 0.01;
+    const p = a.play(); if(p && p.then){ p.then(()=>a.pause()).catch(()=>{}); }
+  }catch(e){}
+  document.removeEventListener("pointerdown", unlockAudio);
+}
+document.addEventListener("pointerdown", unlockAudio);
+$("sndTest").addEventListener("click", ()=>{
+  unlockAudio();
+  try{ const a = new Audio("assets/audio/correct.mp3"); a.volume = .9; a.play().catch(()=>{}); }catch(e){}
+  const b = $("sndOk"); b.style.opacity = "1"; setTimeout(()=>b.style.opacity = "0", 1600);
+});
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="TEXTAREA") return;
+  if(e.key==="ArrowRight") showPage(cur+1);
+  if(e.key==="ArrowLeft") showPage(cur-1);
+});
+
+/* ================= P2 破冰 ================= */
+$("chefIce").addEventListener("click", ()=>{
+  const c = $("chefIce");
+  c.classList.remove("waving"); void c.offsetWidth; c.classList.add("waving");
+  speak("أهلًا بك في مطبخ المرح، يا طاهيّنا الصغير!", .9);
+});
+/* 进入破冰页自动挥手 + 打招呼（P1 开始按钮的点击已解锁音频） */
+enterHooks[2] = ()=>{
+  const c = $("chefIce");
+  c.classList.remove("waving"); void c.offsetWidth; c.classList.add("waving");
+  setTimeout(()=>speak("أهلًا بك في مطبخ المرح، يا طاهيّنا الصغير!", .9), 350);
+};
+
+/* ================= 单词页渲染 ================= */
+document.querySelectorAll(".word-page").forEach(sec=>{
+  const i = +sec.dataset.w, w = WORDS[i];
+  sec.innerHTML = `
+    <div class="timepill">٦ دقائق · كلمات (${["١","٢","٣","٤","٥","٦","٧","٨"][i]}/٨)</div>
+    <div style="text-align:center"><span class="pagetag">مكوّنات مطبخنا · Ingredients</span></div>
+    <div class="wp-wrap">
+      <div class="wp-imgbox"><img src="${w.img}" alt="${w.en}"></div>
+      <div class="wp-info">
+        <div class="wp-wordrow">
+          <div class="wp-word">${w.en}</div>
+          <button class="speak-btn wp-speak" data-w="${w.en}"><i class="spk"></i>Listen</button>
+        </div>
+        <div class="wp-ph">${w.ph}</div>
+        <div class="wp-ar">${w.ar}</div>
+        <div class="wp-ex">
+          <div class="wp-ex-text"><p>${w.ex}</p><p class="ar-t ex-ar">${w.exAr}</p></div>
+          <button class="speak-btn wp-exspeak" data-w="${w.ex}"><i class="spk"></i>Listen</button>
+        </div>
+      </div>
+    </div>
+    <div class="wp-dots">${WORDS.map((_,j)=>`<i class="${j===i?"on":""}"></i>`).join("")}</div>`;
+});
+document.querySelectorAll(".wp-speak").forEach(b=>b.addEventListener("click",()=>speak(b.dataset.w,.7)));
+document.querySelectorAll(".wp-exspeak").forEach(b=>b.addEventListener("click",()=>speak(b.dataset.w,.82)));
+
+/* ================= P12 打地鼠 ================= */
+const MOLE_HOLES = 6;
+$("moleGrid").innerHTML = Array.from({length:MOLE_HOLES},()=>'<div class="hole"></div>').join("");
+let moleRound=0, moleScore=0, moleLock=false, moleTimer=null, moleBarTimer=null;
+function moleStopTimers(){ clearTimeout(moleTimer); clearInterval(moleBarTimer); }
+function startMole(){
+  moleStopTimers();
+  moleRound=0; moleScore=0; moleLock=false;
+  $("moleScore").textContent="0";
+  $("moleEnd").style.display="none";
+  $("moleGrid").style.visibility="visible";
+  nextMoleRound();
+}
+function nextMoleRound(){
+  moleStopTimers();
+  if(moleRound>=8){
+    $("moleGrid").style.visibility="hidden";
+    $("moleWord").textContent="انتهت اللعبة";
+    $("moleBar").style.width="0%";
+    $("moleFinal").textContent = moleScore+" / 8";
+    $("moleEndNote").textContent = moleScore>=6 ? "ممتاز! ذاكرة قوية يا شيف" : "جيد! لنراجع الكلمات مرة أخرى";
+    $("moleEnd").style.display="flex";
+    sfx("fanfare"); confetti();
+    return;
+  }
+  moleLock=false;
+  const correct = WORDS[moleRound];
+  const others = shuffle(WORDS.filter(w=>w!==correct)).slice(0,3);
+  const opts = shuffle([correct,...others]);
+  $("moleWord").textContent = "«"+correct.ar+"»";
+  const holes = shuffle([...document.querySelectorAll("#moleGrid .hole")]);
+  document.querySelectorAll("#moleGrid .hole").forEach(h=>{ h.innerHTML=""; h.classList.remove("up"); });
+  opts.forEach((w,i)=>{
+    const h = holes[i];
+    h.innerHTML = `<button class="mole" data-en="${w.en}"><img src="${w.img}" alt=""><span>${w.en}</span></button>`;
+    setTimeout(()=>h.classList.add("up"), 60);
+  });
+  document.querySelectorAll("#moleGrid .mole").forEach(m=>{
+    m.addEventListener("click", ()=>{
+      if(moleLock) return;
+      if(m.dataset.en===correct.en){
+        moleLock=true; moleScore++;
+        $("moleScore").textContent=moleScore;
+        m.classList.add("hit"); sfx("pop"); speak(correct.en,.7);
+        moleRound++;
+        moleStopTimers();
+        moleTimer=setTimeout(nextMoleRound, 900);
+      } else {
+        m.classList.remove("shake"); void m.offsetWidth; m.classList.add("shake"); sfx("wrong");
+      }
+    });
+  });
+  const bar = $("moleBar"); let pct=100;
+  bar.style.width="100%";
+  moleBarTimer = setInterval(()=>{ pct-=1.2; bar.style.width=Math.max(0,pct)+"%"; },100);
+  moleTimer = setTimeout(()=>{ moleRound++; nextMoleRound(); }, 8400);
+}
+enterHooks[12] = startMole;
+
+/* ================= P13 图文匹配 ================= */
+const MATCH_ROUNDS = [WORDS.slice(0,4), WORDS.slice(4,8)];
+let mRound=0, mSel=null, mDone=0;
+function startMatch(){ mRound=0; buildMatchRound(); $("matchMsg").textContent="اضغط على الصورة ثم على الكلمة الصحيحة"; }
+function buildMatchRound(){
+  mSel=null; mDone=0;
+  $("basketBox").innerHTML = mRound===1 ? $("basketBox").innerHTML : "";
+  const set = MATCH_ROUNDS[mRound];
+  const ic = $("matchImgs"), wc = $("matchWords");
+  ic.innerHTML=""; wc.innerHTML="";
+  set.forEach(w=>{
+    ic.innerHTML += `<div class="card m-img" data-en="${w.en}"><img src="${w.img}" alt="${w.en}"></div>`;
+  });
+  shuffle([...set]).forEach(w=>{
+    wc.innerHTML += `<div class="card m-word" data-en="${w.en}">${w.en}</div>`;
+  });
+  ic.querySelectorAll(".m-img").forEach(el=>el.addEventListener("click",()=>{
+    if(el.classList.contains("done")) return;
+    ic.querySelectorAll(".m-img").forEach(x=>x.classList.remove("sel"));
+    el.classList.add("sel"); mSel=el.dataset.en;
+  }));
+  wc.querySelectorAll(".m-word").forEach(el=>el.addEventListener("click",()=>{
+    if(el.classList.contains("done")) return;
+    if(!mSel){ el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); return; }
+    if(el.dataset.en===mSel){
+      const img = ic.querySelector(`.m-img[data-en="${mSel}"]`);
+      el.classList.add("done"); img.classList.add("done");
+      const w = WORDS.find(x=>x.en===mSel);
+      $("basketBox").innerHTML += `<img src="${w.img}" alt="">`;
+      sfx("correct"); speak(w.en,.7);
+      mSel=null; mDone++;
+      if(mDone===4){
+        if(mRound===0){ $("matchMsg").textContent="رائع! جولة ثانية — هيّا!"; setTimeout(()=>{ mRound=1; buildMatchRound(); },1200); }
+        else { $("matchMsg").textContent="مذهل! جمعتَ كل المكوّنات في السلّة!"; sfx("fanfare"); confetti(); }
+      }
+    } else {
+      el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); sfx("wrong");
+      const img = ic.querySelector(`.m-img[data-en="${mSel}"]`);
+      if(img) img.classList.remove("sel");
+      mSel=null;
+    }
+  }));
+}
+enterHooks[13] = startMatch;
+
+/* ================= P16 语法分类 ================= */
+let sIdx=0, sScore=0, sLock=false;
+function startSort(){
+  sIdx=0; sScore=0; sLock=false;
+  $("sortScore").textContent="0"; $("sortIdx").textContent="1";
+  $("sortMsg").textContent=""; $("sortMsg").style.color="#0C7C78";
+  $("oralZone").classList.remove("show");
+  $("sortCard").style.display="block";
+  renderSort();
+}
+function renderSort(){
+  if(sIdx>=SORT.length){
+    $("sortCard").style.display="none";
+    $("sortMsg").textContent = sScore>=5 ? "ممتاز! فرّقتَ بين النصيحة والتحذير" : "جيد! لاحظ الفرق مرة أخرى";
+    $("sortMsg").style.color="#0C7C78";
+    $("oralZone").classList.add("show");
+    if(sScore>=5){ sfx("fanfare"); confetti(); }
+    return;
+  }
+  const it = SORT[sIdx];
+  $("sortSentence").textContent = it.s;
+  $("sortIdx").textContent = sIdx+1;
+  $("sortSpeak").onclick = ()=>speak(it.s);
+  sLock=false;
+}
+document.querySelectorAll(".bucket").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    if(sLock || sIdx>=SORT.length) return;
+    const it = SORT[sIdx];
+    if(b.dataset.t===it.t){
+      sLock=true; sScore++;
+      $("sortScore").textContent=sScore;
+      sfx("correct");
+      $("sortMsg").textContent = it.t==="should" ? "صحيح! نصيحة لطيفة" : "صحيح! تحذير قوي";
+      $("sortMsg").style.color="#2B7A37";
+      sIdx++;
+      setTimeout(renderSort, 900);
+    } else {
+      sfx("wrong");
+      $("sortMsg").textContent = it.t==="should" ? "فكّر: هل فيها خطر؟ لا — إذن هي نصيحة!" : "انتبه! هناك خطر — إذن هي تحذير!";
+      $("sortMsg").style.color="#C33";
+    }
+  });
+});
+enterHooks[16] = startSort;
+
+/* ================= P17 Role Play ================= */
+let rpIdx=0;
+function startRP(){
+  rpIdx=0; $("rpDone").style.display="none";
+  renderRP();
+}
+function renderRP(){
+  const st = RP[rpIdx];
+  $("rpImg").src = st.img;
+  $("rpStepWord").textContent = st.step + "  ("+(rpIdx+1)+" / 5)";
+  $("rpTeacher").textContent = st.t;
+  $("rpStudent").textContent = st.s;
+  $("rpTeacherAr").textContent = st.tAr;
+  $("rpStudentAr").textContent = st.sAr;
+  $("rpStepWordAr").textContent = st.stepAr;
+  $("rpTListen").onclick = ()=>speak(st.t,.85);
+  $("rpSListen").onclick = ()=>speak(st.s,.62);
+  [...$("rpProg").children].forEach((el,i)=>el.classList.toggle("on", i<=rpIdx));
+}
+$("rpSaid").addEventListener("click", ()=>{
+  sfx("correct");
+  rpIdx++;
+  if(rpIdx>=RP.length){
+    $("rpDone").style.display="flex";
+    sfx("fanfare"); confetti();
+  } else renderRP();
+});
+enterHooks[17] = startRP;
+
+/* ================= P18 总结 ================= */
+$("sumGrid").innerHTML = WORDS.map(w=>`
+  <div class="card sum-word" data-en="${w.en}">
+    <img src="${w.img}" alt="${w.en}">
+    <div class="t">${w.en}<i>${w.ar}</i></div>
+  </div>`).join("");
+document.querySelectorAll(".sum-word").forEach(el=>
+  el.addEventListener("click", ()=>speak(el.dataset.en,.7)));
+
+/* ================= P19 Exit Quiz ================= */
+let qIdx=0, qScore=0, qLock=false;
+function startQuiz(){
+  qIdx=0; qScore=0; qLock=false;
+  $("quizScore").textContent="0";
+  $("quizEnd").style.display="none";
+  $("quizCard").style.display="block";
+  renderQuiz();
+}
+function renderQuiz(){
+  if(qIdx>=QUIZ.length){
+    $("quizCard").style.display="none";
+    $("quizStars").textContent = "★★★★".slice(0, Math.max(1,qScore)) || "★";
+    $("quizStars").textContent = "★".repeat(Math.max(1,qScore)) + "☆".repeat(4-Math.max(1,qScore));
+    $("quizFinal").textContent = qScore+" / 4";
+    $("quizEndTitle").textContent = qScore>=3 ? "رائع جدًا يا بطل!" : "أحسنت! واصل التدريب";
+    $("quizEnd").style.display="flex";
+    if(qScore>=3){ sfx("fanfare"); confetti(); }
+    return;
+  }
+  qLock=false;
+  const q = QUIZ[qIdx];
+  $("quizQ").textContent = q.q;
+  $("quizQ").classList.toggle("enq", q.en);
+  $("quizHint").textContent = q.hint;
+  $("quizIdx").textContent = qIdx+1;
+  $("quizOpts").innerHTML = q.opts.map((o,i)=>`<button class="quiz-opt" data-i="${i}">${o}</button>`).join("");
+  $("quizOpts").querySelectorAll(".quiz-opt").forEach(b=>b.addEventListener("click",()=>{
+    if(qLock) return; qLock=true;
+    const i = +b.dataset.i;
+    if(i===q.a){ b.classList.add("right"); qScore++; $("quizScore").textContent=qScore; sfx("correct"); }
+    else { b.classList.add("bad"); sfx("wrong");
+      $("quizOpts").children[q.a].classList.add("right"); }
+    qIdx++;
+    setTimeout(renderQuiz, 1100);
+  }));
+}
+$("quizRetry").addEventListener("click", startQuiz);
+enterHooks[19] = startQuiz;
+
+/* ================= P20 教师反馈 ================= */
+let fbRating = 0;
+$("fbStars").addEventListener("click", e=>{
+  const el = $("fbStars"), r = el.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width;
+  fbRating = Math.max(1, Math.min(5, Math.ceil(x*5)));
+  el.innerHTML = Array.from({length:5},(_,i)=>`<span class="${i<fbRating?"on":""}">★</span>`).join("");
+});
+$("fbSave").addEventListener("click", ()=>{
+  try{
+    localStorage.setItem("crazyKitchenFeedback", JSON.stringify({
+      perf:$("fb1").value, strength:$("fb2").value, weak:$("fb3").value, plan:$("fb4").value, stars:fbRating
+    }));
+  }catch(e){}
+  const t=$("fbToast"); t.style.display="block";
+  setTimeout(()=>t.style.display="none", 1800);
+});
+try{
+  const saved = localStorage.getItem("crazyKitchenFeedback");
+  if(saved){ const d=JSON.parse(saved);
+    $("fb1").value=d.perf||""; $("fb2").value=d.strength||""; $("fb3").value=d.weak||""; $("fb4").value=d.plan||"";
+    fbRating=d.stars||0;
+    if(fbRating) $("fbStars").innerHTML = Array.from({length:5},(_,i)=>`<span class="${i<fbRating?"on":""}">★</span>`).join("");
+  }
+}catch(e){}
+
+/* ================= 阿语全翻译开关（默认关闭，不记忆） ================= */
+$("arBtn").addEventListener("click", ()=>{ document.body.classList.toggle("ar-on"); });
+if(location.hash.indexOf("ar") > -1) document.body.classList.add("ar-on");
+
+/* 启动（支持 #p=N 直达页面） */
+const hashM = location.hash.match(/p=(\d+)/);
+showPage(hashM ? (+hashM[1]-1) : 0);
+</script>
+</body>
+</html>
