@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مراجعة الدرس · Khusoosi</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:'Segoe UI', Tahoma, Arial, sans-serif;
+    background:linear-gradient(180deg,#fdf6e3 0%,#fdeeda 50%,#fce4c4 100%);
+    min-height:100vh; color:#3d2b1f; padding-bottom:60px;
+  }
+  .en { direction:ltr; unicode-bidi:isolate; font-family:'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif; }
+
+  /* ===== header ===== */
+  header {
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,251,240,.95); backdrop-filter:blur(8px);
+    padding:10px 16px; display:flex; align-items:center; gap:10px;
+    border-bottom:2px solid #f0dfc0; box-shadow:0 2px 12px rgba(180,140,80,.08);
+  }
+  header img.logo { height:34px; }
+  header .htitle { font-size:14px; font-weight:700; color:#8a6d3b; line-height:1.3; }
+  header .htitle .en { font-size:12px; color:#b08d57; display:block; }
+
+  /* ===== hero ===== */
+  .hero { text-align:center; padding:26px 20px 10px; }
+  .hero img.char { width:130px; height:130px; object-fit:contain; filter:drop-shadow(0 6px 14px rgba(180,140,80,.25)); }
+  .hero h1 { font-size:22px; margin-top:8px; color:#5c4023; }
+  .hero .en-title { font-size:17px; color:#c07f2e; font-weight:700; margin-top:4px; }
+  .hero p { font-size:13px; color:#9a7b52; margin-top:8px; }
+
+  /* ===== station cards ===== */
+  .station {
+    background:#fffdf7; border-radius:22px; margin:18px 16px 0;
+    padding:20px 18px; border:2px solid #f3e5c8;
+    box-shadow:0 4px 18px rgba(190,150,90,.10);
+  }
+  .station .shead { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .station .snum {
+    width:34px; height:34px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg,#ffb347,#ff8c42); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:800; box-shadow:0 3px 8px rgba(255,140,66,.35);
+  }
+  .station.done .snum { background:linear-gradient(135deg,#43c86e,#1f9d6c); box-shadow:0 3px 8px rgba(31,157,108,.35); }
+  .station .stitle { font-size:17px; font-weight:800; color:#5c4023; }
+  .station .ssub { font-size:12.5px; color:#a5855c; margin-bottom:14px; }
+  .station .sdone-tag { display:none; margin-right:auto; font-size:20px; }
+  .station.done .sdone-tag { display:block; }
+
+  /* word cards */
+  .word-row { display:flex; gap:8px; justify-content:center; }
+  .word-card {
+    flex:1; min-width:0; max-width:110px; background:#fff; border-radius:16px;
+    border:2px solid #f0dfc0; padding:10px 6px; text-align:center; cursor:pointer;
+    transition:transform .12s, border-color .12s, box-shadow .12s;
+  }
+  .word-card:active { transform:scale(.95); }
+  .word-card.played { border-color:#43c86e; box-shadow:0 0 0 3px rgba(67,200,110,.18); }
+  .word-card img { width:56px; height:56px; object-fit:contain; }
+  .word-card .wen { font-size:17px; font-weight:800; color:#4a3120; margin-top:6px; }
+  .word-card .war { font-size:12px; color:#a5855c; margin-top:2px; }
+  .word-card .play-ic { font-size:15px; margin-top:4px; }
+
+  /* generic buttons */
+  .btn {
+    display:block; width:100%; border:none; border-radius:14px; cursor:pointer;
+    font-size:16px; font-weight:800; padding:13px; margin-top:12px;
+    transition:transform .12s, opacity .2s;
+  }
+  .btn:active { transform:scale(.97); }
+  .btn-primary { background:linear-gradient(135deg,#ffb347,#ff8c42); color:#fff; box-shadow:0 4px 12px rgba(255,140,66,.35); }
+  .btn-green { background:linear-gradient(135deg,#43c86e,#1f9d6c); color:#fff; box-shadow:0 4px 12px rgba(31,157,108,.3); }
+  .btn:disabled { opacity:.35; box-shadow:none; cursor:not-allowed; }
+
+  /* quiz option cards */
+  .opt-row { display:flex; gap:8px; justify-content:center; }
+  .opt {
+    flex:1; min-width:0; background:#fff; border:2.5px solid #eeddbe; border-radius:14px;
+    padding:13px 4px; text-align:center; cursor:pointer; font-size:15px; font-weight:800;
+    color:#4a3120; transition:all .15s; overflow-wrap:break-word;
+  }
+  .opt:active { transform:scale(.95); }
+  .opt.correct { border-color:#1f9d6c; background:#e9f9ef; color:#1f9d6c; }
+  .opt.wrong { border-color:#e05252; background:#fdeeee; color:#e05252; animation:shake .35s; }
+  @keyframes shake { 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+  .q-round { font-size:12px; color:#b08d57; font-weight:700; text-align:center; margin-bottom:8px; }
+  .hear-btn {
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#fff; border:2px solid #f0dfc0; border-radius:14px;
+    width:100%; padding:12px; font-size:15px; font-weight:800; color:#c07f2e;
+    cursor:pointer; margin-bottom:12px;
+  }
+  .hear-btn:active { transform:scale(.97); }
+
+  /* dialogue lines */
+  .dlg-img { width:100%; border-radius:14px; border:2px solid #f0dfc0; margin-bottom:12px; }
+  .dline {
+    display:flex; align-items:center; gap:10px; background:#fff; border:2px solid #f0dfc0;
+    border-radius:14px; padding:10px 12px; margin-bottom:8px; cursor:pointer; transition:all .15s;
+  }
+  .dline:active { transform:scale(.98); }
+  .dline.played { border-color:#43c86e; background:#f4fcf6; }
+  .dline .dic { font-size:20px; flex:none; }
+  .dline .dtxt { font-size:15px; font-weight:700; color:#4a3120; flex:1; overflow-wrap:break-word; }
+  .play-all { background:#fff7ea; border:2px dashed #e8c98f; }
+
+  /* final */
+  #final-card { display:none; text-align:center; }
+  #final-card.show { display:block; }
+  .stars { font-size:52px; letter-spacing:6px; margin:8px 0; }
+  .stars .dim { opacity:.22; filter:grayscale(1); }
+  #final-msg { font-size:15px; font-weight:700; color:#5c4023; line-height:1.7; }
+  #final-score { font-size:13px; color:#a5855c; margin-top:8px; }
+  .screenshot-tip {
+    margin-top:14px; background:#fff7ea; border:2px dashed #e8c98f; border-radius:14px;
+    padding:12px; font-size:13.5px; color:#8a6d3b; font-weight:700; line-height:1.7;
+  }
+  .confetti { font-size:30px; margin-top:6px; }
+
+  footer { text-align:center; margin-top:26px; font-size:11px; color:#c4a97e; }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="../assets/logo_khusoosi.png" alt="Khusoosi">
+  <div class="htitle">مراجعة ما بعد الدرس<span class="en" id="hd-lesson"></span></div>
+</header>
+
+<section class="hero">
+  <img class="char" id="hero-char" src="" alt="">
+  <h1>هيّا نراجع معًا! 🌟</h1>
+  <div class="en en-title" id="hero-title"></div>
+  <p>٤ محطات قصيرة · استمع وكرّر والعب · اجمع النجوم ⭐</p>
+</section>
+
+<!-- Station 1: words listen & repeat -->
+<section class="station" id="st1">
+  <div class="shead"><div class="snum">1</div><div class="stitle">استمع وكرّر الكلمات</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">اضغط على كل بطاقة، استمع للكلمة، ثم كرّرها بصوت عالٍ 🔊</div>
+  <div class="word-row" id="word-row"></div>
+  <button class="btn btn-green" id="st1-done" disabled>كرّرتُ كل الكلمات ✔</button>
+</section>
+
+<!-- Station 2: listen & pick -->
+<section class="station" id="st2">
+  <div class="shead"><div class="snum">2</div><div class="stitle">استمع واختر الكلمة الصحيحة</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">اضغط زر الاستماع 🔊 ثم اختر الكلمة التي سمعتها</div>
+  <div class="q-round" id="st2-round"></div>
+  <button class="hear-btn" id="st2-hear">🔊 استمع</button>
+  <div class="opt-row" id="st2-opts"></div>
+</section>
+
+<!-- Station 3: dialogue shadowing -->
+<section class="station" id="st3">
+  <div class="shead"><div class="snum">3</div><div class="stitle">كرّر الحوار مع نورة</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">استمع لكل جملة وكرّرها، ثم استمع للحوار كاملًا 🎭</div>
+  <img class="dlg-img" id="dlg-img" src="" alt="">
+  <div id="dlg-lines"></div>
+  <button class="hear-btn play-all" id="dlg-all">▶ استمع للحوار كاملًا</button>
+  <button class="btn btn-green" id="st3-done" disabled>كرّرتُ الحوار كاملًا ✔</button>
+</section>
+
+<!-- Station 4: exam challenge -->
+<section class="station" id="st4">
+  <div class="shead"><div class="snum">4</div><div class="stitle">تحدّي الاختبار 🎯</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">استمع للسؤال واختر الإجابة الصحيحة — تمامًا مثل اختبار المدرسة!</div>
+  <div class="q-round" id="st4-round"></div>
+  <button class="hear-btn" id="st4-hear">🔊 استمع للسؤال</button>
+  <div class="opt-row" id="st4-opts"></div>
+</section>
+
+<!-- final -->
+<section class="station" id="final-card">
+  <div class="confetti">🎉</div>
+  <div class="stars" id="stars"></div>
+  <div id="final-msg"></div>
+  <div id="final-score"></div>
+  <div class="screenshot-tip">📸 خذ لقطة شاشة لهذه الصفحة وأرسلها إلى معلمتك<br>Screenshot this page and send it to your teacher</div>
+  <button class="btn btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">🔁 مراجعة مرة أخرى</button>
+</section>
+
+<footer>Khusoosi · خصوصي · We Can! Grade 1</footer>
+
+<audio id="player" preload="auto"></audio>
+<script src="data.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
