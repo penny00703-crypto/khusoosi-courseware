@@ -7,6 +7,28 @@
   const player = document.getElementById('player');
   const state = { firstTry: 0, quizTotal: 0, stations: [false, false, false, false] };
 
+  /* ---------- 数据上报（模板级，所有课通用） ---------- */
+  const SB_URL = 'https://awogcxsegaamenwnjsmg.supabase.co';
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3b2djeHNlZ2FhbWVud25qc21nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMDU5MzMsImV4cCI6MjEwNDY4MTkzM30.rfHrkaTFsOMkhUiC66lY5z4FyLuwYFch-5ZNyywgnDA';
+  function report(name, stars) {
+    fetch(SB_URL + '/rest/v1/review_records', {
+      method: 'POST',
+      headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY,
+                 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({
+        student_name: name,
+        book: LESSON.book, unit: LESSON.unit, lesson: LESSON.lesson,
+        stars, first_try: state.firstTry, quiz_total: state.quizTotal
+      })
+    }).then(r => {
+      const el = document.getElementById('report-status');
+      if (el) el.textContent = r.ok ? '✅ أُرسل إلى معلمتك!' : '⚠️ لم يُرسل، جرّبي لاحقًا';
+    }).catch(() => {
+      const el = document.getElementById('report-status');
+      if (el) el.textContent = '⚠️ لم يُرسل، جرّبي لاحقًا';
+    });
+  }
+
   /* ---------- 音频总线 ---------- */
   function play(file, onend) {
     player.src = A + file;
@@ -157,6 +179,22 @@
     fc.classList.add('show');
     sfx('sfx_success.mp3');
     fc.scrollIntoView({ behavior: location.search.includes('selftest=1') ? 'auto' : 'smooth' });
+
+    /* 自动上报：已存名字直接静默上报；首次完成让学生填一次名字 */
+    const saved = localStorage.getItem('khusoosi_name');
+    if (saved) {
+      report(saved, n);
+    } else {
+      document.getElementById('name-row').style.display = 'flex';
+      const input = document.getElementById('name-input');
+      document.getElementById('name-btn').onclick = () => {
+        const v = input.value.trim();
+        if (!v) { input.focus(); return; }
+        localStorage.setItem('khusoosi_name', v);
+        document.getElementById('name-row').style.display = 'none';
+        report(v, n);
+      };
+    }
   }
 
   /* ========== QA 自检模式（?selftest=1，仅验收用） ========== */
@@ -176,6 +214,11 @@
           if (box.children[idx]) box.children[idx].click();
         }
       });
+      const nr = document.getElementById('name-row');
+      if (nr && nr.style.display !== 'none' && document.getElementById('name-btn').onclick) {
+        document.getElementById('name-input').value = 'QA-自检';
+        document.getElementById('name-btn').click();
+      }
     }, 500);
     setTimeout(() => clearInterval(iv), 20000);
   }

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学习数据看板 · Khusoosi</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,'PingFang SC','Segoe UI',sans-serif; background:#f5f1ea; color:#3d2b1f; min-height:100vh; }
+  header { background:#fffdf7; border-bottom:2px solid #efe3c8; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  header h1 { font-size:19px; color:#5c4023; }
+  header .sub { font-size:12px; color:#a5855c; margin-top:2px; }
+  #refresh { border:none; background:linear-gradient(135deg,#ffb347,#ff8c42); color:#fff; border-radius:10px; padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer; }
+
+  /* 口令门 */
+  #gate { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh; gap:14px; }
+  #gate .box { background:#fffdf7; border:2px solid #efe3c8; border-radius:18px; padding:34px 38px; text-align:center; box-shadow:0 6px 24px rgba(180,140,80,.10); }
+  #gate h2 { font-size:18px; margin-bottom:6px; }
+  #gate p { font-size:12.5px; color:#a5855c; margin-bottom:16px; }
+  #gate input { border:2px solid #e8c98f; border-radius:10px; padding:11px 14px; font-size:15px; outline:none; text-align:center; width:220px; }
+  #gate button { margin-top:12px; width:220px; border:none; border-radius:10px; padding:11px; background:linear-gradient(135deg,#ffb347,#ff8c42); color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
+  #gate .err { color:#e05252; font-size:12px; margin-top:8px; min-height:16px; }
+
+  #main { display:none; padding:20px 24px 40px; max-width:1100px; margin:0 auto; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:22px; }
+  .card { background:#fffdf7; border:2px solid #efe3c8; border-radius:16px; padding:16px; text-align:center; }
+  .card .num { font-size:30px; font-weight:800; color:#c07f2e; }
+  .card .lbl { font-size:12.5px; color:#a5855c; margin-top:4px; }
+  section { background:#fffdf7; border:2px solid #efe3c8; border-radius:16px; padding:18px; margin-bottom:18px; overflow-x:auto; }
+  section h3 { font-size:15px; color:#5c4023; margin-bottom:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th { text-align:left; color:#a5855c; font-weight:700; padding:8px 10px; border-bottom:2px solid #f3e5c8; white-space:nowrap; }
+  td { padding:8px 10px; border-bottom:1px solid #f7efdd; }
+  tr:last-child td { border-bottom:none; }
+  .stars { color:#f5a623; letter-spacing:1px; }
+  .bar-wrap { background:#f3e5c8; border-radius:99px; height:8px; min-width:80px; }
+  .bar { background:linear-gradient(90deg,#43c86e,#1f9d6c); height:8px; border-radius:99px; }
+  #updated { font-size:11.5px; color:#c4a97e; text-align:center; margin-top:6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📊 课后复习数据看板</h1>
+    <div class="sub">Khusoosi 正价课 · 数据来自学生复习页自动上报，实时更新</div>
+  </div>
+  <button id="refresh" onclick="load()">↻ 刷新数据</button>
+</header>
+
+<div id="gate">
+  <div class="box">
+    <h2>请输入访问口令</h2>
+    <p>仅限教研与课后辅导团队使用</p>
+    <input id="pw" type="password" placeholder="口令" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">进入看板</button>
+    <div class="err" id="pw-err"></div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="cards">
+    <div class="card"><div class="num" id="c-total">-</div><div class="lbl">累计完成复习</div></div>
+    <div class="card"><div class="num" id="c-students">-</div><div class="lbl">参与学生数</div></div>
+    <div class="card"><div class="num" id="c-stars">-</div><div class="lbl">平均星级</div></div>
+    <div class="card"><div class="num" id="c-acc">-</div><div class="lbl">平均首次正确率</div></div>
+  </div>
+
+  <section>
+    <h3>👧 按学生 · 完成情况</h3>
+    <table id="t-students">
+      <thead><tr><th>学生</th><th>完成课节</th><th>平均星级</th><th>首次正确率</th><th>最近完成</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h3>📖 按课节 · 完成与掌握</h3>
+    <table id="t-lessons">
+      <thead><tr><th>教材</th><th>单元</th><th>课节</th><th>完成人次</th><th>平均星级</th><th>平均正确率</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h3>🕒 最近上报记录</h3>
+    <table id="t-recent">
+      <thead><tr><th>时间</th><th>学生</th><th>课节</th><th>星级</th><th>首次答对</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <div id="updated"></div>
+</div>
+
+<script>
+const SB_URL = 'https://awogcxsegaamenwnjsmg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF3b2djeHNlZ2FhbWVud25qc21nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMDU5MzMsImV4cCI6MjEwNDY4MTkzM30.rfHrkaTFsOMkhUiC66lY5z4FyLuwYFch-5ZNyywgnDA';
+const PASSCODE = 'khusoosi2026';   // 轻量口令门，仅防路人，不防技术攻击
+
+function unlock() {
+  const v = document.getElementById('pw').value.trim();
+  if (v === PASSCODE) {
+    localStorage.setItem('khusoosi_dash', '1');
+    enter();
+  } else {
+    document.getElementById('pw-err').textContent = '口令不对，再试一次';
+  }
+}
+function enter() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  load();
+}
+if (localStorage.getItem('khusoosi_dash') === '1') enter();
+// 支持带口令的直达链接（演示/书签用）：.../dashboard/?key=口令
+const urlKey = new URLSearchParams(location.search).get('key');
+if (urlKey === PASSCODE) { localStorage.setItem('khusoosi_dash', '1'); enter(); }
+
+function starStr(n) { return '★'.repeat(Math.round(n)) + '☆'.repeat(3 - Math.round(n)); }
+function fmtTime(iso) {
+  const d = new Date(iso);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+async function load() {
+  const res = await fetch(SB_URL + '/rest/v1/review_records?select=*&order=created_at.desc&limit=1000', {
+    headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+  });
+  const rows = await res.json();
+  if (!Array.isArray(rows)) return;
+
+  // 顶部卡片
+  document.getElementById('c-total').textContent = rows.length;
+  const students = [...new Set(rows.map(r => r.student_name))];
+  document.getElementById('c-students').textContent = students.length;
+  const avgS = rows.reduce((s, r) => s + r.stars, 0) / (rows.length || 1);
+  document.getElementById('c-stars').textContent = rows.length ? avgS.toFixed(1) : '-';
+  const avgA = rows.reduce((s, r) => s + r.first_try / (r.quiz_total || 1), 0) / (rows.length || 1);
+  document.getElementById('c-acc').textContent = rows.length ? Math.round(avgA * 100) + '%' : '-';
+
+  // 按学生
+  const byStu = {};
+  rows.forEach(r => {
+    const k = r.student_name;
+    byStu[k] = byStu[k] || { n: 0, stars: 0, acc: 0, last: r.created_at };
+    byStu[k].n++; byStu[k].stars += r.stars; byStu[k].acc += r.first_try / (r.quiz_total || 1);
+  });
+  document.querySelector('#t-students tbody').innerHTML = Object.entries(byStu)
+    .sort((a, b) => b[1].n - a[1].n)
+    .map(([name, s]) => `<tr>
+      <td><b>${name}</b></td><td>${s.n}</td>
+      <td class="stars">${starStr(s.stars / s.n)}</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:${Math.round(s.acc / s.n * 100)}%"></div></div></td>
+      <td>${fmtTime(s.last)}</td></tr>`).join('');
+
+  // 按课节
+  const byLsn = {};
+  rows.forEach(r => {
+    const k = `${r.book}|${r.unit}|${r.lesson}`;
+    byLsn[k] = byLsn[k] || { n: 0, stars: 0, acc: 0 };
+    byLsn[k].n++; byLsn[k].stars += r.stars; byLsn[k].acc += r.first_try / (r.quiz_total || 1);
+  });
+  document.querySelector('#t-lessons tbody').innerHTML = Object.entries(byLsn)
+    .sort()
+    .map(([k, s]) => { const [b, u, l] = k.split('|'); return `<tr>
+      <td>${b}</td><td>${u}</td><td><b>${l}</b></td><td>${s.n}</td>
+      <td class="stars">${starStr(s.stars / s.n)}</td>
+      <td>${Math.round(s.acc / s.n * 100)}%</td></tr>`; }).join('');
+
+  // 最近记录
+  document.querySelector('#t-recent tbody').innerHTML = rows.slice(0, 20)
+    .map(r => `<tr><td>${fmtTime(r.created_at)}</td><td><b>${r.student_name}</b></td>
+      <td>${r.unit} ${r.lesson}</td><td class="stars">${starStr(r.stars)}</td>
+      <td>${r.first_try}/${r.quiz_total}</td></tr>`).join('');
+
+  document.getElementById('updated').textContent = '更新于 ' + new Date().toLocaleString('zh-CN');
+}
+</script>
+</body>
+</html>

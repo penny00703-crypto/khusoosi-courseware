@@ -623,10 +623,17 @@ addScreen('exit quiz & homework', `
       <div style="font-size:26px; font-weight:700; color:#2b3a55; margin-bottom:6px;">Homework</div>
       <div class="ar" style="font-size:16px; color:#7a8aa0; margin-bottom:16px;">الواجب المنزلي</div>
       <div style="font-size:23px; font-weight:700; color:#8a6d3b; margin-bottom:14px;">Workbook · pages 63–64 · Trace and write</div>
-      <div style="background:#fdf6ec; border:2px dashed #d9c9a3; border-radius:16px; padding:18px;">
-        <div style="font-size:52px; font-weight:700; color:#c9b48a; letter-spacing:8px;
+      <div style="background:#fdf6ec; border:2px dashed #d9c9a3; border-radius:16px; padding:14px 18px;">
+        <div style="font-size:40px; font-weight:700; color:#c9b48a; letter-spacing:8px;
           -webkit-text-stroke:1px #c9b48a; font-family:'Comic Sans MS',cursive;">H e l l o</div>
-        <div style="font-size:17px; color:#a08c5b; margin-top:8px;">Trace the word, then write your name</div>
+        <div style="font-size:15px; color:#a08c5b; margin-top:4px;">Trace the word, then write your name</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px; margin-top:14px; background:#fff; border:2px solid #e8d5b0; border-radius:16px; padding:10px 14px;">
+        <img src="assets/sec_qr_review.png" alt="Review QR" style="width:118px; height:118px; border-radius:8px;">
+        <div style="text-align:left;">
+          <div style="font-size:19px; font-weight:700; color:#c07f2e; line-height:1.5; direction:rtl;">امسح الرمز وراجع الدرس في البيت! 🌟</div>
+          <div style="font-size:15px; color:#8a6d3b; margin-top:6px; font-weight:700;">Scan & review at home · earn your stars!</div>
+        </div>
       </div>
     </div>
   </div>`);
