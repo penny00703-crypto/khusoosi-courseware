@@ -1,0 +1,2 @@
+Saved generated speech to: /Users/panxue/Documents/kimi/workspace/travel-h5/assets/a_t_passport.mp3
+Now surface this audio to the user (e.g. via the readFile tool on that path). Playing or reading the audio is the model's job, not this plugin's.
