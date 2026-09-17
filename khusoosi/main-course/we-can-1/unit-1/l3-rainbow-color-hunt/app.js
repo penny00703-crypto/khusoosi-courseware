@@ -29,16 +29,16 @@ $('#btn-ar').onclick=()=>{const on=document.body.classList.toggle('ar-on');$('#b
 
 /* ---------- 课程数据 ---------- */
 const COLORS=[
-{id:'red',en:'red',ar:'أحمر',hex:'#ef3f36',blob:'sec_blob_01.png'},
-{id:'orange',en:'orange',ar:'برتقالي',hex:'#ff9f2e',blob:'sec_blob_02.png'},
-{id:'yellow',en:'yellow',ar:'أصفر',hex:'#ffd93b',blob:'sec_blob_03.png'},
-{id:'green',en:'green',ar:'أخضر',hex:'#37b56a',blob:'sec_blob_04.png'},
-{id:'blue',en:'blue',ar:'أزرق',hex:'#2f80ed',blob:'sec_blob_05.png'},
-{id:'purple',en:'purple',ar:'بنفسجي',hex:'#8e5bd6',blob:'sec_blob_06.png'},
-{id:'pink',en:'pink',ar:'وردي',hex:'#ff8fc7',blob:'sec_blob_07.png'},
-{id:'white',en:'white',ar:'أبيض',hex:'#ffffff',blob:'sec_blob_08.png'},
-{id:'black',en:'black',ar:'أسود',hex:'#2b2b2b',blob:'sec_blob_09.png'},
-{id:'brown',en:'brown',ar:'بني',hex:'#8a5a3b',blob:'sec_blob_10.png'}];
+{id:'red',en:'red',ar:'أحمر',hex:'#ef3f36',blob:'col_red.png'},
+{id:'orange',en:'orange',ar:'برتقالي',hex:'#ff9f2e',blob:'col_orange.png'},
+{id:'yellow',en:'yellow',ar:'أصفر',hex:'#ffd93b',blob:'col_yellow.png'},
+{id:'green',en:'green',ar:'أخضر',hex:'#37b56a',blob:'col_green.png'},
+{id:'blue',en:'blue',ar:'أزرق',hex:'#2f80ed',blob:'col_blue.png'},
+{id:'purple',en:'purple',ar:'بنفسجي',hex:'#8e5bd6',blob:'col_purple.png'},
+{id:'pink',en:'pink',ar:'وردي',hex:'#ff8fc7',blob:'col_pink.png'},
+{id:'white',en:'white',ar:'أبيض',hex:'#ffffff',blob:'col_white.png'},
+{id:'black',en:'black',ar:'أسود',hex:'#2b2b2b',blob:'col_black.png'},
+{id:'brown',en:'brown',ar:'بني',hex:'#8a5a3b',blob:'col_brown.png'}];
 const byId=id=>COLORS.find(c=>c.id===id);
 const KEY5=['red','yellow','blue','green','purple'];        // 重点主动 5 色
 const ADV=['pink','orange'];                                // 进阶主动
