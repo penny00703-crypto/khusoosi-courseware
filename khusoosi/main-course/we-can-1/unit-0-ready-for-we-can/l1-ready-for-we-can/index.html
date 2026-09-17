@@ -33,6 +33,8 @@
     padding:0 10px; background:#2b6cb0; color:#fff; }
   .topbtn:active { transform:scale(.94); }
   #btn-ar[aria-pressed="true"] { background:#1f9d6c; }
+  #btn-teacher { background:#53657d; opacity:.72; min-width:34px; padding:0 9px; }
+  #btn-teacher[aria-pressed="true"] { background:#24354f; opacity:1; }
   #logo-corner { height:36px; width:auto; display:block; background:#fff;
     border-radius:10px; padding:3px 8px; }
   /* ---------- screens ---------- */
@@ -87,6 +89,7 @@
     <div id="objective">Objective</div>
     <div id="progress-wrap"><div id="progress"></div></div>
     <div id="page-num">1 / 17</div>
+    <button class="topbtn" id="btn-teacher" aria-pressed="false" title="Teacher controls">T</button>
     <button class="topbtn" id="btn-ar" aria-pressed="false">عربي</button>
     <img id="logo-corner" src="assets/logo_khusoosi.png" alt="khusoosi">
   </div>
