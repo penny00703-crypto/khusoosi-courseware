@@ -1,6 +1,6 @@
 /* ================================================================
    We Can 1 · Unit 1 My Friends · L1 (25-min 1v1 paid lesson)
-   17 screens · mastery checkpoint: read 4 dialogue lines aloud
+   17 screens · mastery checkpoint: complete a real name exchange
    ================================================================ */
 const A = 'assets/';
 const $ = s => document.querySelector(s);
@@ -13,12 +13,20 @@ function play(src, onend){
   curAudio.play().catch(()=>{});
   if (onend) curAudio.addEventListener('ended', onend, {once:true});
 }
+function playSlow(src, onend){
+  stopAudio();
+  curAudio = new Audio(A + src);
+  curAudio.playbackRate = .78;
+  curAudio.play().catch(()=>{});
+  if (onend) curAudio.addEventListener('ended', onend, {once:true});
+}
 function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio.currentTime=0; curAudio=null; } }
 let curSfx = null;
 function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(A+src); curSfx.play().catch(()=>{});}catch(e){} }
 
 /* ---------- toast ---------- */
 let toastTimer = null;
+const assessment = { check1:null, check2:null, errors:new Set() };
 function toast(msg){
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
@@ -27,6 +35,26 @@ function toast(msg){
 /* ---------- screen framework ---------- */
 const screensHost = $('#screens');
 const screens = [];   // {obj, objective, el, onEnter, onLeave}
+
+const TEACHER_GUIDES = [
+  '<b>Set up:</b> Check sound quickly. Keep this under one minute.',
+  '<b>Lead-in:</b> Reuse the ready-for-class routine, then greet naturally. Accept Hello, Hi, or a wave before teaching.',
+  '<b>Outcome:</b> Point to the school-book source and state the one real-life goal: ask and answer a name.',
+  '<b>Input:</b> Model Hello once. Student waves and says it. Do not over-drill the isolated word.',
+  '<b>Input:</b> Contrast Hi with Hello as two greetings, not a fixed question-and-answer pair.',
+  '<b>Meaning:</b> Use the name tag to establish the intent. Avoid IPA teaching; move quickly to the full exchange.',
+  '<b>Function check:</b> Student says the meaning first; teacher clicks the matching card. Require 3 of 4 without Arabic.',
+  '<b>Book connection:</b> Play the official CD1 03-04 track once, then reveal and replay only the four target turns.',
+  '<b>Supported practice:</b> One guided round is enough. If the learner completes it cleanly, move on.',
+  '<b>Role swap:</b> Teacher is Labeeb; student is Labeeba. Use wave and point-to-self actions.',
+  '<b>Fading:</b> Remove one line at a time. The learner must still produce the whole exchange.',
+  '<b>Response game:</b> Listen for intent, then choose and say the reply. Do not guess the speaker.',
+  '<b>Check 1:</b> New character asks the learner. Hide Arabic and sentence frames. Record error type before helping.',
+  '<b>Repair:</b> Follow Meaning → Slow → Contrast → Model → Build → Hide help → Try again. Check 2 uses a different character.',
+  '<b>School practice:</b> Learner answers aloud before clicking. Only name-exchange items belong here.',
+  '<b>Record:</b> Set A, B, or C from Check 1/2 evidence; do not award badges for page completion.',
+  '<b>Exit:</b> Third new character. No full answer. Help reveals only the first word. Then open the existing home review.'
+];
 
 function addScreen(objective, html, init){
   const el = document.createElement('section');
@@ -44,7 +72,8 @@ function show(i){
   stopAudio();
   cur = i;
   screens.forEach((s,k)=> s.el.classList.toggle('active', k===i));
-  $('#objective').textContent = 'Objective · ' + screens[i].objective;
+  $('#objective').textContent = screens[i].objective;
+  $('#teacher-copy').innerHTML = TEACHER_GUIDES[i] || '';
   $('#page-num').textContent = (i+1) + ' / ' + screens.length;
   $('#progress').style.width = ((i+1)/screens.length*100) + '%';
   $('#btn-prev').disabled = (i===0);
@@ -76,6 +105,11 @@ window.addEventListener('resize', fit);
 $('#btn-ar').addEventListener('click', ()=>{
   const on = document.body.classList.toggle('ar-on');
   $('#btn-ar').setAttribute('aria-pressed', on);
+});
+
+$('#btn-teacher').addEventListener('click', ()=>{
+  const on = document.body.classList.toggle('teacher-on');
+  $('#btn-teacher').setAttribute('aria-pressed', on);
 });
 
 /* ---------- nav ---------- */
@@ -123,21 +157,22 @@ addScreen('class setup', `
   </div>`);
 
 /* ---------- S2 · Lead-in: say hello to the teacher ---------- */
-addScreen('warm-up = lesson preview', `
+addScreen('Warm-up', `
   <div style="display:flex; align-items:center; gap:48px; width:100%; justify-content:center;">
     <div style="position:relative; width:400px; height:440px;">
       <img class="pic" src="${A}sec_teacher.png" style="width:100%; height:100%;">
     </div>
     <div style="max-width:520px;">
-      <div class="card" style="position:relative; font-size:30px; font-weight:700; color:#2b3a55; line-height:1.5;">
-        Hello! I'm your teacher.<br>Say <span style="color:#ff8c42;">hello</span> to me!
-        <span class="ar" style="font-size:20px; color:#7a8aa0; margin-top:8px;">قُل مرحبا للمعلمة!</span>
+      <span class="source-badge">READY → GREET</span>
+      <div class="card" style="position:relative; font-size:34px; font-weight:750; color:#17324d; line-height:1.35; margin-top:14px;">
+        Bag away. Book ready.<br><span style="color:#ff735c;">Hello!</span>
+        <span class="ar" style="font-size:20px; color:#6e7b8b; margin-top:8px;">جهّز نفسك ثم قل مرحبًا</span>
       </div>
       <div style="display:flex; gap:18px; margin-top:26px; align-items:center;">
         <button class="speaker" data-audio="a_t_leadin.mp3"></button>
         <button id="leadin-done" style="height:56px; padding:0 28px; border:none; border-radius:28px;
-          background:#1f9d6c; color:#fff; font-size:20px; font-weight:700; cursor:pointer;
-          box-shadow:0 3px 0 #157a52;">I said Hello!</button>
+          background:#24a66a; color:#fff; font-size:20px; font-weight:750; cursor:pointer;
+          box-shadow:0 3px 0 #187c50;">I greeted my teacher</button>
       </div>
     </div>
   </div>`, el=>({
@@ -151,11 +186,12 @@ addScreen('warm-up = lesson preview', `
 }));
 
 /* ---------- S3 · promise page: goals + textbook badge ---------- */
-addScreen('learning contract', `
+addScreen('Today’s mission', `
   <div style="display:flex; gap:44px; align-items:center; width:100%; justify-content:center;">
     <div style="max-width:560px;">
-      <h1 style="font-size:34px; color:#2b3a55; margin-bottom:6px;">Today we learn from YOUR school book</h1>
-      <div style="font-size:19px; color:#8a6d3b; margin-bottom:18px;">By the end of this lesson, you can:</div>
+      <span class="source-badge">WE CAN 1 · UNIT 1 · GOALS 01–02</span>
+      <h1 style="font-size:40px; color:#17324d; margin:14px 0 6px;">Meet someone new</h1>
+      <div style="font-size:19px; color:#6e7b8b; margin-bottom:18px;">By the end, you can ask and answer a name.</div>
       ${[['a_t_goal1.mp3','Say <b style="color:#ff8c42;">Hello</b> and <b style="color:#ff8c42;">Hi</b>','قُل: مرحبا'],
          ['a_t_goal2.mp3','Ask <b style="color:#2b6cb0;">"What\'s your name?"</b>','اسأل: ما اسمك؟'],
          ['a_t_goal3.mp3','Say <b style="color:#1f9d6c;">"My name\'s ___"</b>','قُل اسمك']].map(([au,en,ar])=>`
@@ -178,7 +214,7 @@ addScreen('learning contract', `
   </div>`);
 
 /* ---------- word screen factory (S4-S6) ---------- */
-function wordScreen(objective, img, word, phon, ar, sentence, auWord, auSentence, extra){
+function wordScreen(objective, img, word, cue, ar, sentence, auWord, auSentence, extra){
   return addScreen(objective, `
     <div style="display:flex; align-items:center; gap:56px; width:100%; justify-content:center;">
       <div style="width:400px; height:400px; position:relative;">
@@ -187,51 +223,51 @@ function wordScreen(objective, img, word, phon, ar, sentence, auWord, auSentence
       </div>
       <div style="text-align:center; max-width:520px;">
         <div data-audio="${auWord}" style="cursor:pointer; font-size:64px; font-weight:700; color:#2b3a55;">${word}</div>
-        <div style="font-size:26px; color:#f6b93b; font-weight:700; margin:4px 0 6px;">${phon}</div>
+        <div style="font-size:15px; color:#1670e8; font-weight:800; margin:8px 0 6px; letter-spacing:1.2px;">${cue}</div>
         <div class="ar" style="font-size:24px; color:#1f9d6c; font-weight:700; margin-bottom:10px;">${ar}</div>
         <div class="card" style="display:inline-flex; align-items:center; gap:14px; padding:12px 22px; margin-top:10px;">
           <button class="speaker small" data-audio="${auSentence}"></button>
           <span style="font-size:26px; font-weight:700; color:#2b6cb0;">${sentence}</span>
         </div>
-        <div style="margin-top:14px; font-size:17px; color:#a08c5b;">Tap the word · Listen · Repeat 2 times</div>
+        <div style="margin-top:14px; font-size:17px; color:#6e7b8b;">Listen · Say it · Use the action</div>
       </div>
     </div>`);
 }
-wordScreen('learn "hello"', 'sec_hello_boy.png', 'hello', '/həˈləʊ/', 'مرحبا', 'Hello, teacher!', 'a_t_hello.mp3', 'a_t_hello_sentence.mp3');
-wordScreen('learn "hi"', 'sec_hi_girl.png', 'hi', '/haɪ/', 'هاي', 'Hi, Labeeb!', 'a_t_hi.mp3', 'a_t_hi_sentence.mp3',
+wordScreen('Greeting 1', 'sec_hello_boy.png', 'Hello!', 'GREETING · WAVE', 'مرحبا', 'Hello, teacher!', 'a_t_hello.mp3', 'a_t_hello_sentence.mp3');
+wordScreen('Greeting 2', 'sec_hi_girl.png', 'Hi!', 'GREETING · WAVE', 'أهلًا', 'Hi, Labeeb!', 'a_t_hi.mp3', 'a_t_hi_sentence.mp3',
   `<div style="position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); background:#fff;
      border:2px solid #f0e2c8; border-radius:18px; padding:6px 16px; font-size:19px; font-weight:700; color:#8a6d3b;">
      hello = hi</div>`);
-wordScreen('learn "name"', 'sec_nametag.png', 'name', '/neɪm/', 'اِسم', "My name's Noura.", 'a_t_name.mp3', 'a_t_name_sentence.mp3',
+wordScreen('Name meaning', 'sec_nametag.png', 'name', 'WHO ARE YOU?', 'اِسم', "My name's Noura.", 'a_t_name.mp3', 'a_t_name_sentence.mp3',
   `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-58%); font-size:44px;
      font-weight:700; color:#2b6cb0; pointer-events:none;">Noura</div>`);
 
 /* ---------- S7 · balloon listening game (tap only) ---------- */
-addScreen('word practice — listen & pop', `
+addScreen('Listen for meaning', `
   <div id="balloon-field" style="position:relative; width:1180px; height:520px; border-radius:22px;
     overflow:hidden; background:url('${A}sec_bg_sky.png') center/cover;">
     <div style="position:absolute; top:14px; left:0; right:0; display:flex; justify-content:center; gap:26px; z-index:3;">
       <div class="card" style="padding:8px 20px; font-size:20px; font-weight:700; color:#2b6cb0;" id="bl-score">Score: 0</div>
       <button class="speaker small" id="bl-play" style="align-self:center;"></button>
-      <div class="card" style="padding:8px 20px; font-size:20px; font-weight:700; color:#e8443a;" id="bl-left">Round: 1 / 8</div>
+      <div class="card" style="padding:8px 20px; font-size:20px; font-weight:700; color:#ff735c;" id="bl-left">Round: 1 / 4</div>
     </div>
     <div id="bl-hint" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center;
       font-size:26px; font-weight:700; color:#2b6cb0; background:#ffffffb0; z-index:4; border-radius:22px;">
-      Tap the balloon with the word you hear!</div>
+      Say the meaning, then tap the matching card.</div>
   </div>`, el=>{
   const words = [
-    {w:'hello', au:'a_t_hello.mp3', c:'#ff8c42'},
-    {w:'hi',    au:'a_t_hi.mp3',    c:'#2b6cb0'},
-    {w:'name',  au:'a_t_name.mp3',  c:'#1f9d6c'}
+    {w:'Greet', au:['a_t_hello.mp3','a_t_hi.mp3'], c:'#ff735c'},
+    {w:'Ask a name', au:['a_t_d1_l3.mp3'], c:'#1670e8'},
+    {w:'Say a name', au:['a_t_d1_l4.mp3','a_t_name_sentence.mp3'], c:'#24a66a'}
   ];
   let round=0, score=0, combo=0, target=null, timer=null, hintT=null;
   const field = el.querySelector('#bl-hint').parentElement;
   function clearBalloons(){ field.querySelectorAll('.bl-b').forEach(b=>b.remove()); }
   function nextRound(){
     clearTimeout(timer); clearTimeout(hintT); clearBalloons();
-    if (round>=8){ el.querySelector('#bl-hint').style.display='flex';
+    if (round>=4){ el.querySelector('#bl-hint').style.display='flex';
       el.querySelector('#bl-hint').innerHTML = 'Great job! Score: '+score; sfx('sfx_success.mp3'); return; }
-    round++; el.querySelector('#bl-left').textContent = 'Round: '+round+' / 8';
+    round++; el.querySelector('#bl-left').textContent = 'Round: '+round+' / 4';
     const order=[0,1,2].sort(()=>Math.random()-.5);
     target = order[0];
     const pos=[150,500,850];
@@ -239,9 +275,9 @@ addScreen('word practice — listen & pop', `
       const b=document.createElement('button');
       b.className='bl-b'; b.textContent=words[wi].w;
       b.style.cssText=`position:absolute; left:${pos[k]}px; top:120px; width:180px; height:220px;
-        border:none; cursor:pointer; border-radius:50% 50% 48% 48%; font-size:30px; font-weight:700; color:#fff;
-        background:radial-gradient(circle at 35% 30%, #ffffff88, ${words[wi].c} 45%);
-        box-shadow:0 8px 16px rgba(0,0,0,.18); animation:blFloat 2.6s ease-in-out ${k*.4}s infinite alternate; z-index:2;`;
+        border:none; cursor:pointer; border-radius:28px; font-size:25px; font-weight:800; color:#fff;
+        background:${words[wi].c}; box-shadow:0 14px 28px rgba(23,50,77,.18);
+        animation:blFloat 2.6s ease-in-out ${k*.4}s infinite alternate; z-index:2;`;
       b.onclick=()=>{
         if (wi===target){ sfx('sfx_pop.mp3'); combo++; score+=10*combo;
           if(combo>1) sfx('sfx_combo.mp3');
@@ -254,7 +290,7 @@ addScreen('word practice — listen & pop', `
     });
     hintT=setTimeout(()=>{ toast('Tap the balloon!'); }, 3000);
   }
-  function playCurrent(){ if(target!==null && round<=8) play(words[target].au); }
+  function playCurrent(){ if(target!==null && round<=4){ const set=words[target].au; play(set[Math.floor(Math.random()*set.length)]); } }
   el.querySelector('#bl-play').onclick=playCurrent;
   return {
     onEnter(){ round=0; score=0; combo=0;
@@ -302,15 +338,16 @@ function dialogueInput(objective, img, lines, audios, extra){
 }
 dialogueInput('dialogue 1 input', 'sec_dialog1.png',
   ['Hello.','Hi.',"What's your name?","My name's Labeeba."],
-  ['a_t_d1_l1.mp3','a_t_d1_l2.mp3','a_t_d1_l3.mp3','a_t_d1_l4.mp3']);
+  ['a_t_d1_l1.mp3','a_t_d1_l2.mp3','a_t_d1_l3.mp3','a_t_d1_l4.mp3'],
+  `<button class="pill blue" data-audio="a_official_cd1_03_04.mp3">Official CD1 03–04</button>`);
 
 /* ---------- dialogue practice factory (S9 / S11) ---------- */
 function dialoguePractice(objective, lines, audios, note){
   return addScreen(objective, `
     <div style="width:100%; max-width:880px;">
       <div style="text-align:center; font-size:22px; font-weight:700; color:#8a6d3b; margin-bottom:16px;">
-        Listen and repeat 2 times — the card turns green! ${note||''}
-        <div class="ar" style="font-size:17px; color:#7a8aa0;">استمع وكرر مرتين</div>
+        Listen once, then say it without reading. ${note||''}
+        <div class="ar" style="font-size:17px; color:#7a8aa0;">استمع ثم قلها دون قراءة</div>
       </div>
       <div class="dp-cards"></div>
     </div>`, el=>{
@@ -320,18 +357,18 @@ function dialoguePractice(objective, lines, audios, note){
       host.innerHTML = lines.map((t,k)=>`
         <div class="card dp-c" data-k="${k}" style="display:flex; align-items:center; gap:16px; padding:14px 22px;
           margin-bottom:12px; cursor:pointer; transition:background .3s;
-          ${counts[k]>=2 ? 'background:#d9f2e5; border:2px solid #1f9d6c;' : ''}">
+          ${counts[k]>=1 ? 'background:#e8f8f0; border:2px solid #24a66a;' : ''}">
           <button class="speaker small" data-audio="${audios[k]}"></button>
           <span style="font-size:27px; font-weight:700; color:#2b3a55; flex:1;">${t}</span>
-          <span style="font-size:20px; font-weight:700; color:${counts[k]>=2?'#1f9d6c':'#c9b48a'};">
-            ${counts[k]>=2 ? 'Done!' : counts[k]+' / 2'}</span>
+          <span style="font-size:20px; font-weight:700; color:${counts[k]>=1?'#24a66a':'#9aa7b4'};">
+            ${counts[k]>=1 ? 'Ready' : 'Listen'}</span>
         </div>`).join('');
       host.querySelectorAll('.dp-c').forEach(c=>{
         c.onclick=e=>{
           if (e.target.closest('.speaker')) return;
           const k=+c.dataset.k;
-          play(audios[k], ()=>{ counts[k]=Math.min(2,counts[k]+1); render();
-            if (counts.every(x=>x>=2)){ sfx('sfx_success.mp3'); toast('All lines green — great reading!'); } });
+          play(audios[k], ()=>{ counts[k]=1; render();
+            if (counts.every(x=>x>=1)){ sfx('sfx_success.mp3'); toast('Now say the talk without reading.'); } });
         };
       });
     }
@@ -347,10 +384,10 @@ dialogueInput('dialogue 2 input — with actions', 'sec_dialog2.png',
    <span class="ar" style="font-size:16px; color:#7a8aa0;">لوّح بيدك · أشِر إلى نفسك</span>`);
 dialoguePractice('dialogue 2 repeat with actions', ['Hello.','Hi.',"What's your name?","My name's Labeeb."],
   ['a_t_d2_l1.mp3','a_t_d2_l2.mp3','a_t_d2_l3.mp3','a_t_d2_l4.mp3'],
-  '· Wave and point while you read!');
+  '· Wave and point while you speak!');
 
-/* ---------- S12 · whack-a-friend main game (60s, combo) ---------- */
-addScreen('main game — listen & tap', `
+/* ---------- S12 · response mission (60s, combo) ---------- */
+addScreen('Choose the reply', `
   <div id="whack-field" style="position:relative; width:1180px; height:520px; border-radius:22px;
     overflow:hidden; background:url('${A}sec_bg_desert.png') center/cover;">
     <div style="position:absolute; top:12px; left:0; right:0; display:flex; justify-content:center; gap:22px; z-index:5;">
@@ -360,9 +397,9 @@ addScreen('main game — listen & tap', `
     </div>
     <div id="wk-start" style="position:absolute; inset:0; z-index:6; display:flex; flex-direction:column;
       align-items:center; justify-content:center; background:#ffffffc8; border-radius:22px;">
-      <div style="font-size:30px; font-weight:700; color:#2b3a55; margin-bottom:8px;">Who is talking?</div>
-      <div style="font-size:20px; color:#8a6d3b; margin-bottom:20px;">Listen — then tap the friend who said it!</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:18px;">استمع ثم اضغط على الصديق الذي يتكلم</div>
+      <div style="font-size:30px; font-weight:750; color:#17324d; margin-bottom:8px;">What should you say?</div>
+      <div style="font-size:20px; color:#6e7b8b; margin-bottom:20px;">Listen · say the reply · tap the matching card</div>
+      <div class="ar" style="font-size:17px; color:#6e7b8b; margin-bottom:18px;">استمع ثم قل الرد واختر البطاقة المناسبة</div>
       <button id="wk-go" style="height:60px; padding:0 44px; border:none; border-radius:30px; background:#ff8c42;
         color:#fff; font-size:24px; font-weight:700; cursor:pointer; box-shadow:0 4px 0 #d96f2a;">Start!</button>
     </div>
@@ -376,9 +413,9 @@ addScreen('main game — listen & tap', `
   </style>`, el=>{
   const field = el.querySelector('#whack-field');
   const friends = [
-    {img:'sec_char_wolf.png',  lines:['a_t_d2_l4.mp3','a_t_d2_l1.mp3'], x:167},
-    {img:'sec_char_cat.png',   lines:['a_t_d1_l4.mp3','a_t_d1_l1.mp3'], x:512},
-    {img:'sec_char_noura.png', lines:['a_t_name_sentence.mp3','a_t_hi_sentence.mp3'], x:872}
+    {img:'sec_char_wolf.png',  reply:'Hi!', lines:['a_t_d1_l1.mp3','a_t_d2_l1.mp3'], x:167},
+    {img:'sec_char_cat.png',   reply:"My name’s Ali.", lines:['a_t_d1_l3.mp3','a_t_d2_l3.mp3'], x:512},
+    {img:'sec_char_noura.png', reply:'Hello!', lines:['a_t_d1_l2.mp3','a_t_d2_l2.mp3'], x:872}
   ];
   let score=0, combo=0, left=60, active=null, tick=null, popT=null, hintT=null, running=false;
   const holes=[];
@@ -390,17 +427,19 @@ addScreen('main game — listen & tap', `
         <img src="${A}${f.img}" style="position:absolute; bottom:0; left:50%; width:170px; height:220px;
           object-fit:contain; transform:translate(-50%,110%); transition:transform .16s ease-out;
           pointer-events:auto; cursor:pointer;">
-      </div>`;
+      </div>
+      <div style="position:absolute; bottom:-2px; left:8px; right:8px; background:#fff; border:2px solid #e5edf2;
+        border-radius:18px; padding:8px; text-align:center; font-size:18px; font-weight:800; color:#17324d;">${f.reply}</div>`;
     field.appendChild(wrap);
     const img=wrap.querySelector('img');
     img.onclick=()=>{
       if (!running || active===null) return;
       if (k===active){ sfx('sfx_hit.mp3'); combo++; score+=10*combo;
         if (combo>1){ sfx('sfx_combo.mp3'); }
-        toast(combo>1?'Combo x'+combo+'!':'Got it!');
+        toast(combo>1?'Combo x'+combo+' — say it!':'Correct — say the reply!');
         img.style.transform='translate(-50%,110%)'; active=null;
         clearTimeout(popT); clearTimeout(hintT); update(); popT=setTimeout(pop, 420);
-      } else { combo=0; sfx('sfx_wrong.mp3'); toast('Not this friend!'); update(); }
+      } else { combo=0; sfx('sfx_wrong.mp3'); toast('Listen to the intent again.'); update(); }
     };
     holes.push(img);
   });
@@ -416,7 +455,7 @@ addScreen('main game — listen & tap', `
     holes[active].style.transform='translate(-50%,0)';
     const f=friends[active];
     play(f.lines[Math.floor(Math.random()*f.lines.length)]);
-    hintT=setTimeout(()=>{ toast('Tap the friend who is talking!'); },3000);
+    hintT=setTimeout(()=>{ toast('Say the reply before you tap.'); },3000);
     popT=setTimeout(pop, Math.max(1400, 2600 - (60-left)*22));
   }
   el.querySelector('#wk-go').onclick=()=>{
@@ -443,78 +482,91 @@ addScreen('main game — listen & tap', `
     onLeave(){ clearInterval(tick); clearTimeout(popT); clearTimeout(hintT); running=false; } };
 });
 
-/* ---------- S13 · mastery checkpoint (teacher-verified) ---------- */
-addScreen('mastery checkpoint', `
-  <div style="width:100%; max-width:860px;">
-    <div style="text-align:center; margin-bottom:14px;">
-      <span style="font-size:24px; font-weight:700; color:#2b3a55;">Read all 4 lines aloud — tap the check when you read it!</span>
-      <div class="ar" style="font-size:17px; color:#7a8aa0;">اقرأ الجمل الأربع بصوت عالٍ</div>
+/* ---------- S13 · Check 1: real exchange, no sentence frame ---------- */
+addScreen('Check 1 · Real talk', `
+  <div style="display:grid; grid-template-columns:430px 1fr; gap:54px; align-items:center; width:100%; max-width:1080px;">
+    <div class="card" style="height:430px; display:flex; align-items:center; justify-content:center;">
+      <img src="${A}sec_char_wolf.png" style="width:330px; height:360px; object-fit:contain;" alt="new character">
     </div>
-    <div class="mc-cards"></div>
-    <div class="mc-pass" style="display:none; text-align:center; margin-top:10px; font-size:28px; font-weight:700; color:#1f9d6c;">
-      You did it! Checkpoint passed!</div>
+    <div>
+      <span class="source-badge">CHECK 1 · NO HELP</span>
+      <h1 style="font-size:42px; color:#17324d; margin:16px 0 8px;">Meet someone new</h1>
+      <p style="font-size:22px; color:#6e7b8b; line-height:1.5;">Listen. Answer with your real name. Then ask back.</p>
+      <div style="display:flex; align-items:center; gap:18px; margin-top:28px;">
+        <button class="speaker" data-audio="a_t_d1_l3.mp3" data-toast="Listen — answer — ask back"></button>
+        <div class="card" style="display:flex; gap:18px; padding:14px 20px; font-size:18px; font-weight:800; color:#17324d;">
+          <span>1 · Listen</span><span>2 · Answer</span><span>3 · Ask back</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="teacher-only" style="position:absolute; left:44px; right:44px; bottom:16px; gap:8px; align-items:center; justify-content:center;">
+    <span class="pill" style="background:#17324d;color:#fff;">Error:</span>
+    <button class="pill error-tag" data-error="repeat">Repeats question</button>
+    <button class="pill error-tag" data-error="name-only">Name only</button>
+    <button class="pill error-tag" data-error="form">Wrong form</button>
+    <button class="pill error-tag" data-error="silent">Silent after text hides</button>
+    <button class="pill rate-tag green" data-rate="A">A</button>
+    <button class="pill rate-tag" data-rate="B" style="background:#ffc84a;color:#17324d;">B</button>
+    <button class="pill rate-tag coral" data-rate="C">C</button>
   </div>`, el=>{
-  const lines=[['Hello.','a_t_d1_l1.mp3'],['Hi.','a_t_d1_l2.mp3'],
-    ["What's your name?",'a_t_d1_l3.mp3'],["My name's ___.",'a_t_d1_l4.mp3']];
-  let done=[];
-  const host=el.querySelector('.mc-cards');
-  function render(){
-    host.innerHTML=lines.map(([t,au],k)=>`
-      <div class="card" style="display:flex; align-items:center; gap:16px; padding:12px 22px; margin-bottom:10px;
-        ${done[k]?'background:#d9f2e5; border:2px solid #1f9d6c;':''}">
-        <button class="speaker small" data-audio="${au}"></button>
-        <span style="font-size:28px; font-weight:700; color:#2b3a55; flex:1;">${t}</span>
-        <button class="mc-ck" data-k="${k}" style="width:52px; height:52px; border-radius:50%; border:3px solid ${done[k]?'#1f9d6c':'#d9c9a3'};
-          background:${done[k]?'#1f9d6c':'#fff'}; cursor:pointer;">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="${done[k]?'#fff':'#d9c9a3'}"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
-        </button>
-      </div>`).join('');
-    host.querySelectorAll('.mc-ck').forEach(b=> b.onclick=()=>{
-      const k=+b.dataset.k; done[k]=!done[k];
-      if(done[k]) sfx('sfx_correct.mp3');
-      render();
-      if (done.every(x=>x)){ el.querySelector('.mc-pass').style.display='block'; sfx('sfx_success.mp3'); }
-      else el.querySelector('.mc-pass').style.display='none';
-    });
-  }
-  return { onEnter(){ done=[false,false,false,false]; el.querySelector('.mc-pass').style.display='none'; render(); } };
+  el.querySelectorAll('.error-tag').forEach(b=>b.onclick=()=>{
+    assessment.errors.add(b.dataset.error); b.style.background='#ffc84a'; b.style.color='#17324d';
+  });
+  el.querySelectorAll('.rate-tag').forEach(b=>b.onclick=()=>{
+    assessment.check1=b.dataset.rate; sfx('sfx_correct.mp3'); toast('Check 1 recorded: '+b.dataset.rate);
+  });
+  return { onEnter(){ assessment.check1=null; assessment.check2=null; assessment.errors.clear();
+    el.querySelectorAll('.error-tag').forEach(b=>{b.style.background='';b.style.color='';}); } };
 });
 
-/* ---------- S14 · Mini Challenge (scaffold fades) ---------- */
-addScreen('mini challenge — real talk', `
-  <div style="width:100%; max-width:900px; text-align:center;">
-    <div style="font-size:26px; font-weight:700; color:#2b3a55; margin-bottom:4px;">Mini Challenge — talk to your teacher!</div>
-    <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:14px;">تحدّث مع معلمتك باسمك الحقيقي</div>
-    <div class="card" style="padding:22px 30px; text-align:left;">
-      <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
-        <button class="speaker small" data-audio="a_t_challenge.mp3"></button>
-        <span style="font-size:27px; font-weight:700; color:#2b6cb0;">Teacher: Hello! What's your name?</span>
-      </div>
-      <div style="display:flex; align-items:center; gap:14px;">
-        <div style="width:44px;"></div>
-        <span id="ch-answer" style="font-size:27px; font-weight:700; color:#e8443a;"></span>
+/* ---------- S14 · fixed repair path + Check 2 ---------- */
+addScreen('Repair · Check 2', `
+  <div style="display:grid; grid-template-columns:410px 1fr; gap:48px; align-items:center; width:100%; max-width:1080px;">
+    <div class="card" style="height:420px; display:flex; align-items:center; justify-content:center;">
+      <img src="${A}sec_char_cat.png" style="width:320px; height:350px; object-fit:contain;" alt="second new character">
+    </div>
+    <div>
+      <span class="source-badge">HELP FADES → CHECK 2</span>
+      <h1 style="font-size:40px; color:#17324d; margin:14px 0 12px;">Try with a new person</h1>
+      <div id="repair-view" class="card" style="min-height:170px; display:flex; align-items:center; justify-content:center;
+        text-align:center; font-size:27px; font-weight:800; color:#17324d; line-height:1.5;">
+        <button class="speaker" data-audio="a_t_d2_l3.mp3"></button>
       </div>
     </div>
-    <div style="display:flex; gap:16px; justify-content:center; margin-top:20px;">
-      <button class="ch-r" data-r="0" style="height:50px; padding:0 26px; border:none; border-radius:25px;
-        background:#f6b93b; color:#fff; font-size:19px; font-weight:700; cursor:pointer;">Round 1 · with help</button>
-      <button class="ch-r" data-r="1" style="height:50px; padding:0 26px; border:none; border-radius:25px;
-        background:#e8443a; color:#fff; font-size:19px; font-weight:700; cursor:pointer;">Round 2 · on your own!</button>
-    </div>
+  </div>
+  <div class="teacher-only" style="position:absolute; left:30px; right:30px; bottom:12px; gap:6px; align-items:center; justify-content:center; flex-wrap:wrap;">
+    ${['Meaning','Slow','Contrast','Model','Build','Hide help','Try again'].map((t,i)=>`<button class="pill repair-step" data-step="${i}" style="background:#eaf4ff;color:#1670e8;">${i+1}. ${t}</button>`).join('')}
+    <button class="pill check2-rate green" data-rate="A">A</button>
+    <button class="pill check2-rate" data-rate="B" style="background:#ffc84a;color:#17324d;">B</button>
+    <button class="pill check2-rate coral" data-rate="C">C</button>
   </div>`, el=>{
-  const ans=el.querySelector('#ch-answer');
-  el.querySelectorAll('.ch-r').forEach(b=> b.onclick=()=>{
-    sfx('sfx_correct.mp3');
-    ans.innerHTML = b.dataset.r==='0'
-      ? 'You: Hi! My name\'s <u>&nbsp;your name&nbsp;</u> .'
-      : 'You: _______ ! My _______ _______ !';
-    play('a_t_challenge.mp3');
+  const view=el.querySelector('#repair-view');
+  let nextStep=0;
+  const steps=[
+    ()=>{ view.innerHTML='<div><div style="font-size:54px;">?</div><div class="ar" style="display:block;color:#24a66a;">ما اسمك؟</div></div>'; },
+    ()=>{ view.innerHTML='<div>Listen slowly. Then point to yourself.</div>'; playSlow('a_t_d1_l3.mp3'); },
+    ()=>{ view.innerHTML='<div style="display:flex;gap:18px;"><span class="card" style="color:#1670e8;">What’s your name?</span><span class="card" style="color:#ff735c;">My name’s …</span></div>'; },
+    ()=>{ view.innerHTML='<div>Hello! <span style="color:#1670e8;">My name’s Noura.</span><br><span style="color:#ff735c;">What’s your name?</span></div>'; play('a_t_challenge.mp3'); },
+    ()=>{ view.innerHTML='<div style="display:flex;gap:12px;"><span class="pill blue">My</span><span class="pill blue">name’s</span><span class="pill blue">your name</span></div>'; },
+    ()=>{ view.innerHTML='<div style="font-size:22px;color:#6e7b8b;">Look at the new person. No words now.</div>'; },
+    ()=>{ view.innerHTML='<button class="speaker" data-audio="a_t_d2_l3.mp3"></button>'; play('a_t_d2_l3.mp3'); toast('Check 2 — answer and ask back.'); }
+  ];
+  el.querySelectorAll('.repair-step').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.step;
+    if(i>nextStep){ toast('Use the next repair step.'); return; }
+    steps[i](); b.style.background='#24a66a'; b.style.color='#fff';
+    if(i===nextStep) nextStep=Math.min(6,nextStep+1);
   });
-  return { onEnter(){ ans.innerHTML='You: Hi! My name\'s <u>&nbsp;your name&nbsp;</u> .'; } };
+  el.querySelectorAll('.check2-rate').forEach(b=>b.onclick=()=>{
+    assessment.check2=b.dataset.rate; sfx('sfx_success.mp3'); toast('Check 2 recorded: '+b.dataset.rate);
+  });
+  return { onEnter(){ nextStep=0; view.innerHTML='<button class="speaker" data-audio="a_t_d2_l3.mp3"></button>';
+    el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#eaf4ff';b.style.color='#1670e8';}); } };
 });
 
 /* ---------- S15 · exam interface (real-exam Q&A formats) ---------- */
-addScreen('exam drill — Q&A match', `
+addScreen('School practice', `
   <div style="display:flex; gap:40px; width:100%; justify-content:center;">
     <div style="width:520px;">
       <div style="font-size:22px; font-weight:700; color:#2b3a55; margin-bottom:4px; text-align:center;">1 · Listen and choose</div>
@@ -537,7 +589,7 @@ addScreen('exam drill — Q&A match', `
   </div>`, el=>{
   /* part 1: listen & choose, 2 rounds */
   const rounds=[
-    {q:'a_t_d1_l3.mp3', opts:[["My name's Noura.",1],["I'm fine, thank you.",0]]},
+    {q:'a_t_d1_l3.mp3', opts:[["My name's Noura.",1],["Hello!",0]]},
     {q:'a_t_d1_l3.mp3', opts:[["Hello!",0],["My name's Labeeb.",1]]}
   ];
   let ri=0;
@@ -556,7 +608,7 @@ addScreen('exam drill — Q&A match', `
   function playQ(){ play(rounds[ri].q, ); }
   el.querySelector('#ex-q').onclick=playQ;
   /* part 2: tap-tap matching */
-  const pairs=[["Hello.","Hi."],["What's your name?","My name's Noura."],["How are you?","I'm fine, thank you."]];
+  const pairs=[["Hello.","Hi."],["What's your name?","My name's Noura."],["Hi.","Hello."]];
   let selQ=null, matched=0;
   function renderMatch(){
     matched=0; selQ=null;
@@ -585,13 +637,14 @@ addScreen('exam drill — Q&A match', `
   return { onEnter(){ ri=0; renderChoose(); renderMatch(); setTimeout(playQ,400); } };
 });
 
-/* ---------- S16 · achievement summary ---------- */
-addScreen('review & achievement', `
+/* ---------- S16 · evidence-based achievement ---------- */
+addScreen('Learning record', `
   <div style="text-align:center;">
-    <h1 class="title" style="margin-bottom:6px;">Today I can say...</h1>
+    <span class="source-badge">TODAY’S EVIDENCE</span>
+    <h1 class="title" style="margin:12px 0 6px;">I can meet someone new</h1>
     <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:22px;">اليوم أستطيع أن أقول</div>
     <div style="display:flex; gap:30px; justify-content:center;">
-      ${[['Hello!','a_t_hello.mp3','#ff8c42'],['What\'s your name?','a_t_d1_l3.mp3','#2b6cb0'],['My name\'s ___!','a_t_name_sentence.mp3','#1f9d6c']]
+      ${[['Greet','a_t_hello.mp3','#ff735c'],['Ask a name','a_t_d1_l3.mp3','#1670e8'],['Answer a name','a_t_name_sentence.mp3','#24a66a']]
         .map(([t,au,c],k)=>`
         <div class="badge" data-audio="${au}" style="cursor:pointer; width:280px; padding:26px 18px; border-radius:22px;
           background:#fff; box-shadow:0 6px 18px rgba(60,40,10,.12); border:3px solid ${c};">
@@ -602,41 +655,50 @@ addScreen('review & achievement', `
           <div style="font-size:24px; font-weight:700; color:#2b3a55;">${t}</div>
         </div>`).join('')}
     </div>
-    <div style="margin-top:24px; font-size:19px; color:#8a6d3b;">Tap a badge to hear it again</div>
+    <div id="ability-level" class="card" style="display:inline-flex; margin-top:22px; padding:10px 20px; font-size:19px; font-weight:800; color:#17324d;">Level: not recorded</div>
   </div>`, el=>({
-  onEnter(){ setTimeout(()=>sfx('sfx_success.mp3'), 250); }
+  onEnter(){
+    const level=assessment.check2 || assessment.check1 || 'Not recorded';
+    const copy={A:'A · Independent',B:'B · With help, then independent',C:'C · Keep practising','Not recorded':'Not recorded'}[level];
+    const colors={A:'#24a66a',B:'#ffc84a',C:'#ff735c','Not recorded':'#e5edf2'};
+    const box=el.querySelector('#ability-level'); box.textContent='Level: '+copy; box.style.borderColor=colors[level];
+    if(level!=='Not recorded') setTimeout(()=>sfx('sfx_success.mp3'),250);
+  }
 }));
 
 /* ---------- S17 · exit quiz + homework ---------- */
-addScreen('exit quiz & homework', `
+addScreen('Exit task · Home review', `
   <div style="display:flex; gap:40px; width:100%; justify-content:center; align-items:stretch;">
     <div class="card" style="width:520px; padding:26px 30px; text-align:center;">
-      <div style="font-size:26px; font-weight:700; color:#2b3a55; margin-bottom:6px;">Exit Quiz — say it to your teacher!</div>
+      <div style="font-size:26px; font-weight:750; color:#17324d; margin-bottom:6px;">One last real talk</div>
       <div class="ar" style="font-size:16px; color:#7a8aa0; margin-bottom:16px;">أجب بصوت عالٍ بدون مساعدة</div>
       <div style="display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:14px;">
+        <img src="${A}sec_char_noura.png" style="width:170px;height:170px;object-fit:contain;" alt="new person">
         <button class="speaker" data-audio="a_t_d1_l3.mp3"></button>
-        <span style="font-size:28px; font-weight:700; color:#2b6cb0;">What's your name?</span>
       </div>
-      <div style="font-size:30px; font-weight:700; color:#e8443a;">You: Hi! My name's _______ .</div>
+      <div id="exit-cue" style="min-height:42px; font-size:28px; font-weight:800; color:#ff735c;">Answer. Then ask back.</div>
+      <button id="exit-help" class="pill" style="margin-top:16px;background:#eef6ff;color:#1670e8;">Help · first word only</button>
     </div>
     <div class="card" style="width:520px; padding:26px 30px; text-align:center;">
       <div style="font-size:26px; font-weight:700; color:#2b3a55; margin-bottom:6px;">Homework</div>
       <div class="ar" style="font-size:16px; color:#7a8aa0; margin-bottom:16px;">الواجب المنزلي</div>
       <div style="font-size:23px; font-weight:700; color:#8a6d3b; margin-bottom:14px;">Workbook · pages 63–64 · Trace and write</div>
       <div style="background:#fdf6ec; border:2px dashed #d9c9a3; border-radius:16px; padding:14px 18px;">
-        <div style="font-size:40px; font-weight:700; color:#c9b48a; letter-spacing:8px;
-          -webkit-text-stroke:1px #c9b48a; font-family:'Comic Sans MS',cursive;">H e l l o</div>
+          <div style="font-size:40px; font-weight:750; color:#9aa7b4; letter-spacing:8px;">H e l l o</div>
         <div style="font-size:15px; color:#a08c5b; margin-top:4px;">Trace the word, then write your name</div>
       </div>
       <div style="display:flex; align-items:center; gap:16px; margin-top:14px; background:#fff; border:2px solid #e8d5b0; border-radius:16px; padding:10px 14px;">
         <img src="assets/sec_qr_review.png" alt="Review QR" style="width:118px; height:118px; border-radius:8px;">
         <div style="text-align:left;">
-          <div style="font-size:19px; font-weight:700; color:#c07f2e; line-height:1.5; direction:rtl;">امسح الرمز وراجع الدرس في البيت! 🌟</div>
+          <div style="font-size:19px; font-weight:700; color:#17324d; line-height:1.5; direction:rtl;">امسح الرمز وراجع الدرس في البيت</div>
           <div style="font-size:15px; color:#8a6d3b; margin-top:6px; font-weight:700;">Scan & review at home · earn your stars!</div>
         </div>
       </div>
     </div>
-  </div>`);
+  </div>`, el=>{
+  el.querySelector('#exit-help').onclick=()=>{ el.querySelector('#exit-cue').textContent='My …'; toast('Only the first word. Finish it yourself.'); };
+  return { onEnter(){ el.querySelector('#exit-cue').textContent='Answer. Then ask back.'; } };
+});
 
 /* ---------- boot ---------- */
 screens.forEach((s,k)=>{
@@ -645,6 +707,8 @@ screens.forEach((s,k)=>{
   b.onclick=()=>{ $('#thumbs').classList.remove('open'); show(k); };
   $('#thumbs').appendChild(b);
 });
-const p0=parseInt(new URLSearchParams(location.search).get('p')||'1',10);
-if (new URLSearchParams(location.search).get('ar')){ document.body.classList.add('ar-on'); $('#btn-ar').setAttribute('aria-pressed','true'); }
+const query=new URLSearchParams(location.search);
+const p0=parseInt(query.get('p')||'1',10);
+if (query.get('ar')){ document.body.classList.add('ar-on'); $('#btn-ar').setAttribute('aria-pressed','true'); }
+if (query.get('teacher')){ document.body.classList.add('teacher-on'); $('#btn-teacher').setAttribute('aria-pressed','true'); }
 fit(); show(isNaN(p0)?0:p0-1);
