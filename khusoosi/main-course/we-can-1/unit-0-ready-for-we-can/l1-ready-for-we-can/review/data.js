@@ -1,45 +1,37 @@
-/* ============================================================
- * 复习页数据文件 · 每节课只改这一个文件
- * We Can 1 · Global Lesson 1「Ready for We Can!」
- * 素材全部引用 ../assets/（复用正价课课件素材，零新增）
- * ============================================================ */
+/*
+ * We Can 1 · Introduction · Global Lesson 1 "Welcome to We Can"
+ * book=We Can 1 / unit=Introduction / lesson=Lesson 1
+ * Audio filenames are stable page interfaces. Replace textbook lines with
+ * verified official tracks/cuts when the official package is delivered.
+ */
 const LESSON = {
-  book:  "We Can 1",
-  unit:  "Ready for We Can",
-  lesson:"Lesson 1",
-  title: "Ready for We Can!",
-  heroChar: "sec_char_noura.png",     // 首页人物形象
-
-  // 关卡1：单词听读卡（图 + 音 + 阿语释义）
+  book: "We Can 1",
+  unit: "Introduction",
+  lesson: "Lesson 1",
+  title: "Welcome to We Can",
+  heroChar: "sec_welcome_class.png",
   words: [
-    { en:"Look",   ar:"انظر",  img:"sec_textbook_intro_2.jpg", audio:"a_r_look.wav"   },
-    { en:"Listen", ar:"استمع", img:"sec_teacher.png",         audio:"a_r_listen.wav" },
-    { en:"Point",  ar:"أشر",   img:"sec_action_book.jpg",     audio:"a_r_point.wav"  }
+    {en:"Put your bag away.",ar:"ضع حقيبتك في مكانها",img:"sec_bag_source_clean.png",audio:"a_t_put_bag_away.mp3"},
+    {en:"Please take a seat.",ar:"تفضل بالجلوس",img:"sec_take_seat.png",audio:"a_t_take_seat.mp3"},
+    {en:"Take out your book.",ar:"أخرج كتابك",img:"sec_book_source_clean.png",audio:"a_t_take_book.mp3"}
   ],
-
-  // 关卡2：听音选词（answer = 正确选项在 options 里的下标）
   listenQuiz: [
-    { audio:"a_r_look.wav",   options:["Look","Listen","Point"], answer:0 },
-    { audio:"a_r_listen.wav", options:["Point","Listen","Look"], answer:1 },
-    { audio:"a_r_point.wav",  options:["Listen","Look","Point"], answer:2 }
+    {audio:"a_t_put_bag_away.mp3",options:["Put your bag away.","Take out your book.","Please take a seat."],answer:0},
+    {audio:"a_t_take_seat.mp3",options:["Take out your pencil.","Please take a seat.","Please open the window."],answer:1},
+    {audio:"a_t_open_window.mp3",options:["Take out your book.","Put your bag away.","Please open the window."],answer:2}
   ],
-
-  // 关卡3：对话跟读（教材 Dialogue 1）
   dialogue: {
-    img: "sec_textbook_intro_2.jpg",
-    lines: [
-      { en:"Listen.",            audio:"a_r_listen.wav" },
-      { en:"Open your book.",    audio:"a_r_open.wav" },
-      { en:"Okay.",              audio:"a_r_okay.wav" },
-      { en:"Again, please.",     audio:"a_r_again.wav" }
+    img:"sec_welcome_class.png",
+    lines:[
+      {en:"Welcome!",audio:"a_t_welcome.mp3"},
+      {en:"Please take a seat.",audio:"a_t_take_seat.mp3"},
+      {en:"Okay.",audio:"a_t_okay.mp3"},
+      {en:"Thank you.",audio:"a_t_thank_you.mp3"},
+      {en:"You're welcome.",audio:"a_t_youre_welcome.mp3"}
     ]
   },
-
-  // 关卡4：考试接口（听问句选答句，与校内题型一致）
   examQuiz: [
-    { audio:"a_r_open.wav", q:"Listen and choose.",
-      options:["Open your book.", "Take a pencil."], answer:0 },
-    { audio:"a_r_pencil.wav", q:"Listen and choose.",
-      options:["Show me.", "Take a pencil."], answer:1 }
+    {audio:"a_t_take_book.mp3",q:"Listen and choose.",options:["Take out your book.","Put your bag away."],answer:0},
+    {audio:"a_t_take_pencil.mp3",q:"Listen and choose.",options:["Please open the window.","Take out your pencil."],answer:1}
   ]
 };

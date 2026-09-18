@@ -22,10 +22,10 @@
       })
     }).then(r => {
       const el = document.getElementById('report-status');
-      if (el) el.textContent = r.ok ? 'أُرسل إلى معلمتك!' : 'لم يُرسل، جرّبي لاحقًا';
+      if (el) el.textContent = r.ok ? '✅ أُرسل إلى معلمتك!' : '⚠️ لم يُرسل، جرّبي لاحقًا';
     }).catch(() => {
       const el = document.getElementById('report-status');
-      if (el) el.textContent = 'لم يُرسل، جرّبي لاحقًا';
+      if (el) el.textContent = '⚠️ لم يُرسل، جرّبي لاحقًا';
     });
   }
 
@@ -61,7 +61,7 @@
     card.className = 'word-card';
     card.innerHTML =
       `<img src="${A + w.img}" alt=""><div class="wen en">${w.en}</div>` +
-      `<div class="war">${w.ar}</div><div class="play-ic">PLAY</div>`;
+      `<div class="war">${w.ar}</div><div class="play-ic">🔊</div>`;
     card.onclick = () => {
       play(w.audio);
       card.classList.add('played');
@@ -133,7 +133,7 @@
   LESSON.dialogue.lines.forEach((l, i) => {
     const row = document.createElement('div');
     row.className = 'dline';
-    row.innerHTML = `<span class="dic">PLAY</span><span class="dtxt en">${l.en}</span>`;
+    row.innerHTML = `<span class="dic">🔊</span><span class="dtxt en">${l.en}</span>`;
     row.onclick = () => {
       play(l.audio);
       row.classList.add('played');
@@ -168,7 +168,7 @@
     const ratio = state.firstTry / state.quizTotal;
     const n = ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : 1;
     document.getElementById('stars').innerHTML =
-      [1, 2, 3].map(i => `<span class="${i <= n ? '' : 'dim'}">●</span>`).join('');
+      [1, 2, 3].map(i => `<span class="${i <= n ? '' : 'dim'}">⭐</span>`).join('');
     const msg = {
       3: 'مذهل! أنت نجم اليوم 🌟',
       2: 'أحسنت! استمع للكلمات مرة أخرى وستتقنها 💪',

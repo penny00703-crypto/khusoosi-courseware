@@ -11,7 +11,7 @@
     background:linear-gradient(180deg,#fdf6e3 0%,#fdeeda 50%,#fce4c4 100%);
     min-height:100vh; color:#3d2b1f; padding-bottom:60px;
   }
-  .en { direction:ltr; unicode-bidi:isolate; font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif; }
+  .en { direction:ltr; unicode-bidi:isolate; font-family:'Nunito','Avenir Next','Segoe UI',sans-serif; }
 
   /* ===== header ===== */
   header {
@@ -51,9 +51,9 @@
   .station.done .sdone-tag { display:block; }
 
   /* word cards */
-  .word-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .word-row { display:flex; gap:8px; justify-content:center; }
   .word-card {
-    flex:0 1 96px; min-width:88px; max-width:110px; background:#fff; border-radius:16px;
+    flex:1; min-width:0; max-width:110px; background:#fff; border-radius:16px;
     border:2px solid #f0dfc0; padding:10px 6px; text-align:center; cursor:pointer;
     transition:transform .12s, border-color .12s, box-shadow .12s;
   }
@@ -136,14 +136,6 @@
 
   footer { text-align:center; margin-top:26px; font-size:11px; color:#c4a97e; }
 </style>
-<style>
-  body{font-family:'Avenir Next',Avenir,'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#fffaf1 0%,#f4faff 52%,#e9f5ff 100%);color:#17324d}
-  header{background:rgba(255,255,255,.94);border-bottom:1px solid #e5edf2;box-shadow:0 6px 22px rgba(23,50,77,.07)}
-  header .htitle,.hero h1,.station .stitle,#final-msg{color:#17324d}header .htitle .en,.hero .en-title{color:#1670e8}.hero p,.station .ssub,.q-round,#final-score{color:#6e7b8b}
-  .station{background:#fff;border:1px solid #e5edf2;box-shadow:0 14px 38px rgba(23,50,77,.09)}.station .snum,.btn-primary{background:#1670e8;box-shadow:0 4px 12px rgba(22,112,232,.28)}
-  .word-card,.opt,.dline,.hear-btn{border-color:#e5edf2;color:#17324d}.word-card .wen,.opt,.dline .dtxt{color:#17324d}.word-card .war{color:#6e7b8b}.hear-btn{color:#1670e8}.play-all,.screenshot-tip{background:#f2f9ff;border-color:#9fd4ff;color:#17324d}
-  .btn-green,#name-btn{background:#24a66a}.hero img.char{border-radius:24px;filter:drop-shadow(0 12px 28px rgba(23,50,77,.14))}
-</style>
 </head>
 <body>
 
@@ -154,32 +146,32 @@
 
 <section class="hero">
   <img class="char" id="hero-char" src="" alt="">
-  <h1>هيّا نراجع معًا!</h1>
+  <h1>هيّا نراجع معًا! 🌟</h1>
   <div class="en en-title" id="hero-title"></div>
-  <p>٤ محطات قصيرة · استمع وكرّر والعب · اجمع النقاط</p>
+  <p>٤ محطات قصيرة · استمع وكرّر والعب · اجمع النجوم ⭐</p>
 </section>
 
 <!-- Station 1: words listen & repeat -->
 <section class="station" id="st1">
-  <div class="shead"><div class="snum">1</div><div class="stitle">استمع وكرّر الكلمات</div><div class="sdone-tag">تم</div></div>
-  <div class="ssub">اضغط على كل بطاقة، استمع للكلمة، ثم كرّرها بصوت عالٍ</div>
+  <div class="shead"><div class="snum">1</div><div class="stitle">استمع وكرّر الكلمات</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">اضغط على كل بطاقة، استمع للكلمة، ثم كرّرها بصوت عالٍ 🔊</div>
   <div class="word-row" id="word-row"></div>
   <button class="btn btn-green" id="st1-done" disabled>كرّرتُ كل الكلمات ✔</button>
 </section>
 
 <!-- Station 2: listen & pick -->
 <section class="station" id="st2">
-  <div class="shead"><div class="snum">2</div><div class="stitle">استمع واختر الكلمة الصحيحة</div><div class="sdone-tag">تم</div></div>
-  <div class="ssub">اضغط زر الاستماع ثم اختر الكلمة التي سمعتها</div>
+  <div class="shead"><div class="snum">2</div><div class="stitle">استمع واختر الكلمة الصحيحة</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">اضغط زر الاستماع 🔊 ثم اختر الكلمة التي سمعتها</div>
   <div class="q-round" id="st2-round"></div>
-  <button class="hear-btn" id="st2-hear">استمع</button>
+  <button class="hear-btn" id="st2-hear">🔊 استمع</button>
   <div class="opt-row" id="st2-opts"></div>
 </section>
 
 <!-- Station 3: dialogue shadowing -->
 <section class="station" id="st3">
-  <div class="shead"><div class="snum">3</div><div class="stitle">كرّر الحوار</div><div class="sdone-tag">تم</div></div>
-  <div class="ssub">استمع لكل جملة وكرّرها، ثم استمع للحوار كاملًا</div>
+  <div class="shead"><div class="snum">3</div><div class="stitle">كرّر الحوار مع نورة</div><div class="sdone-tag">✅</div></div>
+  <div class="ssub">استمع لكل جملة وكرّرها، ثم استمع للحوار كاملًا 🎭</div>
   <img class="dlg-img" id="dlg-img" src="" alt="">
   <div id="dlg-lines"></div>
   <button class="hear-btn play-all" id="dlg-all">▶ استمع للحوار كاملًا</button>
@@ -188,26 +180,26 @@
 
 <!-- Station 4: exam challenge -->
 <section class="station" id="st4">
-  <div class="shead"><div class="snum">4</div><div class="stitle">تحدّي الاختبار</div><div class="sdone-tag">تم</div></div>
+  <div class="shead"><div class="snum">4</div><div class="stitle">تحدّي الاختبار 🎯</div><div class="sdone-tag">✅</div></div>
   <div class="ssub">استمع للسؤال واختر الإجابة الصحيحة — تمامًا مثل اختبار المدرسة!</div>
   <div class="q-round" id="st4-round"></div>
-  <button class="hear-btn" id="st4-hear">استمع للسؤال</button>
+  <button class="hear-btn" id="st4-hear">🔊 استمع للسؤال</button>
   <div class="opt-row" id="st4-opts"></div>
 </section>
 
 <!-- final -->
 <section class="station" id="final-card">
-  <div class="confetti">Well done!</div>
+  <div class="confetti">🎉</div>
   <div class="stars" id="stars"></div>
   <div id="final-msg"></div>
   <div id="final-score"></div>
-  <div class="screenshot-tip">خذ لقطة شاشة لهذه الصفحة وأرسلها إلى معلمتك<br>Screenshot this page and send it to your teacher</div>
+  <div class="screenshot-tip">📸 خذ لقطة شاشة لهذه الصفحة وأرسلها إلى معلمتك<br>Screenshot this page and send it to your teacher</div>
   <div id="name-row">
     <input id="name-input" type="text" maxlength="30" placeholder="اكتب اسمك · Your name">
-    <button id="name-btn">إرسال</button>
+    <button id="name-btn">إرسال ✅</button>
   </div>
   <div id="report-status"></div>
-  <button class="btn btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">مراجعة مرة أخرى</button>
+  <button class="btn btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'})">🔁 مراجعة مرة أخرى</button>
 </section>
 
 <footer>Khusoosi · خصوصي · We Can! Grade 1</footer>
