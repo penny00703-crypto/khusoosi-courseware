@@ -17,7 +17,7 @@ const LESSON = {
     { en:"B", ar:"حرف بي",   img:"tile_B.png", audio:"a_t_ltr_B.mp3" },
     { en:"C", ar:"حرف سي",   img:"tile_C.png", audio:"a_t_ltr_C.mp3" },
     { en:"D", ar:"حرف دي",   img:"tile_D.png", audio:"a_t_ltr_D.mp3" },
-    { en:"E", ar:"حرف إيي",  img:"tile_E.png", audio:"a_t_ltr_E.mp3" },
+    { en:"E", ar:"حرف إي",  img:"tile_E.png", audio:"a_t_ltr_E.mp3" },
     { en:"F", ar:"حرف إف",   img:"tile_F.png", audio:"a_t_ltr_F.mp3" },
     { en:"G", ar:"حرف جي",   img:"tile_G.png", audio:"a_t_ltr_G.mp3" },
     { en:"H", ar:"حرف إتش",  img:"tile_H.png", audio:"a_t_ltr_H.mp3" }

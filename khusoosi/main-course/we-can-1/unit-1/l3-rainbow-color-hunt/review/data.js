@@ -32,13 +32,13 @@ const LESSON = {
     { audio:"a_t_yellow.mp3", options:["yellow","red","white"],   answer:0 }
   ],
 
-  // 关卡3：对话跟读（What color is it? 问答链）
+  // 关卡3：对话跟读（What color is it? → It is ___.）
   dialogue: {
     img: "sec_rainbow_clean.png",
     lines: [
       { en:"What color is it?", audio:"a_t_what_color.mp3" },
-      { en:"This is red.",      audio:"a_t_this_is_red.mp3" },
-      { en:"This is blue.",     audio:"a_t_this_is_blue.mp3" },
+      { en:"It is red.",         audio:"a_t_it_is_red.mp3" },
+      { en:"It is blue.",        audio:"a_t_it_is_blue.mp3" },
       { en:"Show me something green.", audio:"a_t_show_me_green.mp3" }
     ]
   },

@@ -22,7 +22,7 @@ const LESSON = {
   // 关卡2：听问句选答句（3 轮）—— Station 1/4 混合：2 问答 + 1 字母
   listenQuiz: [
     { audio:"a_t_whats_your_name.mp3", options:["My name's Noura.","I'm fine, thank you.","Good-bye."], answer:0 },
-    { audio:"a_t_how_are_you.mp3",     options:["Good morning.","I'm fine, thank you.","My name's Noura."], answer:1 },
+    { audio:"a_t_how_are_you.mp3",     options:["Hello!","I'm fine, thank you.","My name's Noura."], answer:1 },
     { audio:"a_t_ltr_C.mp3",           options:["G","C","E"], answer:1 }
   ],
 
@@ -30,7 +30,7 @@ const LESSON = {
   dialogue: {
     img: "sec_char_noura.png",
     lines: [
-      { en:"Good morning.",              audio:"a_t_good_morning.mp3" },
+      { en:"Hello!",                     audio:"a_t_hello.mp3" },
       { en:"How are you?",               audio:"a_t_how_are_you.mp3" },
       { en:"I'm fine, thank you.",       audio:"a_t_im_fine.mp3" },
       { en:"Good-bye. See you again.",   audio:"a_t_goodbye_seeyou.mp3" }

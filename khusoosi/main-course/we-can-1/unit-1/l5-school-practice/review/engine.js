@@ -75,7 +75,7 @@
 
   /* ========== 通用选择测验（关卡2/4 复用） ========== */
   function runQuiz(cfg) {
-    let round = 0, locked = false;
+    let round = 0, locked = false, firstAttempt = true;
     const roundEl = document.getElementById(cfg.roundId);
     const optsEl  = document.getElementById(cfg.optsId);
     const hearBtn = document.getElementById(cfg.hearId);
@@ -87,6 +87,7 @@
       optsEl.innerHTML = '';
       optsEl.dataset.answer = q.answer;    // QA 自检用
       locked = false;
+      firstAttempt = true;
       q.options.forEach((txt, idx) => {
         const b = document.createElement('button');
         b.className = 'opt en';
@@ -97,9 +98,10 @@
             locked = true;
             b.classList.add('correct');
             sfx('sfx_correct.mp3');
-            state.firstTry++;
+            if (firstAttempt) state.firstTry++;
             setTimeout(next, 900);
           } else {
+            firstAttempt = false;
             b.classList.add('wrong');
             sfx('sfx_wrong.mp3');
             setTimeout(() => b.classList.remove('wrong'), 400);
