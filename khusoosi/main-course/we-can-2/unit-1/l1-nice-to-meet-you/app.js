@@ -10,22 +10,38 @@ const $ = s => document.querySelector(s);
 
 /* ---------- audio bus: stop-all on page turn ---------- */
 let curAudio = null;
+let audioWarnTimer = null;
+function audioFail(){
+  /* never stay silent: tell the teacher exactly what to check */
+  toast('لا يوجد صوت؟ تأكد من كتم الصوت ودرجة الصوت ثم اضغط مجددًا · No sound? Check silent mode & volume, tap again');
+  clearTimeout(audioWarnTimer);
+}
 function play(src, onend){
   stopAudio();
   curAudio = new Audio(A + src);
-  curAudio.play().catch(()=>{});
+  curAudio.preload = 'auto';
+  curAudio.addEventListener('error', audioFail, {once:true});
+  const p = curAudio.play();
+  if (p && p.catch) p.catch(audioFail);
   if (onend) curAudio.addEventListener('ended', onend, {once:true});
 }
 function playSlow(src, onend){
   stopAudio();
   curAudio = new Audio(A + src);
   curAudio.playbackRate = .78;
-  curAudio.play().catch(()=>{});
+  curAudio.addEventListener('error', audioFail, {once:true});
+  const p = curAudio.play();
+  if (p && p.catch) p.catch(audioFail);
   if (onend) curAudio.addEventListener('ended', onend, {once:true});
 }
 function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio.currentTime=0; curAudio=null; } }
 let curSfx = null;
-function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(A+src); curSfx.play().catch(()=>{});}catch(e){} }
+function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(A+src); const p=curSfx.play(); if(p&&p.catch)p.catch(()=>{});}catch(e){} }
+/* warm the audio path on first touch anywhere (mobile browsers gate the very first playback) */
+document.addEventListener('pointerdown', function warm(){
+  document.removeEventListener('pointerdown', warm);
+  try{ const u=new Audio(A+'sfx_pop.mp3'); u.volume=0.01; const p=u.play(); if(p&&p.catch)p.catch(()=>{}); }catch(e){}
+});
 
 /* ---------- toast + assessment state ---------- */
 let toastTimer = null;
@@ -245,7 +261,7 @@ addScreen('Today’s mission', `
       <span class="source-badge">WE CAN 2 · UNIT 1 · GOALS 01–02</span>
       <h1 style="font-size:40px; color:#3d3356; margin:14px 0 6px;">A simple first talk</h1>
       <div style="font-size:19px; color:#6e7b8b; margin-bottom:18px;">By the end, you can have a real first talk in English — five turns, no reading.</div>
-      ${[['a_official_tt1.mp3','Say <b style="color:#f59e0b;">"It\'s nice to meet you"</b>','قُل: سعيد بلقائك'],
+      ${[['a_official_tt1.mp3','Say <b style="color:#d97706;">"It\'s nice to meet you"</b>','قُل: سعيد بلقائك'],
          ['a_official_tt4.mp3','Answer <b style="color:#6a4fa3;">"I\'m great, thanks"</b>','قُل: أنا بخير، شكرًا'],
          ['a_t_first.mp3','Say <b style="color:#1f9d6c;">"I\'m first!"</b> your line number','قُل رقمك في الصف']].map(([au,en,ar])=>`
         <div class="card" style="display:flex; align-items:center; gap:14px; padding:12px 18px; margin-bottom:12px;">
@@ -313,7 +329,7 @@ function dialogueInput(objective, img, lines, audios, extra){
     let n = 0;
     function render(){
       host.innerHTML = (n===0 ? `<div style="display:flex; align-items:center; justify-content:center;
-          height:240px; font-size:22px; font-weight:700; color:#b9a577; text-align:center;">
+          height:240px; font-size:22px; font-weight:700; color:#8a6d3b; text-align:center;">
           Tap "Reveal next line" to start the talk</div>` : '')
         + lines.slice(0,n).map((t,k)=>`
         <div class="card" style="display:flex; align-items:center; gap:12px; padding:10px 16px; margin-bottom:10px;
@@ -377,7 +393,7 @@ addScreen('Ordinals · first to fifth', `
         <button class="speaker" data-audio="a_t_line.mp3" data-toast="First to fifth — listen all"></button>
         <div style="font-size:22px; font-weight:750; color:#3d3356;">Line up! Say your place.</div>
       </div>
-      ${[['first','#f59e0b'],['second','#ec6f9c'],['third','#7b5ea7'],['fourth','#24a66a'],['fifth','#4a3a6e']].map(([w,c],k)=>`
+      ${[['first','#d97706'],['second','#db4f7e'],['third','#7b5ea7'],['fourth','#24a66a'],['fifth','#4a3a6e']].map(([w,c],k)=>`
         <div class="card" data-audio="a_t_${w}.mp3" style="display:flex; align-items:center; gap:16px; padding:9px 18px;
           margin-bottom:9px; cursor:pointer;">
           <span style="width:46px; height:46px; border-radius:50%; background:${c}; color:#fff; display:flex;
@@ -394,7 +410,7 @@ addScreen('Greeting Line practice', `
     <div style="font-size:24px; font-weight:750; color:#3d3356; margin:12px 0 4px;">Point → say the place → tap to check</div>
     <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:16px;">قُل رقم المكان ثم اضغط لتتأكد</div>
     <div style="display:flex; gap:18px; justify-content:center; align-items:flex-end;">
-      ${[['sec_teacher.png','first','#f59e0b'],['sec_char_noura.png','second','#ec6f9c'],
+      ${[['sec_teacher.png','first','#d97706'],['sec_char_noura.png','second','#db4f7e'],
          ['sec_char_cat.png','third','#7b5ea7'],['sec_char_wolf.png','fourth','#24a66a'],[null,'fifth','#4a3a6e']]
         .map(([img,w,c])=>`
         <div class="line-friend" data-audio="a_t_${w}.mp3" style="cursor:pointer; width:190px;">
@@ -425,7 +441,7 @@ addScreen('Ordinal flash check', `
           font-size:32px; font-weight:800; color:#3d3356;">Say it first!</div>
         <div style="display:flex; gap:14px; margin-top:18px; justify-content:center;">
           <button id="fc-reveal" style="height:52px; padding:0 30px; border:none; border-radius:26px;
-            background:#f59e0b; color:#fff; font-size:20px; font-weight:750; cursor:pointer;
+            background:#d97706; color:#fff; font-size:20px; font-weight:750; cursor:pointer;
             box-shadow:0 3px 0 #b45309;">Reveal</button>
           <button id="fc-next" style="height:52px; padding:0 30px; border:none; border-radius:26px;
             background:#6a4fa3; color:#fff; font-size:20px; font-weight:750; cursor:pointer;
@@ -463,7 +479,7 @@ addScreen('New Friend Elevator', `
     <div style="width:640px; display:flex; flex-direction:column;">
       <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
         <span class="source-badge">NEW FRIEND ELEVATOR</span>
-        <span id="ev-round" class="card" style="padding:6px 16px; font-size:17px; font-weight:800; color:#f59e0b;">Friend 1 / 3</span>
+        <span id="ev-round" class="card" style="padding:6px 16px; font-size:17px; font-weight:800; color:#d97706;">Friend 1 / 3</span>
       </div>
       <div style="display:flex; gap:20px; flex:1;">
         <div class="card" style="width:210px; display:flex; align-items:center; justify-content:center; padding:12px;">
@@ -708,7 +724,7 @@ addScreen('School practice', `
         <span class="card" style="display:inline-block; padding:8px 16px; font-size:19px; color:#8a6d3b; margin-left:12px;">ordinal</span>
       </div>
       <div id="ex-opts2"></div>
-      <div style="font-size:15px; color:#a08c5b; text-align:center; margin-top:10px;">Say your answer first, then tap</div>
+      <div style="font-size:15px; color:#8a6d3b; text-align:center; margin-top:10px;">Say your answer first, then tap</div>
     </div>
   </div>`, el=>{
   /* part 1: listen & choose, 2 rounds — key contrast items */
@@ -792,7 +808,7 @@ addScreen('Exit task · Home review', `
             border:none; border-radius:14px; background:#7b5ea7; color:#fff; font-size:17px; font-weight:800;
             cursor:pointer; box-shadow:0 3px 0 #5a4385;">${p}</button>`).join('')}
       </div>
-      <div id="exit-cue" style="min-height:42px; font-size:26px; font-weight:800; color:#f59e0b;">Teacher picks a place — you say it!</div>
+      <div id="exit-cue" style="min-height:42px; font-size:26px; font-weight:800; color:#d97706;">Teacher picks a place — you say it!</div>
       <button id="exit-help" class="pill" style="margin-top:16px;background:#f3eefb;color:#7b5ea7;">Help · first word only</button>
     </div>
     <div class="card" style="width:520px; padding:26px 30px; text-align:center;">
@@ -813,7 +829,7 @@ addScreen('Exit task · Home review', `
   </div>`, el=>{
   el.querySelectorAll('.exit-pos').forEach(b=> b.onclick=()=>{
     el.querySelectorAll('.exit-pos').forEach(x=>x.style.background='#7b5ea7');
-    b.style.background='#f59e0b';
+    b.style.background='#d97706';
     el.querySelector('#exit-cue').textContent='Your place: '+b.textContent+' — say it!';
     toast('Student says: I\'m '+b.dataset.w+'!');
   });
