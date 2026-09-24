@@ -209,7 +209,7 @@ addScreen('Warm-up · say hello to me', `
       <span class="pill" style="background:#7b5ea7; color:#fff;">Teacher</span>
     </div>
     <div style="width:600px;">
-      <span class="source-badge">WE CAN 1 → WE CAN 2</span>
+      <span class="source-badge">YOU KNOW THIS — FROM LAST YEAR'S BOOK!</span>
       <div id="wu-rounds" style="margin-top:14px;">
         ${[
           ['a_t_askname.mp3','Hello! What\'s your name?','My name\'s ___.','أخبرني باسمك'],
@@ -223,7 +223,7 @@ addScreen('Warm-up · say hello to me', `
           <div style="display:flex; align-items:center; gap:12px; margin-top:10px; padding-left:34px;">
             <span style="font-size:24px; font-weight:800; color:#b45309;">${a}</span>
             <button class="wu-done" data-k="${k}" style="height:42px; padding:0 18px; border:none; border-radius:21px;
-              background:#f3eefb; color:#7b5ea7; font-size:16px; font-weight:800; cursor:pointer;">I said it!</button>
+              background:#f3eefb; color:#4a3a6e; font-size:16px; font-weight:800; cursor:pointer;">I said it!</button>
           </div>
           <div class="ar" style="font-size:16px; color:#7a8aa0; margin-top:6px;">${ar}</div>
         </div>`).join('')}
@@ -282,31 +282,38 @@ addScreen('Today’s mission', `
     </div>
   </div>`);
 
-/* ---------- S4 · full-track listening: two new friends ---------- */
+/* ---------- S4 · scene listening: two clips, one per picture ---------- */
 addScreen('Listen · the book’s talk', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">TALK TIME · BOOK PAGES 10–11</span>
+    <div style="margin-top:12px; font-size:26px; font-weight:800; color:#3d3356;">
+      Tap the speaker on each picture. <span style="color:#d97706;">Point to who is talking.</span></div>
+    <div class="ar" style="font-size:18px; color:#7a8aa0; margin-top:4px;">اضغط على السماعة في كل صورة، ثم أشِر إلى المتحدث</div>
     <div style="display:flex; gap:26px; justify-content:center; margin-top:16px;">
       <div style="position:relative; width:430px;">
         <img class="pic" src="${A}wc2_talk_a.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+        <button class="speaker" data-audio="a_official_scene_a.mp3" data-toast="Listen — Turns 1–2"
+          style="position:absolute; bottom:14px; left:14px; width:64px; height:64px; background-size:30px;
+            box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
+        <div style="position:absolute; top:12px; left:12px; background:#7b5ea7; color:#fff; border-radius:16px;
+          padding:5px 14px; font-size:16px; font-weight:800;">1 · Listen ▶</div>
         <div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:#fff;
           border:2px solid #f0e2c8; border-radius:16px; padding:4px 14px; font-size:16px; font-weight:800; color:#8a6d3b;">Turns 1–2</div>
       </div>
       <div style="position:relative; width:430px;">
         <img class="pic" src="${A}wc2_talk_b.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+        <button class="speaker" data-audio="a_official_scene_b.mp3" data-toast="Listen — Turns 3–5"
+          style="position:absolute; bottom:14px; left:14px; width:64px; height:64px; background-size:30px;
+            box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
+        <div style="position:absolute; top:12px; left:12px; background:#7b5ea7; color:#fff; border-radius:16px;
+          padding:5px 14px; font-size:16px; font-weight:800;">2 · Listen ▶</div>
         <div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:#fff;
           border:2px solid #f0e2c8; border-radius:16px; padding:4px 14px; font-size:16px; font-weight:800; color:#8a6d3b;">Turns 3–5</div>
       </div>
     </div>
-    <div style="display:flex; align-items:center; justify-content:center; gap:18px; margin-top:26px;">
-      <button class="speaker" data-audio="a_official_talktime.mp3" data-toast="Listen — who is talking?"></button>
-      <div style="text-align:left;">
-        <div style="font-size:24px; font-weight:750; color:#3d3356;">Listen. Point to who is talking.</div>
-        <div class="ar" style="font-size:17px; color:#7a8aa0;">استمع وأشِر إلى المتحدث</div>
-      </div>
-    </div>
-    <div class="teacher-only" style="margin-top:14px; justify-content:center;">
-      <span class="pill" style="background:#e8f8f0; color:#187c50; font-size:14px;">♪ Official audio · CD1 03–04 · mpi sb_2 track 02</span>
+    <div class="teacher-only" style="margin-top:22px; justify-content:center; gap:12px;">
+      <button class="pill" data-audio="a_official_talktime.mp3" style="background:#4a3a6e; color:#fff; cursor:pointer; border:none;">♪ Full track (teacher)</button>
+      <span class="pill" style="background:#e8f8f0; color:#187c50; font-size:14px;">♪ Official audio · CD1 03–04 · mpi sb_2 track 02 · scenes cut 13.10–19.40 / 20.52–27.15</span>
     </div>
   </div>`);
 
@@ -480,6 +487,11 @@ addScreen('New Friend Elevator', `
       <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
         <span class="source-badge">NEW FRIEND ELEVATOR</span>
         <span id="ev-round" class="card" style="padding:6px 16px; font-size:17px; font-weight:800; color:#d97706;">Friend 1 / 3</span>
+      </div>
+      <div class="card" style="padding:10px 18px; margin-bottom:12px; background:#fff7e8; border:2px solid #f59e0b;">
+        <div style="font-size:21px; font-weight:800; color:#3d3356;">
+          ① Say the <span style="color:#d97706;">orange line</span> out loud → ② Tap it → ③ Your friend boards!</div>
+        <div class="ar" style="font-size:16px; color:#7a8aa0; margin-top:3px;">قُل الجملة البرتقالية بصوت عالٍ، ثم اضغط عليها، ليصعد صديقك إلى المصعد</div>
       </div>
       <div style="display:flex; gap:20px; flex:1;">
         <div class="card" style="width:210px; display:flex; align-items:center; justify-content:center; padding:12px;">
@@ -655,7 +667,7 @@ addScreen('Repair · Check 2', `
     </div>
   </div>
   <div class="teacher-only" style="position:absolute; left:30px; right:30px; bottom:12px; gap:6px; align-items:center; justify-content:center; flex-wrap:wrap;">
-    ${['Meaning','Slow','Contrast','Model','Build','Hide help','Try again'].map((t,i)=>`<button class="pill repair-step" data-step="${i}" style="background:#f3eefb;color:#7b5ea7;">${i+1}. ${t}</button>`).join('')}
+    ${['Meaning','Slow','Contrast','Model','Build','Hide help','Try again'].map((t,i)=>`<button class="pill repair-step" data-step="${i}" style="background:#f3eefb;color:#4a3a6e;">${i+1}. ${t}</button>`).join('')}
     <button class="pill check2-rate green" data-rate="A">A</button>
     <button class="pill check2-rate" data-rate="B" style="background:#ffc84a;color:#3d3356;">B</button>
     <button class="pill check2-rate coral" data-rate="C">C</button>
@@ -701,7 +713,7 @@ addScreen('Repair · Check 2', `
     assessment.check2=b.dataset.rate; sfx('sfx_success.mp3'); toast('Check 2 recorded: '+b.dataset.rate);
   });
   return { onEnter(){ nextStep=0; view.innerHTML='<button class="speaker" data-audio="a_official_tt1.mp3"></button>';
-    el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#f3eefb';b.style.color='#7b5ea7';}); } };
+    el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#f3eefb';b.style.color='#4a3a6e';}); } };
 });
 
 /* ---------- S15 · school-style practice (workbook format, pending verification) ---------- */
@@ -809,7 +821,7 @@ addScreen('Exit task · Home review', `
             cursor:pointer; box-shadow:0 3px 0 #5a4385;">${p}</button>`).join('')}
       </div>
       <div id="exit-cue" style="min-height:42px; font-size:26px; font-weight:800; color:#d97706;">Teacher picks a place — you say it!</div>
-      <button id="exit-help" class="pill" style="margin-top:16px;background:#f3eefb;color:#7b5ea7;">Help · first word only</button>
+      <button id="exit-help" class="pill" style="margin-top:16px;background:#f3eefb;color:#4a3a6e;">Help · first word only</button>
     </div>
     <div class="card" style="width:520px; padding:26px 30px; text-align:center;">
       <div style="font-size:26px; font-weight:700; color:#463a5e; margin-bottom:6px;">Homework</div>
