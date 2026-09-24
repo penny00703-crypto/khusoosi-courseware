@@ -43,7 +43,7 @@ const TEACHER_GUIDES = [
   '<b>Set up:</b> Tap the sound-check speaker once — the button turns green when the sound plays through. Keep this under one minute.',
   '<b>Warm-up (2 min cap):</b> Two real rounds with the student on camera. Round 1 — ask "What\'s your name?", the student answers with their real name. Round 2 — "How are you?", accept any WC1 answer: "I\'m fine, thank you." is correct here. One round each; do not linger.',
   '<b>Outcome:</b> Point to the We Can 2 cover: same book as school. State the one goal — a simple first talk, five turns, no reading.',
-  '<b>Input (1.5 min):</b> Play the full track once. Student listens and points to who is talking. Replay once if needed. Official CD1 03 audio is pending — the speaker plays a teacher-voice recording for now.',
+  '<b>Input (1.5 min):</b> Play the official CD1 03–04 track once. Student listens and points to who is talking. Replay once if needed.',
   '<b>Turns 1–2 (2.5 min):</b> Reveal line by line; student repeats each twice. If "too" drops, show the contrast pair and build it back: nice → to meet → you, too.',
   '<b>Turns 3–5 (2.5 min):</b> Position B must say "I\'m great, thanks. And you?" If the student falls back to WC1 "I\'m fine, thank you.", contrast old vs new: "Last year: fine. This year: great!" Note: "I\'m fine." alone is NOT wrong — it is turn 5.',
   '<b>Stage habits:</b> Four habits for every talk: big smiles, gestures, strong voice, eye contact. Demo once, do not drill. These come back at every Exit task.',
@@ -283,14 +283,14 @@ addScreen('Listen · the book’s talk', `
       </div>
     </div>
     <div style="display:flex; align-items:center; justify-content:center; gap:18px; margin-top:26px;">
-      <button class="speaker" data-audio="a_t_tt_all.mp3" data-toast="Listen — who is talking?"></button>
+      <button class="speaker" data-audio="a_official_talktime.mp3" data-toast="Listen — who is talking?"></button>
       <div style="text-align:left;">
         <div style="font-size:24px; font-weight:750; color:#3d3356;">Listen. Point to who is talking.</div>
         <div class="ar" style="font-size:17px; color:#7a8aa0;">استمع وأشِر إلى المتحدث</div>
       </div>
     </div>
     <div class="teacher-only" style="margin-top:14px; justify-content:center;">
-      <span class="pill" style="background:#fff3d6; color:#b45309; font-size:14px;">♪ Official audio pending · CD1 03 · teacher voice for now</span>
+      <span class="pill" style="background:#e8f8f0; color:#187c50; font-size:14px;">♪ Official audio · CD1 03–04 · mpi sb_2 track 02</span>
     </div>
   </div>`);
 
@@ -650,7 +650,7 @@ addScreen('Repair · Check 2', `
     /* 1 Meaning — Arabic once, the broken meaning only */
     ()=>{ view.innerHTML='<div><div style="font-size:44px;">🤝</div><div style="font-size:24px;">nice to meet you</div><div class="ar" style="display:block;color:#24a66a;font-size:22px;">سعيد بلقائك · وأنت؟ = and you?</div></div>'; },
     /* 2 Slow — full round at .78 rate */
-    ()=>{ view.innerHTML='<div style="font-size:24px;">Listen slowly. Five turns.</div>'; playSlow('a_t_tt_all.mp3'); },
+    ()=>{ view.innerHTML='<div style="font-size:24px;">Listen slowly. Five turns.</div>'; playSlow('a_official_talktime.mp3'); },
     /* 3 Contrast — old vs new + too pair */
     ()=>{ view.innerHTML=`<div style="display:flex; flex-direction:column; gap:10px; font-size:22px;">
         <div style="display:flex; gap:14px; align-items:center;">
@@ -664,8 +664,8 @@ addScreen('Repair · Check 2', `
           <span class="card" style="padding:8px 16px; color:#e8443a; border:2px solid #e8443a;">…meet you, too.</span>
         </div></div>`;
       play('a_t_contrast.mp3'); },
-    /* 4 Model — full model, teacher voice */
-    ()=>{ view.innerHTML='<div style="font-size:22px;">Watch me. Then you.<br><span style="color:#7b5ea7;">Hi! It\'s nice to meet you. … I\'m great, thanks. And you?</span></div>'; play('a_t_tt_all.mp3'); },
+    /* 4 Model — full model, official track */
+    ()=>{ view.innerHTML='<div style="font-size:22px;">Watch me. Then you.<br><span style="color:#7b5ea7;">Hi! It\'s nice to meet you. … I\'m great, thanks. And you?</span></div>'; play('a_official_talktime.mp3'); },
     /* 5 Build — chunk both weak spots */
     ()=>{ view.innerHTML=`<div style="display:flex; flex-direction:column; gap:12px; font-size:20px;">
         <div style="display:flex; gap:8px; justify-content:center;"><span class="pill blue">nice</span><span class="pill blue">to meet</span><span class="pill blue">you, too</span></div>
