@@ -245,8 +245,8 @@ addScreen('Today’s mission', `
       <span class="source-badge">WE CAN 2 · UNIT 1 · GOALS 01–02</span>
       <h1 style="font-size:40px; color:#3d3356; margin:14px 0 6px;">A simple first talk</h1>
       <div style="font-size:19px; color:#6e7b8b; margin-bottom:18px;">By the end, you can have a real first talk in English — five turns, no reading.</div>
-      ${[['a_t_tt1.mp3','Say <b style="color:#f59e0b;">"It\'s nice to meet you"</b>','قُل: سعيد بلقائك'],
-         ['a_t_tt4.mp3','Answer <b style="color:#6a4fa3;">"I\'m great, thanks"</b>','قُل: أنا بخير، شكرًا'],
+      ${[['a_official_tt1.mp3','Say <b style="color:#f59e0b;">"It\'s nice to meet you"</b>','قُل: سعيد بلقائك'],
+         ['a_official_tt4.mp3','Answer <b style="color:#6a4fa3;">"I\'m great, thanks"</b>','قُل: أنا بخير، شكرًا'],
          ['a_t_first.mp3','Say <b style="color:#1f9d6c;">"I\'m first!"</b> your line number','قُل رقمك في الصف']].map(([au,en,ar])=>`
         <div class="card" style="display:flex; align-items:center; gap:14px; padding:12px 18px; margin-bottom:12px;">
           <button class="speaker small" data-audio="${au}"></button>
@@ -331,12 +331,12 @@ function dialogueInput(objective, img, lines, audios, extra){
 }
 dialogueInput('Turns 1–2 · nice to meet you', 'wc2_talk_a.png',
   ["Hi. It's nice to meet you.", "It's nice to meet you, <b style='color:#e8443a;'>too</b>."],
-  ['a_t_tt1.mp3','a_t_tt2.mp3'],
+  ['a_official_tt1.mp3','a_official_tt2.mp3'],
   `<span style="font-size:18px; font-weight:700; color:#e8443a;">Don't drop "too"!</span>
    <span class="ar" style="font-size:16px; color:#7a8aa0;">too = أيضًا</span>`);
 dialogueInput('Turns 3–5 · how are you', 'wc2_talk_b.png',
   ["Hi. How are you?", "I'm <b style='color:#1f9d6c;'>great</b>, thanks. And you?", "I'm fine."],
-  ['a_t_tt3.mp3','a_t_tt4.mp3','a_t_tt5.mp3'],
+  ['a_official_tt3.mp3','a_official_tt4.mp3','a_official_tt5.mp3'],
   `<span style="font-size:18px; font-weight:700; color:#1f9d6c;">Upgrade: fine → GREAT!</span>
    <span class="ar" style="font-size:16px; color:#7a8aa0;">هذه السنة: great</span>`);
 
@@ -498,11 +498,11 @@ addScreen('New Friend Elevator', `
     {img:'sec_char_wolf.png',  name:'Wolf'}
   ];
   const LINES=[
-    {t:"Hi. It's nice to meet you.",      au:'a_t_tt1.mp3', who:'friend'},
-    {t:"It's nice to meet you, too.",     au:'a_t_tt2.mp3', who:'you'},
-    {t:"Hi. How are you?",                au:'a_t_tt3.mp3', who:'friend'},
-    {t:"I'm great, thanks. And you?",     au:'a_t_tt4.mp3', who:'you'},
-    {t:"I'm fine.",                       au:'a_t_tt5.mp3', who:'friend'}
+    {t:"Hi. It's nice to meet you.",      au:'a_official_tt1.mp3', who:'friend'},
+    {t:"It's nice to meet you, too.",     au:'a_official_tt2.mp3', who:'you'},
+    {t:"Hi. How are you?",                au:'a_official_tt3.mp3', who:'friend'},
+    {t:"I'm great, thanks. And you?",     au:'a_official_tt4.mp3', who:'you'},
+    {t:"I'm fine.",                       au:'a_official_tt5.mp3', who:'friend'}
   ];
   let round=0, step=0;
   function render(){
@@ -560,7 +560,7 @@ addScreen('Say the whole talk', `
   </div>`, el=>{
   const lines=["Hi. It's nice to meet you.","It's nice to meet you, too.","Hi. How are you?",
     "I'm great, thanks. And you?","I'm fine."];
-  const audios=['a_t_tt1.mp3','a_t_tt2.mp3','a_t_tt3.mp3','a_t_tt4.mp3','a_t_tt5.mp3'];
+  const audios=['a_official_tt1.mp3','a_official_tt2.mp3','a_official_tt3.mp3','a_official_tt4.mp3','a_official_tt5.mp3'];
   const host = el.querySelector('.dp-cards');
   let counts=[];
   function render(){
@@ -596,7 +596,7 @@ addScreen('Check 1 · Real talk', `
       <h1 style="font-size:42px; color:#3d3356; margin:16px 0 8px;">The wolf says hi!</h1>
       <p style="font-size:22px; color:#6e7b8b; line-height:1.5;">The wolf opens. You keep the talk going — all five turns, no reading.</p>
       <div style="display:flex; align-items:center; gap:18px; margin-top:28px;">
-        <button class="speaker" data-audio="a_t_tt1.mp3" data-toast="Listen — then YOU talk"></button>
+        <button class="speaker" data-audio="a_official_tt1.mp3" data-toast="Listen — then YOU talk"></button>
         <div class="card" style="display:flex; gap:18px; padding:14px 20px; font-size:18px; font-weight:800; color:#3d3356;">
           <span>1 · Listen</span><span>2 · Answer</span><span>3 · Keep going</span>
         </div>
@@ -634,7 +634,7 @@ addScreen('Repair · Check 2', `
       <h1 style="font-size:40px; color:#3d3356; margin:14px 0 12px;">Try with a new friend</h1>
       <div id="repair-view" class="card" style="min-height:170px; display:flex; align-items:center; justify-content:center;
         text-align:center; font-size:27px; font-weight:800; color:#3d3356; line-height:1.5; padding:16px 22px;">
-        <button class="speaker" data-audio="a_t_tt1.mp3"></button>
+        <button class="speaker" data-audio="a_official_tt1.mp3"></button>
       </div>
     </div>
   </div>
@@ -673,7 +673,7 @@ addScreen('Repair · Check 2', `
     /* 6 Hide help */
     ()=>{ view.innerHTML='<div style="font-size:22px;color:#6e7b8b;">Look at your new friend. No words now.</div>'; },
     /* 7 Try again = Check 2 */
-    ()=>{ view.innerHTML='<button class="speaker" data-audio="a_t_tt1.mp3"></button>'; play('a_t_tt1.mp3'); toast('Check 2 — five turns, no reading.'); }
+    ()=>{ view.innerHTML='<button class="speaker" data-audio="a_official_tt1.mp3"></button>'; play('a_official_tt1.mp3'); toast('Check 2 — five turns, no reading.'); }
   ];
   el.querySelectorAll('.repair-step').forEach(b=>b.onclick=()=>{
     const i=+b.dataset.step;
@@ -684,7 +684,7 @@ addScreen('Repair · Check 2', `
   el.querySelectorAll('.check2-rate').forEach(b=>b.onclick=()=>{
     assessment.check2=b.dataset.rate; sfx('sfx_success.mp3'); toast('Check 2 recorded: '+b.dataset.rate);
   });
-  return { onEnter(){ nextStep=0; view.innerHTML='<button class="speaker" data-audio="a_t_tt1.mp3"></button>';
+  return { onEnter(){ nextStep=0; view.innerHTML='<button class="speaker" data-audio="a_official_tt1.mp3"></button>';
     el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#f3eefb';b.style.color='#7b5ea7';}); } };
 });
 
@@ -713,8 +713,8 @@ addScreen('School practice', `
   </div>`, el=>{
   /* part 1: listen & choose, 2 rounds — key contrast items */
   const rounds=[
-    {q:'a_t_tt3.mp3', opts:[["I'm great, thanks. And you?",1],["It's nice to meet you.",0]]},
-    {q:'a_t_tt1.mp3', opts:[["I'm fine.",0],["It's nice to meet you, too.",1]]}
+    {q:'a_official_tt3.mp3', opts:[["I'm great, thanks. And you?",1],["It's nice to meet you.",0]]},
+    {q:'a_official_tt1.mp3', opts:[["I'm fine.",0],["It's nice to meet you, too.",1]]}
   ];
   let ri=0;
   function renderChoose(){
@@ -751,7 +751,7 @@ addScreen('Learning record', `
     <h1 class="title" style="margin:12px 0 6px;">I can have a first talk!</h1>
     <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:22px;">اليوم أستطيع أن أقول</div>
     <div style="display:flex; gap:30px; justify-content:center;">
-      ${[['Say "nice to meet you"','a_t_tt1.mp3','#f59e0b'],['Say "I\'m great, thanks"','a_t_tt4.mp3','#7b5ea7'],['Say my line number','a_t_first.mp3','#24a66a']]
+      ${[['Say "nice to meet you"','a_official_tt1.mp3','#f59e0b'],['Say "I\'m great, thanks"','a_official_tt4.mp3','#7b5ea7'],['Say my line number','a_t_first.mp3','#24a66a']]
         .map(([t,au,c])=>`
         <div class="badge" data-audio="${au}" style="cursor:pointer; width:280px; padding:26px 18px; border-radius:22px;
           background:#fff; box-shadow:0 6px 18px rgba(60,40,10,.12); border:3px solid ${c};">
