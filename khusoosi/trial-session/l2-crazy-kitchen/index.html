@@ -686,7 +686,12 @@ const TOTAL = 20;
 
 /* ================= 工具 ================= */
 const $ = id => document.getElementById(id);
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fixedOrder(a, shift=0){
+  const out = Array.from(a);
+  if(out.length < 2) return out;
+  const offset = Math.abs(shift) % out.length;
+  return out.slice(offset).concat(out.slice(0, offset));
+}
 
 /* 等比缩放 */
 const stage = $("stage");
@@ -901,10 +906,10 @@ function nextMoleRound(){
   }
   moleLock=false;
   const correct = WORDS[moleRound];
-  const others = shuffle(WORDS.filter(w=>w!==correct)).slice(0,3);
-  const opts = shuffle([correct,...others]);
+  const others = fixedOrder(WORDS.filter(w=>w!==correct), moleRound+1).slice(0,3);
+  const opts = fixedOrder([correct,...others], moleRound*2+1);
   $("moleWord").textContent = "«"+correct.ar+"»";
-  const holes = shuffle([...document.querySelectorAll("#moleGrid .hole")]);
+  const holes = fixedOrder([...document.querySelectorAll("#moleGrid .hole")], moleRound*3+2);
   document.querySelectorAll("#moleGrid .hole").forEach(h=>{ h.innerHTML=""; h.classList.remove("up"); });
   opts.forEach((w,i)=>{
     const h = holes[i];
@@ -946,7 +951,7 @@ function buildMatchRound(){
   set.forEach(w=>{
     ic.innerHTML += `<div class="card m-img" data-en="${w.en}"><img src="${w.img}" alt="${w.en}"></div>`;
   });
-  shuffle([...set]).forEach(w=>{
+  fixedOrder([...set], mRound+1).forEach(w=>{
     wc.innerHTML += `<div class="card m-word" data-en="${w.en}">${w.en}</div>`;
   });
   ic.querySelectorAll(".m-img").forEach(el=>el.addEventListener("click",()=>{
