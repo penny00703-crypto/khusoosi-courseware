@@ -214,7 +214,7 @@ addScreen('Warm-up · say hello to me', `
         <div style="width:158px; height:158px; border-radius:50%; padding:7px;
           background:linear-gradient(135deg,#7b5ea7,#4a3a6e); box-shadow:0 10px 24px rgba(74,58,110,.35);">
           <img src="${A}sec_teacher.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;
-            object-position:center 8%; background:#fff;">
+            object-position:center center; background:#fff;">
         </div>
         <span class="pill" style="background:#7b5ea7; color:#fff;">Teacher</span>
       </div>
@@ -268,9 +268,9 @@ addScreen('Today’s mission', `
       <span class="source-badge">WE CAN 2 · UNIT 1 · GOALS 01–02</span>
       <h1 style="font-size:40px; color:#3d3356; margin:14px 0 6px;">A simple first talk</h1>
       <div style="font-size:19px; color:#6e7b8b; margin-bottom:18px;">By the end, you can have a real first talk in English — five turns, no reading.</div>
-      ${[['a_official_tt1.mp3','Say <b style="color:#d97706;">"It\'s nice to meet you"</b>','قُل: سعيد بلقائك'],
-         ['a_official_tt4.mp3','Answer <b style="color:#6a4fa3;">"I\'m great, thanks"</b>','قُل: أنا بخير، شكرًا'],
-         ['a_t_first.mp3','Say <b style="color:#1f9d6c;">"I\'m first!"</b> your line number','قُل رقمك في الصف']].map(([au,en,ar])=>`
+      ${[['a_official_tt1.mp3','"Hi. <b style="color:#d97706;">It\'s nice to meet you.</b>"','قُل: سعيد بلقائك'],
+         ['a_official_tt4.mp3','"I\'m <b style="color:#6a4fa3;">great, thanks.</b> And you?"','قُل: أنا بخير، شكرًا'],
+         ['a_t_first.mp3','"I\'m <b style="color:#1f9d6c;">first!</b>" — your line number','قُل رقمك في الصف']].map(([au,en,ar])=>`
         <div class="card" style="display:flex; align-items:center; gap:14px; padding:12px 18px; margin-bottom:12px;">
           <button class="speaker small" data-audio="${au}"></button>
           <div><div style="font-size:23px; color:#463a5e;">${en}</div>
@@ -308,7 +308,7 @@ addScreen('Listen · the book’s talk', `
       <div style="position:relative; width:430px;">
         <img class="pic" src="${A}wc2_talk_b.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
         <button class="speaker" data-audio="a_official_scene_b.mp3" data-toast="Listen — Turns 3–5"
-          style="position:absolute; bottom:14px; left:14px; width:64px; height:64px; background-size:30px;
+          style="position:absolute; top:14px; right:14px; width:64px; height:64px; background-size:30px;
             box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
         <div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:#fff;
           border:2px solid #f0e2c8; border-radius:16px; padding:4px 14px; font-size:16px; font-weight:800; color:#8a6d3b;">Turns 3–5</div>
@@ -413,29 +413,37 @@ addScreen('Ordinals · first to fifth', `
     </div>
   </div>`);
 
-/* ---------- S9 · Greeting Line practice: five friends in a row ---------- */
+/* ---------- S9 · Greeting Line practice: five kids in a queue ---------- */
 addScreen('Greeting Line practice', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">SAY IT BEFORE YOU TAP</span>
-    <div style="font-size:24px; font-weight:750; color:#3d3356; margin:12px 0 4px;">Point → say the place → tap to check</div>
-    <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:16px;">قُل رقم المكان ثم اضغط لتتأكد</div>
-    <div style="display:flex; gap:18px; justify-content:center; align-items:flex-end;">
-      ${[['sec_teacher.png','first','#d97706'],['sec_char_noura.png','second','#db4f7e'],
-         ['sec_char_cat.png','third','#7b5ea7'],['sec_char_wolf.png','fourth','#24a66a'],[null,'fifth','#4a3a6e']]
-        .map(([img,w,c])=>`
-        <div class="line-friend" data-audio="a_t_${w}.mp3" style="cursor:pointer; width:190px;">
-          <div style="height:230px; display:flex; align-items:flex-end; justify-content:center;">
-            ${img
-              ? `<img src="${A}${img}" style="max-width:170px; max-height:230px; object-fit:contain;">`
-              : `<div style="width:130px; height:130px; border-radius:50%; background:#fff;
-                   border:4px dashed #4a3a6e; display:flex; align-items:center; justify-content:center;
-                   font-size:30px; font-weight:800; color:#4a3a6e;">YOU</div>`}
-          </div>
-          <div style="margin-top:10px; background:${c}; color:#fff; font-size:21px; font-weight:800;
-            padding:8px 0; border-radius:16px; box-shadow:0 3px 0 rgba(0,0,0,.18);">I'm ${w}!</div>
-        </div>`).join('')}
+    <div style="font-size:24px; font-weight:750; color:#3d3356; margin:12px 0 4px;">Point to a kid → say the place out loud → tap the kid to check</div>
+    <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:12px;">أشِر إلى طفل، قُل رقمه في الصف بصوت عالٍ، ثم اضغط عليه لتتأكد</div>
+    <div style="position:relative; width:980px; max-width:100%; margin:0 auto;">
+      <img class="pic" src="${A}sec_queue.png" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+      ${[['first','#d97706',24.4],['second','#db4f7e',38.1],['third','#7b5ea7',51.9],
+         ['fourth','#24a66a',65.6],['fifth','#4a3a6e',79.4]].map(([w,c,x])=>`
+      <button class="q-hot" data-w="${w}" style="position:absolute; left:${x-5.6}%; top:16%; width:11.2%; height:74%;
+        background:transparent; border:none; cursor:pointer; border-radius:14px;"></button>
+      <div class="q-tag" data-w="${w}" style="position:absolute; left:${x}%; top:1%; transform:translate(-50%,10px);
+        background:${c}; color:#fff; font-size:19px; font-weight:800; padding:6px 14px; border-radius:14px;
+        box-shadow:0 3px 0 rgba(0,0,0,.18); opacity:0; transition:all .3s; pointer-events:none; white-space:nowrap;">I'm ${w}!</div>`).join('')}
     </div>
-  </div>`);
+  </div>`, el=>({
+  onEnter(){
+    let done=0;
+    el.querySelectorAll('.q-hot').forEach(b=> b.onclick=()=>{
+      if (b.dataset.done) return;
+      const w=b.dataset.w;
+      play('a_t_'+w+'.mp3');
+      const tag=el.querySelector('.q-tag[data-w="'+w+'"]');
+      tag.style.opacity='1'; tag.style.transform='translate(-50%,0)';
+      b.style.background='rgba(255,255,255,.14)';
+      b.dataset.done='1'; done++;
+      if (done===5) setTimeout(()=>{ sfx('sfx_success.mp3'); toast('The whole line — great!'); }, 700);
+    });
+  }
+}));
 
 /* ---------- S10 · ordinal flash check ---------- */
 addScreen('Ordinal flash check', `
