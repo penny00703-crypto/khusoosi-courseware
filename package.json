@@ -1,0 +1,9 @@
+{
+  "name": "khusoosi-courseware",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Khusoosi courseware static site — npm run dev starts a zero-dependency local preview server",
+  "scripts": {
+    "dev": "node scripts/dev-server.js"
+  }
+}
