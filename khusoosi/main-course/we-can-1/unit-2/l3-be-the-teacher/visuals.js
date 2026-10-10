@@ -1,0 +1,26 @@
+'use strict';
+window.L10_VISUALS = (()=>{
+  let uid=0;
+  function bot(x,foot,scale=1,sit=false,pip=false,eyes=false,nose=false){
+    return `<g class="actor" transform="translate(${x-360*scale} ${foot-431*scale}) scale(${scale})"><ellipse cx="370" cy="431" rx="102" ry="12" fill="#17324d" opacity=".09"/>
+    <g stroke="#284963" fill="none" stroke-width="21" stroke-linecap="round" stroke-linejoin="round">${sit?'<path d="M338 377h103v35M365 377h42v35"/><path d="M432 422h29M397 422h28" stroke-width="22"/>':'<path d="M335 327v85M383 327v85"/><path d="M322 422h29M372 422h31" stroke-width="22"/>'}</g>
+    <g transform="translate(0 ${sit?49:0})"><path d="M319 263l-30 43 10 21" stroke="#365e78" stroke-width="19" stroke-linecap="round" fill="none"/><path d="${nose?'M397 263l35-45-66-43':'M397 263l27 38 4 20'}" stroke="#365e78" stroke-width="19" stroke-linecap="round" fill="none"/><circle cx="300" cy="327" r="13" fill="#ffd466" stroke="#ba9440" stroke-width="3"/><circle cx="${nose?366:428}" cy="${nose?175:322}" r="13" fill="#ffd466" stroke="#ba9440" stroke-width="3"/>
+    <rect x="309" y="234" width="101" height="103" rx="24" fill="${pip?'#ebaf48':'#70b1cf'}" stroke="#315973" stroke-width="4"/><rect x="327" y="257" width="65" height="43" rx="13" fill="#eaf7fa"/><circle cx="345" cy="278" r="7" fill="#ef725c"/><path d="M361 279h16M336 318h45" stroke="#81b6b1" stroke-width="5" stroke-linecap="round"/><path d="M357 215v19" stroke="#315973" stroke-width="16"/><path d="M357 118V95" stroke="#315973" stroke-width="5"/><circle cx="357" cy="87" r="10" fill="${pip?'#1468d9':'#ef725c'}"/>
+    <rect x="284" y="151" width="14" height="38" rx="7" fill="#efbd52"/><rect x="419" y="151" width="14" height="38" rx="7" fill="#efbd52"/><rect x="295" y="119" width="127" height="99" rx="30" fill="#f7fcff" stroke="#315973" stroke-width="4"/><rect x="307" y="131" width="103" height="74" rx="24" fill="${pip?'#fff1c4':'#d8eff5'}"/>
+    ${eyes?'<path d="M328 165h12M376 165h12" stroke="#25435c" stroke-width="4" stroke-linecap="round"/>':'<ellipse cx="334" cy="165" rx="6" ry="9" fill="#25435c"/><ellipse cx="382" cy="165" rx="6" ry="9" fill="#25435c"/>'}<circle cx="324" cy="182" r="7" fill="#efa995"/><circle cx="393" cy="182" r="7" fill="#efa995"/><path d="M349 183q10 12 20 0" stroke="#25435c" stroke-width="4" stroke-linecap="round" fill="none"/>${nose?'<circle cx="358" cy="172" r="7" fill="#ef725c"/>':''}</g></g>`;
+  }
+  function art(pose,variant='robo',thumbnail=false){
+    const id='scene'+uid++,pip=variant==='pip';
+    const group=pose==='line'||pose==='circle';
+    const coords=pose==='line'?[[205,413],[289,413],[373,413],[457,413],[541,413]]:[[373,272],[533,330],[468,419],[275,419],[213,330]];
+    const actors=group?coords.map((p,i)=>bot(...p,pose==='line'?.51:.38,false,pip||i===2)).join(''):bot(pose==='front'?187:505,431,1,pose==='sit',pip,pose==='closed',pose==='nose');
+    return `<svg class="classroom" viewBox="0 0 740 470" role="img" aria-label="${thumbnail?'Goal action':'Complete classroom action'}"><defs><linearGradient id="${id}" x2="0" y2="1"><stop stop-color="#e8f3f8"/><stop offset="1" stop-color="#d9eaf1"/></linearGradient><marker id="${id}arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0l8 4-8 4" fill="none" stroke="#1468d9" stroke-width="2"/></marker></defs><path fill="url(#${id})" d="M0 0h740v470H0z"/><path fill="#ecd8ba" d="M0 367h740v103H0z"/><path d="M0 367h740" stroke="#fff9ed" stroke-width="7"/>
+    <rect x="45" y="80" width="216" height="148" rx="17" fill="#fff"/><rect x="56" y="91" width="194" height="126" rx="9" fill="#90b7a7"/><path d="M81 122h77M81 149h135M81 177h93" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+    ${!group?'<g transform="translate(145 0)"><path d="M285 274v116" stroke="#b77c54" stroke-width="17" stroke-linecap="round"/><rect x="273" y="276" width="38" height="95" rx="14" fill="#deb278"/><rect x="276" y="383" width="174" height="17" rx="8" fill="#cc965e"/><path d="M290 400v31M435 400v31" stroke="#b77c54" stroke-width="10" stroke-linecap="round"/></g>':''}
+    ${pose==='front'||pose==='seat'?`<path d="${pose==='front'?'M463 348Q342 279 254 337':'M242 340Q342 280 432 348'}" fill="none" stroke="#1468d9" stroke-width="6" stroke-dasharray="8 9" marker-end="url(#${id}arrow)"/>`:''}
+    ${pose==='circle'?'<ellipse cx="373" cy="344" rx="159" ry="78" fill="#fff7df" stroke="#cc9b58" stroke-width="4" stroke-dasharray="10 8"/>':''}${pose==='line'?'<path d="M177 429h391" stroke="#cc9b58" stroke-width="4" stroke-dasharray="10 8"/>':''}${actors}</svg>`;
+  }
+  function scene(pose='stand',variant='robo',bubble='',success=false){const name=variant==='pip'?'Pip':'Robo';return `<div class="scene-wrap ${success?'scene-success':''}" data-pose="${pose}" data-character="${variant}"><span class="scene-tag">ROBO’S CLASSROOM</span>${art(pose,variant)}${bubble?`<div class="scene-bubble ${success?'blue':'coral'}">${bubble}</div>`:''}<span class="robot-name">${name}${['line','circle'].includes(pose)?' & friends':''}</span></div>`;}
+  function goal(key,variant='robo'){return `<div class="goal-picture" aria-label="Picture goal; command words hidden">${art(key,variant,true)}</div>`;}
+  return {scene,goal,art};
+})();

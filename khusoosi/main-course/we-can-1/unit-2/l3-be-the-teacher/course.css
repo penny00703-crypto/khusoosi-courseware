@@ -1,0 +1,119 @@
+.scene-bubble{top:55px;right:27px;width:169px;font-size:19px}
+.scene-wrap{height:470px}
+.classroom{height:100%!important}
+.scene-tag{top:17px;left:18px;font-size:10px}
+.robot-name{bottom:18px;font-size:14px}
+.lesson-copy h1{font-size:42px}
+.lesson-layout{grid-template-columns:365px 1fr}
+.model{font-size:21px;min-height:70px;padding:13px 15px}
+.model-list{gap:13px}
+.instruction{font-size:20px;margin-bottom:19px}
+.source-label{line-height:1.7}
+.check-scene .scene-wrap,.repair-scene .scene-wrap{height:406px;align-self:start;margin-top:4px}
+.check-strip{bottom:32px;right:44px;width:750px}
+.record-flag{left:445px;bottom:8px}
+.check-scene .lesson-copy,.repair-scene .lesson-copy{justify-content:flex-start;padding-top:4px}
+.check-scene h1,.repair-scene h1{font-size:35px;margin-bottom:14px}
+.check-scene .guide{font-size:17px;margin-bottom:10px}
+.goal-picture{height:163px;width:100%;border-radius:18px;overflow:hidden;background:#e6f1f7;flex:none}
+.goal-picture .classroom{width:100%;object-fit:contain}
+.goal-block{width:100%;margin:0 0 12px}
+.goal-block>span{display:block;font-size:12px;letter-spacing:1px;font-weight:850;color:var(--muted);margin-bottom:7px}
+.check-scene .hint-caption{font-size:20px;padding:7px 15px;margin:0 0 9px}
+.check-scene .action{font-size:17px;min-height:46px;margin-top:0}
+.check-scene .small-note{font-size:12px;margin-top:9px}
+.check-scene .counter{margin-top:9px}
+.lesson-copy .repair-controls{margin-top:12px}
+.repair .model{font-size:19px;min-height:62px}
+.repair .instruction{font-size:18px;margin-bottom:10px}
+.repair .build-line{font-size:21px}
+.repair .goal-picture{height:163px}
+.contrast-pair>div{display:block;text-align:center;width:50%;padding:3px}
+.contrast-pair .goal-picture{height:112px}
+.contrast-pair{gap:12px;margin-bottom:12px}
+.choice-screen{display:flex;flex-direction:column;height:100%;align-items:center;justify-content:center;gap:20px}
+.choice-top{text-align:center;max-width:900px}
+.choice-top .eyebrow{justify-content:center;margin-bottom:10px}
+.choice-top h1{font-size:34px;margin-bottom:12px}
+.choice-top .model{min-width:430px;justify-content:center;margin:auto;font-size:24px}
+.choice-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;max-width:1080px}
+.choice-card{padding:9px 9px 13px;border:2px solid #dce6ee;border-radius:23px;background:#fff;color:var(--ink);box-shadow:0 5px 0 #e2e9ef;position:relative}
+.choice-card .classroom{height:178px!important;width:100%;border-radius:15px}
+.choice-card .card-letter{display:block;font-size:17px;font-weight:850;margin:9px 0 0}
+.choice-card.picked{border-color:var(--coral);box-shadow:0 5px 0 #f7c8bb}
+.choice-card.correct{border-color:#2a9474;box-shadow:0 5px 0 #bce2d0}
+.choice-card:disabled{opacity:1}
+.choice-feedback{height:42px;display:flex;align-items:center;justify-content:center;gap:25px;font-size:17px;color:var(--muted)}
+.choice-feedback .primary{font-size:15px}
+.mini-tool{font-size:13px}
+.mission-choice{display:flex;gap:10px;margin-top:19px;width:100%}
+.mission-choice button{flex:1;font-size:13px;padding:10px;border:1px solid #cbd9e5;border-radius:12px;color:var(--ink);background:#fff}
+.mission-choice .selected{background:#fff1c8;border-color:#e1b856}
+.prep{direction:rtl;text-align:right;align-items:flex-end}
+.prep .eyebrow{direction:ltr}
+.prep h1{font-size:39px;letter-spacing:0}
+.prep p{font-size:23px;line-height:1.8;margin:4px 0 10px}
+.prep .guide{direction:ltr;align-self:flex-start;margin-top:13px}
+.prep .primary{width:100%}
+.prep-art{height:470px;border-radius:30px;background:#e6f1f7;padding:38px;display:flex;flex-direction:column;justify-content:center;gap:20px}
+.prep-card{display:flex;align-items:center;gap:22px;background:#fff;border-radius:19px;padding:21px;font-size:27px;direction:rtl}
+.prep-card span{font-size:35px}
+.warmup-image{height:470px;position:relative;border-radius:30px;overflow:hidden;background:#e6f1f7}
+.warmup-image img{width:100%;height:100%;object-fit:contain}
+.warmup-image .scene-tag{background:#fff}
+.book-picture{height:470px;background:#fff;border:1px solid #e3e9ed;border-radius:25px;overflow:hidden;padding:12px}
+.book-picture img{width:100%;height:100%;object-fit:contain}
+.book-copy h1{font-size:37px}
+.book-copy .model{font-size:19px;min-height:58px}
+.book-copy .instruction{font-size:18px}
+.book-copy .dialogue-reply{font-size:19px;margin-top:18px}
+.source-pill{display:inline-block;border-radius:12px;padding:8px 12px;background:#fff1d4;color:#876129;font-size:11px;font-weight:850;line-height:1.7;margin-top:13px}
+.school-start .instruction{font-size:19px}
+.school-start .source-label{font-size:10px}
+.school-start .book-picture{padding:8px}
+.school-target{font-size:25px;padding:14px 28px;border:2px solid #cbdbe9;border-radius:17px;background:#fff;color:var(--ink);font-weight:750}
+.result-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;height:100%;align-items:center}
+.result-copy h1{font-size:37px}
+.result-copy .eyebrow{margin-bottom:10px}
+.result-table{width:100%;border-collapse:collapse;font-size:15px;margin:15px 0}
+.result-table td{padding:10px 12px;border-bottom:1px solid #e4e7e9}
+.result-table td:last-child{text-align:right;font-weight:750}
+.practice-list{font-size:14px;line-height:1.5;color:#9a5b38;margin:9px 0}
+.review-card{background:#fff;border-radius:26px;padding:26px;text-align:center;border:1px solid #e0e8ec}
+.review-card h2{margin:0;font-size:26px}
+.review-card p{font-size:15px;line-height:1.5;color:var(--muted);margin:10px 0}
+.review-card img{width:185px;height:185px;object-fit:contain;display:block;margin:13px auto}
+.review-card a{display:inline-block;text-decoration:none;margin:6px 0}
+.review-warning{font-size:12px!important;color:#8a6332!important;background:#fff6df;border-radius:10px;padding:10px}
+.record-chip{font-size:11px;letter-spacing:.8px;color:#67768a;margin-top:9px}
+.footer-meta{margin-left:0;font-size:9px;gap:10px}
+#teacher-panel{bottom:183px}
+#teacher-panel.records-view{bottom:90px}
+.evidence p{overflow-wrap:anywhere}
+.all-a{font-size:20px;line-height:1.55;background:#fff;padding:18px;border-radius:18px}
+.all-a p{font-size:14px;margin:8px 0}
+.oral-hint-row{display:flex;gap:8px;margin-top:8px}
+.oral-hint-row button{font-size:12px}
+.small-caption{font-size:14px;padding:9px 13px;border-radius:12px;background:#fff;margin:8px 0}
+.check-strip .retry-label{font-size:11px}
+.sound-done{color:var(--green);font-size:16px;padding:12px}
+.choice-screen .guide{margin:0;font-size:17px}
+.playing-caption{font-size:15px;background:#fff;padding:8px 14px;border-radius:11px;position:absolute;right:65px;bottom:111px;z-index:3}
+.progress-dots{display:flex;gap:8px;justify-content:center}
+.progress-dots i{width:8px;height:8px;border-radius:100%;background:#d5e0e9}
+.progress-dots i.current{background:#1468d9}
+.playing .speaker{background:var(--coral)}
+.scene-success:after{box-shadow:inset 0 0 0 5px #bce2d066}
+.phase-label{font-size:12px;color:#67768a}
+.support-disclaimer{font-size:10px;color:#8a6332;margin-top:8px;line-height:1.6}
+
+.check-scene .lesson-copy:has(.model) .goal-picture{height:108px}
+.repair .goal-picture{height:138px}
+.repair .small-caption{font-size:13px;margin:6px 0}
+.repair .model{min-height:55px;font-size:18px}
+.repair .lesson-copy{padding-top:0}
+.prep .eyebrow{align-self:flex-end}
+.choice-card:focus-visible{outline:4px solid var(--coral);outline-offset:3px}
+.book-copy .book-picture{width:529px;padding:0;justify-self:center;border-radius:19px}
+.school-start .book-picture{width:560px;padding:0;justify-self:center;border-radius:19px}
+
