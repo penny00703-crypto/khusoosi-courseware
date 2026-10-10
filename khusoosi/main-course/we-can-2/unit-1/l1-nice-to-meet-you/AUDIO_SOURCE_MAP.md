@@ -7,8 +7,8 @@
 | 页面用途 | 切片文件 | 原文件 | CD 小轨 | 起止（秒） | 标签 |
 |---|---|---|---|---|---|
 | S2 WC1 衔接问候 | a_official_name.mp3 | WC1 包 CDA03（跨册引用已核对） | CD1 03 | — | Official |
-| S4 场景A（Turns 1–2） | a_official_scene_a.mp3 | 02 CDA03 Unit 1 Feelings_Talk Time.mp3 | CD1 03–04 | 13.10–19.40（尾 0.25s 淡出） | Official |
-| S4 场景B（Turns 3–5） | a_official_scene_b.mp3 | 同上 | CD1 03–04 | 20.52–27.15（尾 0.25s 淡出） | Official |
+| S4 场景A（Turns 1–2） | a_official_scene_a.mp3 | 02 CDA03 Unit 1 Feelings_Talk Time.mp3 | CD1 03–04 | 12.75–19.40（尾 0.25s 淡出；10-10 按静音边界重切，旧版 13.10 起点切掉 "Hello" 词头） | Official |
+| S4 场景B（Turns 3–5） | a_official_scene_b.mp3 | 同上 | CD1 03–04 | 20.30–27.15（尾 0.25s 淡出；10-10 按静音边界重切，旧版 20.52 起点切掉 "Hi" 词头） | Official |
 | S4 教师整轨 / S14 Slow·Model | a_official_talktime.mp3 | 同上 | CD1 03–04 | 整轨（70s） | Official |
 | 逐句 tt1 "It's nice to meet you" | a_official_tt1.mp3 | 同上 | CD1 03–04 | 15.34–16.88 | Official |
 | 逐句 tt2 "…meet you, too" | a_official_tt2.mp3 | 同上 | CD1 03–04 | 17.14–19.26 | Official |

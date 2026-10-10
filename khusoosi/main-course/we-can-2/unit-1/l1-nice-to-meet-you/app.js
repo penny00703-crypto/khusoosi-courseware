@@ -80,7 +80,7 @@ function addScreen(objective, html, init){
   el.className = 'screen';
   el.innerHTML = html;
   screensHost.appendChild(el);
-  const api = init ? init(el) : {};
+  const api = init ? (init(el) || {}) : {};
   screens.push({ objective, el, onEnter: api.onEnter, onLeave: api.onLeave });
 }
 
@@ -202,40 +202,49 @@ addScreen('class setup', `
 
 /* ---------- S2 · warm-up: teacher ↔ student, two real rounds ---------- */
 addScreen('Warm-up · say hello to me', `
-  <div style="display:flex; align-items:center; gap:40px; width:100%; justify-content:center;">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
-      <img src="${A}sec_teacher.png" style="width:170px; height:170px; border-radius:50%; object-fit:cover;
-        object-position:center 8%; border:6px solid #7b5ea7; box-shadow:0 10px 26px rgba(40,30,60,.25); background:#fff;">
-      <span class="pill" style="background:#7b5ea7; color:#fff;">Teacher</span>
+  <div style="width:100%; max-width:1080px; background:linear-gradient(135deg,#f3eefb 0%,#fff7e8 100%);
+    border-radius:28px; padding:30px 40px; box-shadow:0 14px 36px rgba(74,58,110,.14);">
+    <div style="text-align:center; margin-bottom:22px;">
+      <span class="source-badge">WARM-UP</span>
+      <div style="font-size:30px; font-weight:800; color:#3d3356; margin-top:10px;">You know this — from last year's book!</div>
+      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">هذا من كتاب العام الماضي — أنت تعرفه!</div>
     </div>
-    <div style="width:600px;">
-      <span class="source-badge">YOU KNOW THIS — FROM LAST YEAR'S BOOK!</span>
-      <div id="wu-rounds" style="margin-top:14px;">
+    <div style="display:flex; align-items:center; gap:34px; justify-content:center;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+        <div style="width:158px; height:158px; border-radius:50%; padding:7px;
+          background:linear-gradient(135deg,#7b5ea7,#4a3a6e); box-shadow:0 10px 24px rgba(74,58,110,.35);">
+          <img src="${A}sec_teacher.png" style="width:100%; height:100%; border-radius:50%; object-fit:cover;
+            object-position:center 8%; background:#fff;">
+        </div>
+        <span class="pill" style="background:#7b5ea7; color:#fff;">Teacher</span>
+      </div>
+      <div id="wu-rounds" style="flex:1; max-width:540px;">
         ${[
           ['a_t_askname.mp3','Hello! What\'s your name?','My name\'s ___.','أخبرني باسمك'],
           ['a_t_wc2_leadin.mp3','How are you?','I\'m fine, thank you.','كيف حالك؟']
         ].map(([au,q,a,ar],k)=>`
-        <div class="card wu-round" data-k="${k}" style="padding:14px 20px; margin-bottom:14px; transition:all .25s;">
+        <div class="card bubble wu-round" data-k="${k}" style="padding:16px 22px; margin-bottom:16px; transition:all .25s;">
           <div style="display:flex; align-items:center; gap:12px;">
             <button class="speaker small" data-audio="${au}"></button>
-            <span style="font-size:26px; font-weight:750; color:#3d3356;">${q}</span>
+            <span style="font-size:27px; font-weight:800; color:#3d3356;">${q}</span>
           </div>
-          <div style="display:flex; align-items:center; gap:12px; margin-top:10px; padding-left:34px;">
-            <span style="font-size:24px; font-weight:800; color:#b45309;">${a}</span>
+          <div style="display:flex; align-items:center; gap:12px; margin-top:10px; padding-left:48px;">
+            <span style="font-size:24px; font-weight:800; color:#d97706;">${a}</span>
             <button class="wu-done" data-k="${k}" style="height:42px; padding:0 18px; border:none; border-radius:21px;
               background:#f3eefb; color:#4a3a6e; font-size:16px; font-weight:800; cursor:pointer;">I said it!</button>
           </div>
           <div class="ar" style="font-size:16px; color:#7a8aa0; margin-top:6px;">${ar}</div>
         </div>`).join('')}
-      </div>
-      <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
         <button class="pill" data-audio="a_official_name.mp3" style="background:#4a3a6e; color:#fff; cursor:pointer; border:none;">♪ Hear the book's own talk · WC1 CD</button>
       </div>
-    </div>
-    <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
-      <div style="width:170px; height:170px; border-radius:50%; background:#fff; border:6px dashed #f59e0b;
-        display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; color:#b45309;">YOU</div>
-      <span class="pill" style="background:#ffc84a; color:#4a3a6e;">Student</span>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+        <div style="width:158px; height:158px; border-radius:50%; padding:7px;
+          background:linear-gradient(135deg,#ffc84a,#f59e0b); box-shadow:0 10px 24px rgba(245,158,11,.35);">
+          <div style="width:100%; height:100%; border-radius:50%; background:#fff;
+            display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:800; color:#b45309;">YOU</div>
+        </div>
+        <span class="pill" style="background:#ffc84a; color:#4a3a6e;">Student</span>
+      </div>
     </div>
   </div>`, el=>({
   onEnter(){
@@ -246,10 +255,8 @@ addScreen('Warm-up · say hello to me', `
       card.style.background='#e8f8f0';
       b.textContent='✓'; b.style.background='#24a66a'; b.style.color='#fff';
       sfx('sfx_correct.mp3');
-      if (k===0) setTimeout(()=>play('a_t_myname.mp3'), 350);
-      else setTimeout(()=>play('a_t_wc2_reply.mp3'), 350);
-      if ([...el.querySelectorAll('.wu-done')].every(x=>x.textContent==='✓'))
-        setTimeout(()=>toast('Great! You remember WC1!'), 600);
+      if (k===0){ setTimeout(()=>{ play('a_t_welldone.mp3'); toast('Well done!'); }, 350); }
+      else { setTimeout(()=>{ play('a_t_wc2_reply.mp3'); toast('Great — you remember!'); }, 350); }
     });
   }
 }));
@@ -295,8 +302,6 @@ addScreen('Listen · the book’s talk', `
         <button class="speaker" data-audio="a_official_scene_a.mp3" data-toast="Listen — Turns 1–2"
           style="position:absolute; bottom:14px; left:14px; width:64px; height:64px; background-size:30px;
             box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
-        <div style="position:absolute; top:12px; left:12px; background:#7b5ea7; color:#fff; border-radius:16px;
-          padding:5px 14px; font-size:16px; font-weight:800;">1 · Listen ▶</div>
         <div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:#fff;
           border:2px solid #f0e2c8; border-radius:16px; padding:4px 14px; font-size:16px; font-weight:800; color:#8a6d3b;">Turns 1–2</div>
       </div>
@@ -305,8 +310,6 @@ addScreen('Listen · the book’s talk', `
         <button class="speaker" data-audio="a_official_scene_b.mp3" data-toast="Listen — Turns 3–5"
           style="position:absolute; bottom:14px; left:14px; width:64px; height:64px; background-size:30px;
             box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
-        <div style="position:absolute; top:12px; left:12px; background:#7b5ea7; color:#fff; border-radius:16px;
-          padding:5px 14px; font-size:16px; font-weight:800;">2 · Listen ▶</div>
         <div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); background:#fff;
           border:2px solid #f0e2c8; border-radius:16px; padding:4px 14px; font-size:16px; font-weight:800; color:#8a6d3b;">Turns 3–5</div>
       </div>
@@ -716,30 +719,21 @@ addScreen('Repair · Check 2', `
     el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#f3eefb';b.style.color='#4a3a6e';}); } };
 });
 
-/* ---------- S15 · school-style practice (workbook format, pending verification) ---------- */
-addScreen('School practice', `
-  <div style="display:flex; gap:40px; width:100%; justify-content:center;">
-    <div style="width:520px;">
-      <div style="font-size:22px; font-weight:700; color:#463a5e; margin-bottom:4px; text-align:center;">1 · Listen and choose</div>
-      <div class="ar" style="font-size:16px; color:#7a8aa0; text-align:center; margin-bottom:10px;">استمع واختر الإجابة</div>
-      <div style="text-align:center; margin-bottom:12px;">
-        <button class="speaker" id="ex-q"></button>
-        <span class="card" style="display:inline-block; padding:8px 16px; font-size:19px; color:#8a6d3b; margin-left:12px;" id="ex-round">1 / 2</span>
-      </div>
-      <div id="ex-opts"></div>
+/* ---------- S15 · school-style practice, part 1: listen and choose ---------- */
+addScreen('School practice 1 · Listen and choose', `
+  <div style="width:100%; max-width:760px; text-align:center;">
+    <span class="source-badge">SCHOOL PRACTICE · 1 OF 2</span>
+    <div class="card" style="padding:12px 22px; margin:14px auto 18px; background:#fff7e8; border:2px solid #f59e0b; max-width:640px;">
+      <div style="font-size:24px; font-weight:800; color:#3d3356;">
+        ① Tap the speaker and listen → ② Tap the sentence that answers it</div>
+      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">اضغط السماعة واستمع، ثم اضغط الجملة التي ترد عليها</div>
     </div>
-    <div style="width:520px;">
-      <div style="font-size:22px; font-weight:700; color:#463a5e; margin-bottom:4px; text-align:center;">2 · Which place do you hear?</div>
-      <div class="ar" style="font-size:16px; color:#7a8aa0; text-align:center; margin-bottom:10px;">أي رقم تسمع؟</div>
-      <div style="text-align:center; margin-bottom:12px;">
-        <button class="speaker" id="ex-q2" data-audio="a_t_third.mp3"></button>
-        <span class="card" style="display:inline-block; padding:8px 16px; font-size:19px; color:#8a6d3b; margin-left:12px;">ordinal</span>
-      </div>
-      <div id="ex-opts2"></div>
-      <div style="font-size:15px; color:#8a6d3b; text-align:center; margin-top:10px;">Say your answer first, then tap</div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:18px;">
+      <button class="speaker" id="ex-q"></button>
+      <span class="card" style="display:inline-block; padding:8px 18px; font-size:19px; font-weight:800; color:#8a6d3b;" id="ex-round">1 / 2</span>
     </div>
+    <div id="ex-opts" style="max-width:560px; margin:0 auto;"></div>
   </div>`, el=>{
-  /* part 1: listen & choose, 2 rounds — key contrast items */
   const rounds=[
     {q:'a_official_tt3.mp3', opts:[["I'm great, thanks. And you?",1],["It's nice to meet you.",0]]},
     {q:'a_official_tt1.mp3', opts:[["I'm fine.",0],["It's nice to meet you, too.",1]]}
@@ -749,8 +743,8 @@ addScreen('School practice', `
     el.querySelector('#ex-round').textContent=(ri+1)+' / 2';
     const opts=[...rounds[ri].opts].sort(()=>Math.random()-.5);
     el.querySelector('#ex-opts').innerHTML=opts.map(([t,ok])=>`
-      <div class="card ex-o" data-ok="${ok}" style="padding:14px 20px; margin-bottom:12px; cursor:pointer;
-        font-size:21px; font-weight:700; color:#463a5e; text-align:center;">${t}</div>`).join('');
+      <div class="card ex-o" data-ok="${ok}" style="padding:16px 22px; margin-bottom:14px; cursor:pointer;
+        font-size:23px; font-weight:700; color:#463a5e; text-align:center;">${t}</div>`).join('');
     el.querySelectorAll('.ex-o').forEach(o=> o.onclick=()=>{
       if (o.dataset.ok==='1'){ sfx('sfx_correct.mp3'); o.style.background='#d9f2e5'; o.style.border='2px solid #1f9d6c';
         setTimeout(()=>{ if(ri<1){ ri++; renderChoose(); playQ(); } else toast('Listening part done!'); },700);
@@ -759,17 +753,32 @@ addScreen('School practice', `
   }
   function playQ(){ play(rounds[ri].q); }
   el.querySelector('#ex-q').onclick=playQ;
-  /* part 2: ordinal listen & choose, 1 round */
+  return { onEnter(){ ri=0; renderChoose(); setTimeout(playQ,400); } };
+});
+
+/* ---------- S15b · school-style practice, part 2: listen and tap the number ---------- */
+addScreen('School practice 2 · Listen and tap', `
+  <div style="width:100%; max-width:760px; text-align:center;">
+    <span class="source-badge">SCHOOL PRACTICE · 2 OF 2</span>
+    <div class="card" style="padding:12px 22px; margin:14px auto 18px; background:#fff7e8; border:2px solid #f59e0b; max-width:640px;">
+      <div style="font-size:24px; font-weight:800; color:#3d3356;">
+        ① Say your answer out loud first → ② Tap the speaker to check → ③ Tap the matching sentence</div>
+      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">قُل إجابتك بصوت عالٍ أولًا، ثم استمع للتحقق، ثم اضغط الجملة الصحيحة</div>
+    </div>
+    <div style="margin-bottom:18px;">
+      <button class="speaker" id="ex-q2" data-audio="a_t_third.mp3"></button>
+    </div>
+    <div id="ex-opts2" style="max-width:480px; margin:0 auto;"></div>
+  </div>`, el=>{
   const opts2=[["I'm first!",0],["I'm third!",1],["I'm fifth!",0]].sort(()=>Math.random()-.5);
   el.querySelector('#ex-opts2').innerHTML=opts2.map(([t,ok])=>`
-    <div class="card ex-o2" data-ok="${ok}" style="padding:14px 20px; margin-bottom:12px; cursor:pointer;
-      font-size:23px; font-weight:800; color:#463a5e; text-align:center;">${t}</div>`).join('');
+    <div class="card ex-o2" data-ok="${ok}" style="padding:16px 22px; margin-bottom:14px; cursor:pointer;
+      font-size:25px; font-weight:800; color:#463a5e; text-align:center;">${t}</div>`).join('');
   el.querySelectorAll('.ex-o2').forEach(o=> o.onclick=()=>{
     if (o.dataset.ok==='1'){ sfx('sfx_success.mp3'); o.style.background='#d9f2e5'; o.style.border='2px solid #1f9d6c';
       toast('Ordinal nailed!'); }
     else { sfx('sfx_wrong.mp3'); toast('Listen again!'); play('a_t_third.mp3'); }
   });
-  return { onEnter(){ ri=0; renderChoose(); setTimeout(playQ,400); } };
 });
 
 /* ---------- S16 · evidence-based achievement ---------- */

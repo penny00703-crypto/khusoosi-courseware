@@ -52,8 +52,12 @@
     box-shadow:0 3px 0 #d9a514; }
   .navbtn:active { transform:translateY(2px); box-shadow:none; }
   .navbtn:disabled { background:#cbb99a; box-shadow:none; cursor:default; }
-  #btn-thumbs { background:#7b5ea7; box-shadow:0 3px 0 #5a4385; }
-  #btn-fs { background:#3d3356; box-shadow:0 3px 0 #241f33; }
+  #btn-thumbs { background:#5a4385; color:#fff; box-shadow:0 3px 0 #3f2f5e; }
+  #btn-fs { background:#241f33; color:#fff; box-shadow:0 3px 0 #14101e; }
+  /* ---------- speech bubble cards ---------- */
+  .bubble { position:relative; border-radius:22px !important; }
+  .bubble::after { content:''; position:absolute; left:-13px; top:30px; width:0; height:0;
+    border:13px solid transparent; border-right-color:#fff; border-left:0; }
   /* ---------- thumbnails ---------- */
   #thumbs { position:absolute; left:0; right:0; bottom:64px; z-index:39; display:none;
     background:#fffffff2; border-top:2px solid #f0e2c8; padding:12px 20px;
