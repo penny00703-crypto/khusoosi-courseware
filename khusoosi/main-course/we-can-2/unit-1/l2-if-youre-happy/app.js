@@ -21,7 +21,7 @@ function audioFail(){
 }
 function play(src, onend){
   stopAudio();
-  curAudio = new Audio(A + src);
+  curAudio = new Audio(audioUrl(src));
   curAudio.preload = 'auto';
   curAudio.addEventListener('error', audioFail, {once:true});
   const p = curAudio.play();
@@ -30,7 +30,7 @@ function play(src, onend){
 }
 function playSlow(src, onend){
   stopAudio();
-  curAudio = new Audio(A + src);
+  curAudio = new Audio(audioUrl(src));
   curAudio.playbackRate = .78;
   curAudio.addEventListener('error', audioFail, {once:true});
   const p = curAudio.play();
@@ -41,11 +41,20 @@ function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio.currentTime=0; cu
 /* navigation token: any delayed audio scheduled before a page turn is cancelled */
 let navToken = 0;
 function later(fn, ms){ const t = navToken; setTimeout(()=>{ if (t === navToken) fn(); }, ms); }
+
+/* ---------- audio preloader: blob-cache every clip so taps play instantly ---------- */
+const audioBlobs = {};
+const AUDIO_MANIFEST = ["a_official_chant_all.mp3","a_official_chant_clap.mp3","a_official_clap_a.mp3","a_official_clap_b.mp3","a_official_clap_c.mp3","a_official_tt1.mp3","a_t_b_first.mp3","a_t_c_fourth.mp3","a_t_cap.mp3","a_t_clap.mp3","a_t_clap_hands.mp3","a_t_clap_word.mp3","a_t_clock.mp3","a_t_d_fourth.mp3","a_t_e_fifth.mp3","a_t_eighth.mp3","a_t_f_seventh.mp3","a_t_fifth.mp3","a_t_first.mp3","a_t_fourth.mp3","a_t_full_example.mp3","a_t_h_ninth.mp3","a_t_happy.mp3","a_t_i_ninth.mp3","a_t_j_tenth.mp3","a_t_line.mp3","a_t_line2.mp3","a_t_lock.mp3","a_t_ninth.mp3","a_t_no_eighth.mp3","a_t_no_second.mp3","a_t_no_sixth.mp3","a_t_no_third.mp3","a_t_second.mp3","a_t_seventh.mp3","a_t_sixth.mp3","a_t_soundcheck.mp3","a_t_tenth.mp3","a_t_third.mp3","a_t_welldone.mp3","a_t_yes_right.mp3","sfx_correct.mp3","sfx_pop.mp3","sfx_success.mp3","sfx_wrong.mp3"];
+AUDIO_MANIFEST.forEach(f=>{
+  fetch(A+f).then(r=> r.ok ? r.blob() : Promise.reject(f))
+    .then(b=>{ audioBlobs[f]=URL.createObjectURL(b); }).catch(()=>{});
+});
+function audioUrl(src){ return audioBlobs[src] || (A+src); }
 let curSfx = null;
-function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(A+src); const p=curSfx.play(); if(p&&p.catch)p.catch(()=>{});}catch(e){} }
+function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(audioUrl(src)); const p=curSfx.play(); if(p&&p.catch)p.catch(()=>{});}catch(e){} }
 document.addEventListener('pointerdown', function warm(){
   document.removeEventListener('pointerdown', warm);
-  try{ const u=new Audio(A+'sfx_pop.mp3'); u.volume=0.01; const p=u.play(); if(p&&p.catch)p.catch(()=>{}); }catch(e){}
+  try{ const u=new Audio(audioUrl('sfx_pop.mp3')); u.volume=0.01; const p=u.play(); if(p&&p.catch)p.catch(()=>{}); }catch(e){}
 });
 
 /* ---------- toast + assessment state ---------- */
@@ -191,7 +200,7 @@ addScreen('class setup', `
     const label = el.querySelector('#soundcheck-label');
     btn.onclick = ()=>{
       stopAudio();
-      const au = new Audio(A + 'a_t_soundcheck.mp3');
+      const au = new Audio(audioUrl('a_t_soundcheck.mp3'));
       curAudio = au;
       btn.style.transform = 'scale(1.12)';
       btn.style.boxShadow = '0 0 0 12px rgba(123,94,167,.16), 0 3px 0 #5a4385';
@@ -245,7 +254,7 @@ addScreen('Warm-up 2 · the line', `
     <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 6px;">Tap a kid — you say the place!</div>
     <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:18px;">اضغط طفلًا وقُل مكانه في الصف</div>
     <div style="position:relative; width:760px; max-width:100%; margin:0 auto;">
-      <img class="pic" src="${A}sec_queue.png" style="width:100%; border-radius:16px; box-shadow:0 10px 26px rgba(74,58,110,.16);">
+      <img class="pic" src="${A}sec_queue.jpg" style="width:100%; border-radius:16px; box-shadow:0 10px 26px rgba(74,58,110,.16);">
       ${ORD1.map(([w,c],k)=>{
         const x=[28.7,43.5,58.8,73.8,87.5][k];
         return `<button class="warm-kid" data-audio="a_t_${w}.mp3" data-toast="You say it too!"
@@ -266,7 +275,7 @@ addScreen('Today’s book', `
       <div style="font-size:22px; font-weight:700; color:#6a4fa3;">We Can 2 · Unit 1 · Pages 6–7</div>
     </div>
     <div style="text-align:center;">
-      <img class="pic" src="${A}l2_confusion_book.png" style="width:340px; box-shadow:0 10px 26px rgba(0,0,0,.22); border-radius:10px;">
+      <img class="pic" src="${A}l2_confusion_book.jpg" style="width:340px; box-shadow:0 10px 26px rgba(0,0,0,.22); border-radius:10px;">
     </div>
   </div>`);
 
@@ -323,7 +332,7 @@ addScreen('Listen · the chant', `
       Listen and <span style="color:#d97706;">clap with them!</span></div>
     <div class="ar" style="font-size:18px; color:#7a8aa0; margin-top:4px;">استمع وصفِّق معهم</div>
     <div style="position:relative; width:860px; max-width:100%; margin:16px auto 0;">
-      <img class="pic" src="${A}l2_clap_scene.png" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+      <img class="pic" src="${A}l2_clap_scene.jpg" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
       <button class="speaker" data-audio="a_official_chant_all.mp3" data-toast="The whole chant — listen and do"
         style="position:absolute; bottom:16px; left:16px; width:72px; height:72px; background-size:34px;
           box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
@@ -340,7 +349,7 @@ addScreen('Listen · the chant', `
 addScreen('The clap verse · lines 1–2', `
   <div style="display:flex; gap:36px; width:100%; align-items:center; justify-content:center;">
     <div style="width:300px; text-align:center;">
-      <img class="pic" src="${A}l2_chant_girl.png" style="width:100%; max-height:400px; object-fit:contain;">
+      <img class="pic" src="${A}l2_chant_girl.jpg" style="width:100%; max-height:400px; object-fit:contain;">
       <div style="font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 6</div>
     </div>
     <div style="width:640px;">
@@ -469,7 +478,7 @@ addScreen('Flash check · sixth to tenth', `
 addScreen('Confusion Game · watch the trick', `
   <div style="display:flex; gap:32px; width:100%; align-items:center; justify-content:center;">
     <div style="width:520px;">
-      <img class="pic" src="${A}l2_confusion_book.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+      <img class="pic" src="${A}l2_confusion_book.jpg" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
       <div style="text-align:center; font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 7 · Fun Time</div>
     </div>
     <div style="width:560px;">
@@ -575,7 +584,7 @@ addScreen('Trick Star · the real game', `
       <span class="ar" style="font-size:16px; color:#7a8aa0; font-weight:700;"> · استمع ثم اضغط صح أم خطأ</span></div>
     <div style="display:flex; gap:22px; align-items:center; justify-content:center;">
       <div style="position:relative; width:430px;">
-        <img class="pic" src="${A}l2_confusion_bg.png" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
+        <img class="pic" src="${A}l2_confusion_bg.jpg" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
       </div>
       <div style="width:480px;">
         <div style="display:flex; align-items:center; gap:14px; justify-content:center; margin-bottom:12px;">
@@ -715,7 +724,7 @@ addScreen('Check 1 · fix my tricks', `
 addScreen('Repair · Check 2', `
   <div style="display:grid; grid-template-columns:400px 1fr; gap:48px; align-items:center; width:100%; max-width:1080px;">
     <div class="card" style="height:420px; display:flex; align-items:center; justify-content:center; padding:16px;">
-      <img src="${A}l2_confusion_bg.png" style="width:100%; height:100%; object-fit:cover; border-radius:14px;" alt="game friends">
+      <img src="${A}l2_confusion_bg.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:14px;" alt="game friends">
     </div>
     <div>
       <span class="source-badge">HELP FADES → CHECK 2</span>

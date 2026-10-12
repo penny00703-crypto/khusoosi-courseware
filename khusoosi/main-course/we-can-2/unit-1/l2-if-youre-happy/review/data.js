@@ -9,12 +9,12 @@ const LESSON = {
   unit:  "Unit 1",
   lesson:"L2",
   title: "If You're Happy",
-  heroChar: "l2_chant_girl.png",     // 首页人物形象（教材 p6 拍手女孩 = 本课教材角色）
+  heroChar: "l2_chant_girl.jpg",     // 首页人物形象（教材 p6 拍手女孩 = 本课教材角色）
 
   // 关卡1：词句听读卡（教材图 + 音 + 阿语释义）
   words: [
     { en:"clap your hands", ar:"صفِّق بيديك",      img:"l2_snd_clap.png",  audio:"a_t_clap_hands.mp3" },
-    { en:"happy",           ar:"سعيد",             img:"l2_clap_scene.png",audio:"a_t_happy.mp3"      },
+    { en:"happy",           ar:"سعيد",             img:"l2_clap_scene.jpg",audio:"a_t_happy.mp3"      },
     { en:"sixth – tenth",   ar:"السادس – العاشر",  img:"l2_ordinals.png",  audio:"a_t_line2.mp3"      }
   ],
 
@@ -27,7 +27,7 @@ const LESSON = {
 
   // 关卡3：chant 跟唱（教材 clap 段，官方音频切片）
   dialogue: {
-    img: "l2_chant_girl.png",
+    img: "l2_chant_girl.jpg",
     lines: [
       { en:"If you're happy and you know it, clap your hands. 👏 👏", audio:"a_official_clap_a.mp3" },
       { en:"If you're happy and you know it, clap your hands. 👏 👏", audio:"a_official_clap_b.mp3" },
