@@ -59,7 +59,8 @@ const screens = [];
 
 const TEACHER_GUIDES = [
   '<b>Set up:</b> Tap the sound-check speaker once — the button turns green when sound plays through. Keep this under one minute.',
-  '<b>Warm-up (2 min cap):</b> Two fast recalls from L1. Round 1 — play the greeting, the student answers "It\'s nice to meet you, too." Round 2 — tap any kid in the line, the student says "I\'m first!" etc. One pass each; do not linger.',
+  '<b>Warm-up 1 (1 min):</b> Play the greeting; the student answers "It\'s nice to meet you, too." One pass, fast and warm.',
+  '<b>Warm-up 2 (1 min):</b> Tap any kid in the line; the student says the place word BEFORE the tap plays it — "first!", "second!"… One pass through the five.',
   '<b>Outcome:</b> Show the book page: today = a chant, new line numbers sixth–tenth, and the Confusion Game. State the one goal: sing the clap part and fix my tricks.',
   '<b>Input (2 min):</b> Play the official chant once. Student listens and claps along. Only the clap verse is a target today — the other verses are just fun exposure, never tested.',
   '<b>Clap verse lines 1–2 (2.5 min):</b> Play each slice, student sings it back twice. Keywords must be heard out loud: happy, know, clap your hands.',
@@ -67,12 +68,14 @@ const TEACHER_GUIDES = [
   '<b>Ordinals input (2.5 min):</b> Run the axis: first–fifth fast (they know these), then sixth–tenth slowly, one card at a time. Point and say. Understandable is enough — do not over-correct /θ/ (30 seconds max).',
   '<b>Flash check:</b> Show the number; the student says the word BEFORE you reveal. Wrong → play the audio once and move on.',
   '<b>Confusion Game demo (2 min):</b> Play the trick: "F is the seventh letter of the alphabet." Student judges right or wrong, then hears the fix: "No, it\'s the sixth letter. G is the seventh letter." Act it out — be sneaky, then laugh.',
-  '<b>Guided tricks (2.5 min):</b> Four rounds with the sentence frame on screen. Student says the full fix out loud BEFORE tapping reveal. Pass = two independent fixes.',
+  '<b>Guided tricks (2.5 min):</b> One card at a time, sentence frame on screen. Student says the full fix out loud BEFORE tapping "check". The letter strip on top is for counting support. Pass = two independent fixes.',
   '<b>Trick Star game (3 min):</b> No frames. Six cards — some true, some tricks. Student answers out loud first, then taps Right or Trick, then checks. Speed second, correctness first.',
   '<b>Sounds (2 min):</b> Receptive only — play a word, student taps the picture. cap/clap/lock/clock. No spelling rules today; this seeds L4. Practice-model voice: the official CD1 06 track is not in the package yet.',
-  '<b>Check 1 (3 min):</b> No help, no Arabic. Station 1: play the clap verse, student sings it (keywords out loud). Station 2: play two tricks, student fixes them out loud. Record error type FIRST, then help. A = both stations independent · B = one prompt · C = two or more breaks.',
+  '<b>Check 1 · station 1:</b> No help, no Arabic. Play the clap verse; the student sings it — keywords must be heard out loud. Note breaks silently; record on the next page.',
+  '<b>Check 1 · station 2 + record:</b> Play the two tricks; the student fixes them out loud. Record error type FIRST, then the level. A = both stations independent · B = one prompt · C = two or more breaks.',
   '<b>Repair (4 min):</b> Fixed seven steps — repair only what broke. Contrast step targets the fifth/sixth border and the trick-fix chunks. Check 2 uses fresh items: a C trick and one chant re-run.',
-  '<b>School practice (2 min):</b> Student answers aloud BEFORE clicking. Workbook-style items, pending verification against the current 1448 workbook.',
+  '<b>School practice 1 (1 min):</b> Student answers aloud BEFORE tapping. School-style item, pending verification against the current 1448 workbook.',
+  '<b>School practice 2 (1 min):</b> Same routine — say the fix aloud first, then tap the matching sentence.',
   '<b>Record:</b> Set A, B, or C from Check 1/2 evidence; never award badges for page completion.',
   '<b>Exit (1 min):</b> One last trick — play it, the student fixes you. Then sing the clap verse once together and send the home-review link to the parent.'
 ];
@@ -202,39 +205,22 @@ addScreen('class setup', `
   }
 }));
 
-/* ---------- S2 · warm-up: L1 recall, two fast rounds ---------- */
-addScreen('Warm-up · you know this!', `
-  <div style="width:100%; max-width:1080px; background:linear-gradient(135deg,#f3eefb 0%,#fff7e8 100%);
-    border-radius:28px; padding:26px 40px; box-shadow:0 14px 36px rgba(74,58,110,.14);">
-    <div style="text-align:center; margin-bottom:18px;">
-      <span class="source-badge">WARM-UP · FROM LESSON 1</span>
-      <div style="font-size:28px; font-weight:800; color:#3d3356; margin-top:8px;">Two things you already can do!</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">شيئان تعرفهما من الدرس الماضي!</div>
-    </div>
-    <div style="display:flex; gap:30px; align-items:center; justify-content:center;">
-      <div class="card" style="padding:16px 22px; width:400px;">
-        <div style="font-size:18px; font-weight:800; color:#7b5ea7; margin-bottom:10px;">Round 1 · the greeting</div>
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button class="speaker small" data-audio="a_official_tt1.mp3"></button>
-          <span style="font-size:22px; font-weight:800; color:#3d3356;">"Hi. It's nice to meet you."</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:12px; margin-top:10px; padding-left:52px;">
-          <span style="font-size:21px; font-weight:800; color:#d97706;">It's nice to meet you, too.</span>
-          <button class="wu-done" style="height:38px; padding:0 16px; border:none; border-radius:19px;
-            background:#f3eefb; color:#4a3a6e; font-size:15px; font-weight:800; cursor:pointer;">I said it!</button>
-        </div>
+/* ---------- S2 · warm-up 1 of 2: the greeting from L1 ---------- */
+addScreen('Warm-up 1 · say hi', `
+  <div style="text-align:center; width:100%; max-width:860px;">
+    <span class="source-badge">WARM-UP · FROM LESSON 1 · 1 OF 2</span>
+    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 6px;">Say hi to me — like last time!</div>
+    <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:26px;">حيّيني مثل المرة الماضية</div>
+    <div class="card" style="padding:26px 34px; max-width:700px; margin:0 auto;">
+      <div style="display:flex; align-items:center; gap:16px; justify-content:center;">
+        <button class="speaker" data-audio="a_official_tt1.mp3" style="width:72px; height:72px; background-size:34px;"></button>
+        <span style="font-size:28px; font-weight:800; color:#3d3356;">"Hi. It's nice to meet you."</span>
       </div>
-      <div class="card" style="padding:16px 22px; flex:1;">
-        <div style="font-size:18px; font-weight:800; color:#7b5ea7; margin-bottom:10px;">Round 2 · tap a kid, say the place</div>
-        <div style="position:relative; width:100%; max-width:560px; margin:0 auto;">
-          <img class="pic" src="${A}sec_queue.png" style="width:100%; border-radius:12px;">
-          ${ORD1.map(([w,c],k)=>{
-            const x=[28.7,43.5,58.8,73.8,87.5][k];
-            return `<button class="warm-kid" data-audio="a_t_${w}.mp3" data-toast="You say it too!"
-              style="position:absolute; left:${x-5.5}%; top:18%; width:11%; height:70%;
-              background:transparent; border:none; cursor:pointer; border-radius:12px;"></button>`;
-          }).join('')}
-        </div>
+      <div style="margin:22px 0 4px; font-size:17px; font-weight:700; color:#8a6d3b;">YOUR TURN →</div>
+      <div style="display:flex; align-items:center; gap:16px; justify-content:center;">
+        <span style="font-size:27px; font-weight:800; color:#d97706;">It's nice to meet you, too.</span>
+        <button class="wu-done" style="height:46px; padding:0 22px; border:none; border-radius:23px;
+          background:#f3eefb; color:#4a3a6e; font-size:17px; font-weight:800; cursor:pointer;">I said it!</button>
       </div>
     </div>
   </div>`, el=>({
@@ -244,6 +230,24 @@ addScreen('Warm-up · you know this!', `
       sfx('sfx_correct.mp3'); setTimeout(()=>{ play('a_t_welldone.mp3'); },300); };
   }
 }));
+
+/* ---------- S3 · warm-up 2 of 2: the line, first–fifth flash ---------- */
+addScreen('Warm-up 2 · the line', `
+  <div style="text-align:center; width:100%; max-width:920px;">
+    <span class="source-badge">WARM-UP · FROM LESSON 1 · 2 OF 2</span>
+    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 6px;">Tap a kid — you say the place!</div>
+    <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:18px;">اضغط طفلًا وقُل مكانه في الصف</div>
+    <div style="position:relative; width:760px; max-width:100%; margin:0 auto;">
+      <img class="pic" src="${A}sec_queue.png" style="width:100%; border-radius:16px; box-shadow:0 10px 26px rgba(74,58,110,.16);">
+      ${ORD1.map(([w,c],k)=>{
+        const x=[28.7,43.5,58.8,73.8,87.5][k];
+        return `<button class="warm-kid" data-audio="a_t_${w}.mp3" data-toast="You say it too!"
+          style="position:absolute; left:${x-5.5}%; top:18%; width:11%; height:70%;
+          background:transparent; border:none; cursor:pointer; border-radius:12px;"></button>`;
+      }).join('')}
+    </div>
+    <div style="margin-top:14px; font-size:19px; font-weight:700; color:#8a6d3b;">Student says it first — then tap to check. ★</div>
+  </div>`);
 
 /* ---------- S3 · promise page: goals + textbook badge ---------- */
 addScreen('Today’s mission', `
@@ -464,47 +468,62 @@ addScreen('Confusion Game · watch the trick', `
   }
 }));
 
-/* ---------- S10 · guided tricks with sentence frame ---------- */
+/* ---------- S11 · guided tricks: one card at a time ---------- */
 addScreen('Confusion Game · your turn', `
-  <div style="text-align:center; width:100%; max-width:920px;">
-    <span class="source-badge">SAY THE FIX BEFORE YOU TAP</span>
-    <div style="font-size:22px; font-weight:750; color:#3d3356; margin:12px 0 4px;">
-      ① Listen → ② Say the fix out loud → ③ Tap to check</div>
-    <div class="ar" style="font-size:17px; color:#7a8aa0;">استمع، قُل التصحيح بصوت عالٍ، ثم اضغط لتتأكد</div>
-    <div style="display:flex; gap:16px; justify-content:center; margin-top:16px; align-items:stretch;">
-      <div style="display:flex; flex-direction:column; gap:8px; justify-content:center;">
-        ${['A','B','C','D','E','F','G','H','I','J'].map((L,k)=>`
-          <span style="display:inline-flex; width:44px; height:36px; align-items:center; justify-content:center;
-            background:#fff; border:2px solid #e3d5b8; border-radius:10px; font-size:18px; font-weight:800; color:#6a4fa3;">${L}</span>`).join('')}
+  <div style="text-align:center; width:100%; max-width:860px;">
+    <span class="source-badge">YOUR TURN · SAY THE FIX OUT LOUD FIRST</span>
+    <div style="display:flex; gap:7px; justify-content:center; margin:16px 0 20px;">
+      ${['A','B','C','D','E','F','G','H','I','J'].map((L,k)=>`
+        <span style="display:inline-flex; flex-direction:column; width:52px; height:58px; align-items:center; justify-content:center;
+          background:#fff; border:2px solid #e3d5b8; border-radius:12px;">
+          <b style="font-size:21px; color:#6a4fa3; line-height:1;">${L}</b>
+          <i style="font-size:12px; color:#a08c5b; font-style:normal; margin-top:2px;">${k+1}</i></span>`).join('')}
+    </div>
+    <div class="card" style="padding:28px 34px;">
+      <div id="gt-round" style="font-size:16px; font-weight:800; color:#8a6d3b; margin-bottom:14px;">Card 1 / 4</div>
+      <div style="display:flex; align-items:center; gap:18px; justify-content:center;">
+        <button id="gt-play" class="speaker" style="width:72px; height:72px; background-size:34px;"></button>
+        <div id="gt-say" style="font-size:27px; font-weight:800; color:#463a5e;"></div>
       </div>
-      <div style="flex:1;" id="trick-list">
-        ${[
-          ['a_t_f_seventh.mp3','"F is the seventh letter."','a_t_no_sixth.mp3','No, it\'s the <b>sixth</b> letter.'],
-          ['a_t_j_tenth.mp3','"J is the tenth letter."','a_t_yes_right.mp3','<b>Yes!</b> J is the tenth letter.'],
-          ['a_t_h_ninth.mp3','"H is the ninth letter."','a_t_no_eighth.mp3','No, it\'s the <b>eighth</b> letter.'],
-          ['a_t_b_first.mp3','"B is the first letter."','a_t_no_second.mp3','No, it\'s the <b>second</b> letter.']
-        ].map(([q,qt,a,at],k)=>`
-        <div class="card trick-row" data-k="${k}" style="display:flex; align-items:center; gap:14px; padding:10px 16px; margin-bottom:10px;">
-          <button class="speaker small" data-audio="${q}"></button>
-          <div style="flex:1; text-align:left; font-size:21px; font-weight:800; color:#463a5e;">${qt}</div>
-          <button class="trick-check" data-k="${k}" data-a="${a}" style="height:42px; padding:0 18px; border:none;
-            border-radius:21px; background:#f3eefb; color:#4a3a6e; font-size:16px; font-weight:800; cursor:pointer;">I said the fix!</button>
-        </div>
-        <div class="trick-ans card" id="trick-ans-${k}" style="display:none; margin:-4px 0 10px 58px; padding:10px 16px;
-          text-align:left; font-size:21px; font-weight:800; color:#1f9d6c; border:2px solid #1f9d6c;">${at}</div>`).join('')}
+      <div style="margin-top:18px; font-size:19px; color:#6e7b8b; font-weight:700;">Your fix, out loud: "No, it's the ___ letter." — or "Yes!"</div>
+      <div id="gt-ans" class="card" style="display:none; margin:16px auto 0; max-width:520px; padding:14px 20px;
+        font-size:24px; font-weight:800; color:#1f9d6c; border:2px solid #1f9d6c;"></div>
+      <div style="margin-top:18px; display:flex; gap:14px; justify-content:center;">
+        <button id="gt-check" style="height:54px; padding:0 30px; border:none; border-radius:27px; cursor:pointer;
+          background:#d97706; color:#fff; font-size:20px; font-weight:800; box-shadow:0 3px 0 #b45309;">I said it — check!</button>
+        <button id="gt-next" style="height:54px; padding:0 30px; border:none; border-radius:27px; cursor:pointer;
+          background:#6a4fa3; color:#fff; font-size:20px; font-weight:800; box-shadow:0 3px 0 #4a3a6e; display:none;">Next card →</button>
       </div>
     </div>
-  </div>`, el=>({
-  onEnter(){
-    el.querySelectorAll('.trick-check').forEach(b=> b.onclick=()=>{
-      const k=b.dataset.k;
-      const ans=el.querySelector('#trick-ans-'+k);
-      ans.style.display='block';
-      b.textContent='✓'; b.style.background='#24a66a'; b.style.color='#fff';
-      play(b.dataset.a);
-    });
+  </div>`, el=>{
+  const DECK=[
+    {q:'a_t_f_seventh.mp3', say:'"F is the seventh letter."', a:'a_t_no_sixth.mp3',  at:'No, it\'s the <b>sixth</b> letter.'},
+    {q:'a_t_j_tenth.mp3',   say:'"J is the tenth letter."',   a:'a_t_yes_right.mp3', at:'<b>Yes!</b> J is the tenth letter.'},
+    {q:'a_t_h_ninth.mp3',   say:'"H is the ninth letter."',   a:'a_t_no_eighth.mp3', at:'No, it\'s the <b>eighth</b> letter.'},
+    {q:'a_t_b_first.mp3',   say:'"B is the first letter."',   a:'a_t_no_second.mp3', at:'No, it\'s the <b>second</b> letter.'}
+  ];
+  let di=0;
+  function paint(){
+    el.querySelector('#gt-round').textContent = di<4 ? ('Card '+(di+1)+' / 4') : 'All four — great fixing!';
+    el.querySelector('#gt-say').innerHTML = di<4 ? DECK[di].say : '✓ ✓ ✓ ✓';
+    el.querySelector('#gt-ans').style.display='none';
+    el.querySelector('#gt-check').style.display = di<4 ? '' : 'none';
+    el.querySelector('#gt-next').style.display='none';
+    el.querySelector('#gt-play').style.display = di<4 ? '' : 'none';
   }
-}));
+  el.querySelector('#gt-play').onclick=()=>{ if(di<4) play(DECK[di].q); };
+  el.querySelector('#gt-check').onclick=()=>{
+    if (di>=4) return;
+    const ans=el.querySelector('#gt-ans');
+    ans.innerHTML=DECK[di].at; ans.style.display='block';
+    sfx('sfx_correct.mp3'); play(DECK[di].a);
+    el.querySelector('#gt-check').style.display='none';
+    el.querySelector('#gt-next').style.display='';
+  };
+  el.querySelector('#gt-next').onclick=()=>{ di++; sfx('sfx_pop.mp3'); paint();
+    if(di<4) setTimeout(()=>play(DECK[di].q), 400); else sfx('sfx_success.mp3'); };
+  return { onEnter(){ di=0; paint(); setTimeout(()=>play(DECK[0].q), 400); } };
+});
 
 /* ---------- S11 · Trick Star: main game, no frames ---------- */
 addScreen('Trick Star · the real game', `
@@ -513,11 +532,9 @@ addScreen('Trick Star · the real game', `
       <span class="source-badge">TRICK STAR · NO HELP NOW</span>
       <span id="ts-stars" style="font-size:26px; letter-spacing:4px;">☆☆☆☆☆☆</span>
     </div>
-    <div class="card" style="padding:10px 18px; margin:0 auto 12px; background:#fff7e8; border:2px solid #f59e0b; max-width:700px;">
-      <div style="font-size:21px; font-weight:800; color:#3d3356;">
-        ① Listen to my card → ② Say your answer out loud → ③ Tap <span style="color:#24a66a;">Right</span> or <span style="color:#d94f4f;">Trick</span></div>
-      <div class="ar" style="font-size:16px; color:#7a8aa0; margin-top:3px;">استمع للبطاقة، قُل إجابتك بصوت عالٍ، ثم اضغط صح أم خطأ</div>
-    </div>
+    <div style="font-size:23px; font-weight:800; color:#3d3356; margin-bottom:14px;">
+      Listen to my card. Then tap <span style="color:#24a66a;">Right</span> or <span style="color:#d94f4f;">Trick</span>.
+      <span class="ar" style="font-size:16px; color:#7a8aa0; font-weight:700;"> · استمع ثم اضغط صح أم خطأ</span></div>
     <div style="display:flex; gap:22px; align-items:center; justify-content:center;">
       <div style="position:relative; width:430px;">
         <img class="pic" src="${A}l2_confusion_bg.png" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
@@ -615,24 +632,25 @@ addScreen('Sounds · listen and tap the picture', `
   return { onEnter(){ deal(); setTimeout(playW, 400); } };
 });
 
-/* ---------- S13 · Check 1: chant + fix two tricks, no help ---------- */
-addScreen('Check 1 · sing and fix', `
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:36px; align-items:stretch; width:100%; max-width:1040px;">
-    <div class="card" style="padding:24px 26px; text-align:center;">
-      <span class="source-badge">CHECK 1 · STATION 1 · NO WORDS</span>
-      <div style="font-size:26px; font-weight:800; color:#3d3356; margin:12px 0;">Sing the clap verse!</div>
-      <div style="font-size:19px; color:#6e7b8b; margin-bottom:14px;">The book sings with you — your voice sings the keywords: happy · know · clap your hands.</div>
-      <button class="speaker" data-audio="a_official_chant_clap.mp3" data-toast="Sing with the book!" style="width:72px; height:72px; background-size:34px;"></button>
-      <div style="margin-top:12px; font-size:24px;">👏 👏</div>
-    </div>
-    <div class="card" style="padding:24px 26px; text-align:center;">
-      <span class="source-badge">CHECK 1 · STATION 2 · NO FRAMES</span>
-      <div style="font-size:26px; font-weight:800; color:#3d3356; margin:12px 0;">Fix my two tricks!</div>
-      <div style="font-size:19px; color:#6e7b8b; margin-bottom:14px;">Listen to each one. Out loud: "No, it's the ___ letter."</div>
-      <div style="display:flex; gap:16px; justify-content:center;">
-        <button class="speaker" data-audio="a_t_h_ninth.mp3" data-toast="Trick 1 — fix me!"></button>
-        <button class="speaker" data-audio="a_t_f_seventh.mp3" data-toast="Trick 2 — fix me!"></button>
-      </div>
+/* ---------- S14 · Check 1, station 1: sing the clap verse, no words ---------- */
+addScreen('Check 1 · sing', `
+  <div style="text-align:center; width:100%; max-width:820px;">
+    <span class="source-badge">CHECK 1 · STATION 1 OF 2 · NO WORDS ON SCREEN</span>
+    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 8px;">Sing the clap verse!</div>
+    <div style="font-size:20px; color:#6e7b8b; margin-bottom:24px;">The book sings with you — your voice sings the keywords:<br><b style="color:#d97706;">happy · know · clap your hands</b></div>
+    <button class="speaker" data-audio="a_official_chant_clap.mp3" data-toast="Sing with the book!" style="width:88px; height:88px; background-size:42px;"></button>
+    <div style="margin-top:16px; font-size:34px;">👏 👏</div>
+  </div>`);
+
+/* ---------- S15 · Check 1, station 2: fix two tricks, no frames ---------- */
+addScreen('Check 1 · fix my tricks', `
+  <div style="text-align:center; width:100%; max-width:820px;">
+    <span class="source-badge">CHECK 1 · STATION 2 OF 2 · NO FRAMES</span>
+    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 8px;">Fix my two tricks!</div>
+    <div style="font-size:20px; color:#6e7b8b; margin-bottom:24px;">Listen to each one. Out loud: "No, it's the ___ letter."</div>
+    <div style="display:flex; gap:24px; justify-content:center;">
+      <button class="speaker" data-audio="a_t_h_ninth.mp3" data-toast="Trick 1 — fix me!" style="width:88px; height:88px; background-size:42px;"></button>
+      <button class="speaker" data-audio="a_t_f_seventh.mp3" data-toast="Trick 2 — fix me!" style="width:88px; height:88px; background-size:42px;"></button>
     </div>
   </div>
   <div class="teacher-only" style="position:absolute; left:44px; right:44px; bottom:16px; gap:8px; align-items:center; justify-content:center;">
@@ -721,12 +739,10 @@ addScreen('Repair · Check 2', `
 /* ---------- S15 · school practice 1: complete the chant line ---------- */
 addScreen('School practice 1 · listen and complete', `
   <div style="width:100%; max-width:760px; text-align:center;">
-    <span class="source-badge">SCHOOL PRACTICE · 1 OF 2 · 仿题待核</span>
-    <div class="card" style="padding:12px 22px; margin:14px auto 18px; background:#fff7e8; border:2px solid #f59e0b; max-width:640px;">
-      <div style="font-size:24px; font-weight:800; color:#3d3356;">
-        ① Say your answer out loud first → ② Listen → ③ Tap the missing word</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">قُل إجابتك أولًا، ثم استمع، ثم اضغط الكلمة الناقصة</div>
-    </div>
+    <span class="source-badge">SCHOOL-STYLE PRACTICE · 1 OF 2</span>
+    <div style="font-size:22px; font-weight:750; color:#3d3356; margin:16px 0 20px;">
+      Say your answer first — then listen and tap the missing word.
+      <span class="ar" style="font-size:16px; color:#7a8aa0;"> · قُل إجابتك أولًا ثم استمع واضغط الكلمة الناقصة</span></div>
     <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:14px;">
       <button class="speaker" data-audio="a_official_clap_a.mp3" data-toast="Listen — what word is missing?"></button>
       <div class="card" style="padding:14px 22px; font-size:25px; font-weight:800; color:#463a5e;">
@@ -748,12 +764,10 @@ addScreen('School practice 1 · listen and complete', `
 /* ---------- S16 · school practice 2: pick the fix ---------- */
 addScreen('School practice 2 · listen and choose the fix', `
   <div style="width:100%; max-width:760px; text-align:center;">
-    <span class="source-badge">SCHOOL PRACTICE · 2 OF 2 · 仿题待核</span>
-    <div class="card" style="padding:12px 22px; margin:14px auto 18px; background:#fff7e8; border:2px solid #f59e0b; max-width:640px;">
-      <div style="font-size:24px; font-weight:800; color:#3d3356;">
-        ① Say the fix out loud → ② Listen → ③ Tap the matching sentence</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:4px;">قُل التصحيح بصوت عالٍ، ثم استمع، ثم اضغط الجملة الصحيحة</div>
-    </div>
+    <span class="source-badge">SCHOOL-STYLE PRACTICE · 2 OF 2</span>
+    <div style="font-size:22px; font-weight:750; color:#3d3356; margin:16px 0 20px;">
+      Say the fix out loud — then listen and tap the matching sentence.
+      <span class="ar" style="font-size:16px; color:#7a8aa0;"> · قُل التصحيح بصوت عالٍ ثم استمع واضغط الجملة الصحيحة</span></div>
     <div style="margin-bottom:18px;">
       <button class="speaker" data-audio="a_t_f_seventh.mp3" data-toast='"F is the seventh letter of the alphabet."'></button>
     </div>
