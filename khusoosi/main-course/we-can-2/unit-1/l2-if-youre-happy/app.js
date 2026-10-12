@@ -38,6 +38,9 @@ function playSlow(src, onend){
   if (onend) curAudio.addEventListener('ended', onend, {once:true});
 }
 function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio.currentTime=0; curAudio=null; } }
+/* navigation token: any delayed audio scheduled before a page turn is cancelled */
+let navToken = 0;
+function later(fn, ms){ const t = navToken; setTimeout(()=>{ if (t === navToken) fn(); }, ms); }
 let curSfx = null;
 function sfx(src){ try{ if(curSfx){curSfx.pause();} curSfx = new Audio(A+src); const p=curSfx.play(); if(p&&p.catch)p.catch(()=>{});}catch(e){} }
 document.addEventListener('pointerdown', function warm(){
@@ -96,6 +99,7 @@ let cur = 0;
 function show(i){
   i = Math.max(0, Math.min(screens.length-1, i));
   if (screens[cur] && screens[cur].onLeave) screens[cur].onLeave();
+  navToken++;
   stopAudio();
   cur = i;
   screens.forEach((s,k)=> s.el.classList.toggle('active', k===i));
@@ -230,7 +234,7 @@ addScreen('Warm-up 1 · say hi', `
   onEnter(){
     const b=el.querySelector('.wu-done');
     b.onclick=()=>{ b.textContent='✓'; b.style.background='#24a66a'; b.style.color='#fff';
-      sfx('sfx_correct.mp3'); setTimeout(()=>{ play('a_t_welldone.mp3'); },300); };
+      sfx('sfx_correct.mp3'); later(()=>{ play('a_t_welldone.mp3'); },300); };
   }
 }));
 
@@ -495,7 +499,7 @@ addScreen('Confusion Game · watch the trick', `
       if (b.dataset.ok==='1'){
         sfx('sfx_correct.mp3');
         el.querySelector('#demo-fix').style.display='block';
-        setTimeout(()=> play('a_t_full_example.mp3'), 350);
+        later(()=> play('a_t_full_example.mp3'), 350);
         toast('You caught the trick!');
       } else { sfx('sfx_wrong.mp3'); toast('Count the letters: A-B-C-D-E-F…'); }
     });
@@ -555,8 +559,8 @@ addScreen('Confusion Game · your turn', `
     el.querySelector('#gt-next').style.display='';
   };
   el.querySelector('#gt-next').onclick=()=>{ di++; sfx('sfx_pop.mp3'); paint();
-    if(di<4) setTimeout(()=>play(DECK[di].q), 400); else sfx('sfx_success.mp3'); };
-  return { onEnter(){ di=0; paint(); setTimeout(()=>play(DECK[0].q), 400); } };
+    if(di<4) later(()=>play(DECK[di].q), 400); else sfx('sfx_success.mp3'); };
+  return { onEnter(){ di=0; paint(); later(()=>play(DECK[0].q), 400); } };
 });
 
 /* ---------- S11 · Trick Star: main game, no frames ---------- */
@@ -616,17 +620,17 @@ addScreen('Trick Star · the real game', `
     ans.style.border = correct ? '2px solid #1f9d6c' : '2px solid #d94f4f';
     if (correct){ stars++; sfx('sfx_correct.mp3'); }
     else sfx('sfx_wrong.mp3');
-    setTimeout(()=> play(card.fix), 300);
+    later(()=> play(card.fix), 300);
     el.querySelector('#ts-stars').textContent = '★'.repeat(stars)+'☆'.repeat(Math.max(0,6-stars));
-    setTimeout(()=>{ di++; sfx('sfx_pop.mp3');
-      if (di<6){ paint(); setTimeout(playCard, 600); }
+    later(()=>{ di++; sfx('sfx_pop.mp3');
+      if (di<6){ paint(); later(playCard, 600); }
       else { paint(); if (stars>=5) sfx('sfx_success.mp3'); toast('Trick Star: '+stars+' / 6'); }
     }, 2600);
   }
   el.querySelector('#ts-play').onclick=playCard;
   el.querySelector('#ts-right').onclick=()=>judge(false);
   el.querySelector('#ts-trick').onclick=()=>judge(true);
-  return { onEnter(){ di=0; stars=0; paint(); setTimeout(playCard, 500); } };
+  return { onEnter(){ di=0; stars=0; paint(); later(playCard, 500); } };
 });
 
 /* ---------- S12 · Sounds: cap / clap / lock / clock (receptive) ---------- */
@@ -660,10 +664,10 @@ addScreen('Sounds · listen and tap the picture', `
     if (di>=4) return;
     if (p.dataset.w===deck[di]){
       sfx('sfx_correct.mp3'); p.style.border='3px solid #1f9d6c'; p.style.background='#e8f8f0';
-      di++; setTimeout(()=>{ paint(); if(di<4){ playW(); } else { sfx('sfx_success.mp3'); toast('All four! Great ears!'); } }, 700);
+      di++; later(()=>{ paint(); if(di<4){ playW(); } else { sfx('sfx_success.mp3'); toast('All four! Great ears!'); } }, 700);
     } else { sfx('sfx_wrong.mp3'); toast('Listen again!'); playW(); }
   });
-  return { onEnter(){ deal(); setTimeout(playW, 400); } };
+  return { onEnter(){ deal(); later(playW, 400); } };
 });
 
 /* ---------- S14 · Check 1, station 1: sing the clap verse, no words ---------- */
@@ -848,7 +852,7 @@ addScreen('Learning record', `
     const box=el.querySelector('#ability-level'); box.textContent='Level: '+copy; box.style.borderColor=colors[level];
     try{ localStorage.setItem('khusoosi:wc2-u1-l2:result', level);
       localStorage.setItem('khusoosi:wc2-u1-l2:errors', JSON.stringify([...assessment.errors])); }catch(e){}
-    if(level!=='Not recorded') setTimeout(()=>sfx('sfx_success.mp3'),250);
+    if(level!=='Not recorded') later(()=>sfx('sfx_success.mp3'),250);
   }
 }));
 
@@ -876,12 +880,19 @@ addScreen('Exit task · Home review', `
         <div style="font-size:21px; font-weight:750; color:#3d3356;">Home review · four stations</div>
         <div style="font-size:15px; color:#a08c5b; margin-top:4px;">words → listen & choose → sing the chant → exam style</div>
       </div>
-      <a href="review/" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:12px;
-        margin-top:14px; background:#24a66a; border-radius:16px; padding:16px 14px; text-decoration:none;
-        box-shadow:0 3px 0 #187c50;">
-        <span style="font-size:22px; font-weight:800; color:#fff;">Open home review →</span>
-      </a>
-      <div style="font-size:15px; color:#8a6d3b; margin-top:10px; font-weight:700;">Teacher: copy this link and send it to the parent</div>
+      <div style="display:flex; align-items:center; gap:22px; margin-top:16px; justify-content:center;">
+        <img src="${A}sec_qr_review.png" alt="home review QR" style="width:132px; height:132px; border-radius:14px; box-shadow:0 4px 12px rgba(60,40,10,.18);">
+        <div style="text-align:center;">
+          <a href="review/" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:12px;
+            background:#24a66a; border-radius:16px; padding:15px 22px; text-decoration:none;
+            box-shadow:0 3px 0 #187c50;">
+            <span style="font-size:21px; font-weight:800; color:#fff;">Open home review →</span>
+          </a>
+          <div style="font-size:15px; color:#8a6d3b; margin-top:10px; font-weight:700;">Scan the code — or tap the button</div>
+          <div class="ar" style="font-size:15px; color:#7a8aa0; margin-top:2px;">امسح الرمز أو اضغط الزر</div>
+        </div>
+      </div>
+      <div style="font-size:14px; color:#8a6d3b; margin-top:12px; font-weight:700;">Teacher: copy this link and send it to the parent</div>
     </div>
   </div>`, el=>{
   el.querySelector('#exit-reveal').onclick=()=>{
