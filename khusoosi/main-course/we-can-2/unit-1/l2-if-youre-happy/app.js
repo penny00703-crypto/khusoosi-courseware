@@ -61,7 +61,10 @@ const TEACHER_GUIDES = [
   '<b>Set up:</b> Tap the sound-check speaker once — the button turns green when sound plays through. Keep this under one minute.',
   '<b>Warm-up 1 (1 min):</b> Play the greeting; the student answers "It\'s nice to meet you, too." One pass, fast and warm.',
   '<b>Warm-up 2 (1 min):</b> Tap any kid in the line; the student says the place word BEFORE the tap plays it — "first!", "second!"… One pass through the five.',
-  '<b>Outcome:</b> Show the book page: today = a chant, new line numbers sixth–tenth, and the Confusion Game. State the one goal: sing the clap part and fix my tricks.',
+  '<b>Today\'s book:</b> Point at the page image: this lesson is We Can 2, Unit 1, pages 6–7 — a chant, new line numbers, and a game.',
+  '<b>Mission 1 of 3:</b> Read it together — today the student will sing the clap verse. That is the promise; keep it to ten seconds.',
+  '<b>Mission 2 of 3:</b> Read it together — new line numbers sixth to tenth.',
+  '<b>Mission 3 of 3:</b> Read it together — the student will catch and fix your tricks. Be playful.',
   '<b>Input (2 min):</b> Play the official chant once. Student listens and claps along. Only the clap verse is a target today — the other verses are just fun exposure, never tested.',
   '<b>Clap verse lines 1–2 (2.5 min):</b> Play each slice, student sings it back twice. Keywords must be heard out loud: happy, know, clap your hands.',
   '<b>Clap verse lines 3–4 + full verse (3 min):</b> Same routine, then sing the whole clap verse together up to three times. Clap on the beat.',
@@ -249,31 +252,62 @@ addScreen('Warm-up 2 · the line', `
     <div style="margin-top:14px; font-size:19px; font-weight:700; color:#8a6d3b;">Student says it first — then tap to check. ★</div>
   </div>`);
 
-/* ---------- S3 · promise page: goals + textbook badge ---------- */
-addScreen('Today’s mission', `
-  <div style="display:flex; gap:44px; align-items:center; width:100%; justify-content:center;">
-    <div style="max-width:580px;">
-      <span class="source-badge">WE CAN 2 · UNIT 1 · GOALS 03–04</span>
-      <h1 style="font-size:40px; color:#3d3356; margin:14px 0 6px;">Sing, count, and trick me!</h1>
-      <div style="font-size:19px; color:#6e7b8b; margin-bottom:18px;">By the end, you can sing the clap song, say sixth to tenth, and catch my tricks.</div>
-      ${[['a_official_clap_a.mp3','Sing: "If you\'re <b style="color:#d97706;">happy</b> and you <b style="color:#d97706;">know</b> it, <b style="color:#d97706;">clap</b> your <b style="color:#d97706;">hands</b>"','غُنَّ معي أغنية التصفيق'],
-         ['a_t_line2.mp3','Say "<b style="color:#7b5ea7;">sixth</b> to <b style="color:#1f9d6c;">tenth</b>"','قُل من السادس إلى العاشر'],
-         ['a_t_full_example.mp3','Fix my trick: "<b style="color:#d94f4f;">No</b>, it\'s the <b style="color:#d94f4f;">sixth</b> letter."','صحِّح خطأي']].map(([au,en,ar])=>`
-        <div class="card" style="display:flex; align-items:center; gap:14px; padding:12px 18px; margin-bottom:12px;">
-          <button class="speaker small" data-audio="${au}"></button>
-          <div><div style="font-size:22px; color:#463a5e;">${en}</div>
-          <div class="ar" style="font-size:17px; color:#7a8aa0;">${ar}</div></div>
-        </div>`).join('')}
+/* ---------- S4 · today's book: where this lesson lives ---------- */
+addScreen('Today’s book', `
+  <div style="display:flex; gap:48px; align-items:center; width:100%; justify-content:center;">
+    <div style="max-width:520px;">
+      <span class="source-badge">TODAY · FROM YOUR BOOK</span>
+      <h1 style="font-size:42px; color:#3d3356; margin:14px 0 10px;">This is today's lesson!</h1>
+      <div class="ar" style="font-size:19px; color:#7a8aa0; margin-bottom:18px;">درس اليوم من كتابك</div>
+      <div style="font-size:22px; font-weight:700; color:#6a4fa3;">We Can 2 · Unit 1 · Pages 6–7</div>
     </div>
     <div style="text-align:center;">
-      <div style="position:relative; width:320px; margin:0 auto;">
-        <img class="pic" src="${A}l2_confusion_book.png" style="width:100%; box-shadow:0 10px 26px rgba(0,0,0,.22); border-radius:10px;">
-        <div style="position:absolute; top:-16px; right:-16px; background:#7b5ea7; color:#fff;
-          font-weight:700; font-size:16px; padding:8px 14px; border-radius:20px; transform:rotate(6deg);
-          box-shadow:0 4px 10px rgba(0,0,0,.25);">Pages 6–7</div>
+      <img class="pic" src="${A}l2_confusion_book.png" style="width:340px; box-shadow:0 10px 26px rgba(0,0,0,.22); border-radius:10px;">
+    </div>
+  </div>`);
+
+/* ---------- S5 · mission 1 of 3: sing ---------- */
+addScreen('Mission 1 · sing', `
+  <div style="text-align:center; width:100%; max-width:820px;">
+    <span class="source-badge">TODAY · MISSION 1 OF 3</span>
+    <div class="card" style="padding:30px 36px; margin-top:20px;">
+      <div style="display:flex; align-items:center; gap:18px; justify-content:center;">
+        <button class="speaker" data-audio="a_official_clap_a.mp3" style="width:72px; height:72px; background-size:34px;"></button>
+        <div style="text-align:left;">
+          <div style="font-size:26px; font-weight:800; color:#463a5e; line-height:1.5;">Sing: "If you're <b style="color:#d97706;">happy</b> and you <b style="color:#d97706;">know</b> it, <b style="color:#d97706;">clap</b> your <b style="color:#d97706;">hands</b>"</div>
+          <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:6px;">غُنَّ معي أغنية التصفيق</div>
+        </div>
       </div>
-      <div style="margin-top:14px; font-size:19px; font-weight:700; color:#6a4fa3;">We Can 2 · Same as your school!</div>
-      <div class="ar" style="font-size:16px; color:#7a8aa0; margin-top:4px;">نفس كتاب المدرسة</div>
+    </div>
+  </div>`);
+
+/* ---------- S6 · mission 2 of 3: sixth to tenth ---------- */
+addScreen('Mission 2 · count', `
+  <div style="text-align:center; width:100%; max-width:820px;">
+    <span class="source-badge">TODAY · MISSION 2 OF 3</span>
+    <div class="card" style="padding:30px 36px; margin-top:20px;">
+      <div style="display:flex; align-items:center; gap:18px; justify-content:center;">
+        <button class="speaker" data-audio="a_t_line2.mp3" style="width:72px; height:72px; background-size:34px;"></button>
+        <div style="text-align:left;">
+          <div style="font-size:26px; font-weight:800; color:#463a5e; line-height:1.5;">Say "<b style="color:#7b5ea7;">sixth</b> to <b style="color:#1f9d6c;">tenth</b>"</div>
+          <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:6px;">قُل من السادس إلى العاشر</div>
+        </div>
+      </div>
+    </div>
+  </div>`);
+
+/* ---------- S7 · mission 3 of 3: fix the trick ---------- */
+addScreen('Mission 3 · fix my trick', `
+  <div style="text-align:center; width:100%; max-width:820px;">
+    <span class="source-badge">TODAY · MISSION 3 OF 3</span>
+    <div class="card" style="padding:30px 36px; margin-top:20px;">
+      <div style="display:flex; align-items:center; gap:18px; justify-content:center;">
+        <button class="speaker" data-audio="a_t_full_example.mp3" style="width:72px; height:72px; background-size:34px;"></button>
+        <div style="text-align:left;">
+          <div style="font-size:26px; font-weight:800; color:#463a5e; line-height:1.5;">Fix my trick: "<b style="color:#d94f4f;">No</b>, it's the <b style="color:#d94f4f;">sixth</b> letter."</div>
+          <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:6px;">صحِّح خطأي</div>
+        </div>
+      </div>
     </div>
   </div>`);
 
@@ -303,7 +337,7 @@ addScreen('The clap verse · lines 1–2', `
   <div style="display:flex; gap:36px; width:100%; align-items:center; justify-content:center;">
     <div style="width:300px; text-align:center;">
       <img class="pic" src="${A}l2_chant_girl.png" style="width:100%; max-height:400px; object-fit:contain;">
-      <div style="font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">From your book, page 6</div>
+      <div style="font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 6</div>
     </div>
     <div style="width:640px;">
       <span class="source-badge">SING AFTER THE BOOK · OFFICIAL AUDIO</span>
@@ -359,7 +393,7 @@ addScreen('New line numbers · sixth to tenth', `
   <div style="display:flex; gap:30px; width:100%; align-items:center; justify-content:center;">
     <div style="width:520px;">
       <img class="pic" src="${A}l2_ordinals.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
-      <div style="text-align:center; font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">Your book, page 7</div>
+      <div style="text-align:center; font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 7</div>
     </div>
     <div style="width:560px;">
       <div style="display:flex; align-items:center; gap:14px; margin-bottom:12px;">
@@ -432,7 +466,7 @@ addScreen('Confusion Game · watch the trick', `
   <div style="display:flex; gap:32px; width:100%; align-items:center; justify-content:center;">
     <div style="width:520px;">
       <img class="pic" src="${A}l2_confusion_book.png" style="width:100%; box-shadow:0 8px 22px rgba(60,40,10,.15);">
-      <div style="text-align:center; font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">Fun Time · your book, page 7</div>
+      <div style="text-align:center; font-size:16px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 7 · Fun Time</div>
     </div>
     <div style="width:560px;">
       <span class="source-badge">CONFUSION GAME · TRY AND TRICK!</span>
