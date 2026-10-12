@@ -421,10 +421,13 @@ addScreen('Greeting Line practice', `
     <div class="ar" style="font-size:17px; color:#7a8aa0; margin-bottom:12px;">أشِر إلى طفل، قُل رقمه في الصف بصوت عالٍ، ثم اضغط عليه لتتأكد</div>
     <div style="position:relative; width:980px; max-width:100%; margin:0 auto;">
       <img class="pic" src="${A}sec_queue.png" style="width:100%; border-radius:14px; box-shadow:0 8px 22px rgba(60,40,10,.15);">
-      ${[['first','#d97706',24.4],['second','#db4f7e',38.1],['third','#7b5ea7',51.9],
-         ['fourth','#24a66a',65.6],['fifth','#4a3a6e',79.4]].map(([w,c,x])=>`
-      <button class="q-hot" data-w="${w}" style="position:absolute; left:${x-5.6}%; top:16%; width:11.2%; height:74%;
+      ${[['first','#d97706',28.7],['second','#db4f7e',43.5],['third','#7b5ea7',58.8],
+         ['fourth','#24a66a',73.8],['fifth','#4a3a6e',87.5]].map(([w,c,x],k)=>`
+      <button class="q-hot" data-w="${w}" style="position:absolute; left:${x-5.5}%; top:20%; width:11%; height:70%;
         background:transparent; border:none; cursor:pointer; border-radius:14px;"></button>
+      <div style="position:absolute; left:${x}%; top:90.5%; transform:translateX(-50%); width:40px; height:40px;
+        border-radius:50%; background:${c}; color:#fff; display:flex; align-items:center; justify-content:center;
+        font-size:20px; font-weight:800; border:3px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,.22); pointer-events:none;">${k+1}</div>
       <div class="q-tag" data-w="${w}" style="position:absolute; left:${x}%; top:1%; transform:translate(-50%,10px);
         background:${c}; color:#fff; font-size:19px; font-weight:800; padding:6px 14px; border-radius:14px;
         box-shadow:0 3px 0 rgba(0,0,0,.18); opacity:0; transition:all .3s; pointer-events:none; white-space:nowrap;">I'm ${w}!</div>`).join('')}
