@@ -345,7 +345,7 @@ addScreen('New feelings · needs', `
   onEnter(){
     el.querySelectorAll('.feel-in').forEach(c=> c.onclick=e=>{
       if (e.target.closest('.speaker')) return;
-      play('a_official_qa_'+c.dataset.w+'.mp3');
+      play('a_official_ans_'+c.dataset.w+'.mp3');
       toast('Listen — then you say it!');
     });
   }
@@ -367,7 +367,7 @@ addScreen('New feelings · temperature', `
   onEnter(){
     el.querySelectorAll('.feel-in').forEach(c=> c.onclick=e=>{
       if (e.target.closest('.speaker')) return;
-      play('a_official_qa_'+c.dataset.w+'.mp3');
+      play('a_official_ans_'+c.dataset.w+'.mp3');
       toast('Listen — then you say it!');
     });
   }
@@ -389,7 +389,7 @@ addScreen('New feelings · states', `
   onEnter(){
     el.querySelectorAll('.feel-in').forEach(c=> c.onclick=e=>{
       if (e.target.closest('.speaker')) return;
-      play('a_official_qa_'+c.dataset.w+'.mp3');
+      play('a_official_ans_'+c.dataset.w+'.mp3');
       toast('Listen — then act it and say it!');
     });
   }
