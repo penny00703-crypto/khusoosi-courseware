@@ -45,7 +45,7 @@ function later(fn, ms){ const t = navToken; setTimeout(()=>{ if (t === navToken)
 
 /* ---------- audio preloader: blob-cache every clip so taps play instantly ---------- */
 const audioBlobs = {};
-const AUDIO_MANIFEST = ["a_official_ans_hungry.mp3","a_official_ans_scared.mp3","a_official_jingle_a.mp3","a_official_jingle_i.mp3","a_official_wtm.mp3","a_t_a_says_apple.mp3","a_t_a_says_apron.mp3","a_t_cap.mp3","a_t_clap_word.mp3","a_t_clock.mp3","a_t_i_says_iron.mp3","a_t_listen_number.mp3","a_t_lock.mp3","a_t_long.mp3","a_t_magic_e.mp3","a_t_missing_e.mp3","a_t_short.mp3","a_t_soundcheck.mp3","a_t_w_apple.mp3","a_t_w_apron.mp3","a_t_w_cap.mp3","a_t_w_cape.mp3","a_t_w_ink.mp3","a_t_w_iron.mp3","a_t_w_pin.mp3","a_t_w_pine.mp3","a_t_w_tap.mp3","a_t_w_tape.mp3","a_t_w_tim.mp3","a_t_w_time.mp3","a_t_welldone.mp3","a_t_which_one.mp3","a_t_yourturn_ask.mp3","a_t_yourturn_say.mp3","sfx_correct.mp3","sfx_pop.mp3","sfx_success.mp3","sfx_wrong.mp3"];
+const AUDIO_MANIFEST = ["a_official_ans_hungry.mp3","a_official_ans_scared.mp3","a_official_ans_thirsty.mp3","a_official_jingle_a.mp3","a_official_jingle_i.mp3","a_official_wtm.mp3","a_t_cap.mp3","a_t_clap_word.mp3","a_t_clock.mp3","a_t_lock.mp3","a_t_long.mp3","a_t_magic_e.mp3","a_t_missing_e.mp3","a_t_pat_apron.mp3","a_t_pat_cap.mp3","a_t_pat_cape.mp3","a_t_pat_iron.mp3","a_t_pat_pin.mp3","a_t_pat_pine.mp3","a_t_pat_tap.mp3","a_t_pat_time.mp3","a_t_pat_tim.mp3","a_t_short.mp3","a_t_soundcheck.mp3","a_t_w_apple.mp3","a_t_w_apron.mp3","a_t_w_cap.mp3","a_t_w_cape.mp3","a_t_w_ink.mp3","a_t_w_iron.mp3","a_t_w_pin.mp3","a_t_w_pine.mp3","a_t_w_tap.mp3","a_t_w_tape.mp3","a_t_w_tim.mp3","a_t_w_time.mp3","a_t_welldone.mp3","a_t_yourturn_ask.mp3","a_t_yourturn_say.mp3","sfx_correct.mp3","sfx_pop.mp3","sfx_success.mp3","sfx_wrong.mp3"];
 AUDIO_MANIFEST.forEach(f=>{
   fetch(A+f).then(r=> r.ok ? r.blob() : Promise.reject(f))
     .then(b=>{ audioBlobs[f]=URL.createObjectURL(b); }).catch(()=>{});
@@ -72,25 +72,23 @@ const screens = [];
 
 const TEACHER_GUIDES = [
   '<b>Set up:</b> Tap the sound-check speaker once — the button turns green when sound plays through. Keep this under one minute.',
-  '<b>Warm-up 1 (1 min):</b> L3 comes back: ask "What\'s the matter?" twice with the two patients. The student answers "I\'m hungry." / "I\'m scared." — full sentences.',
-  '<b>Warm-up 2 (1 min):</b> Now the student asks YOU: "What\'s the matter?" Act your answer big — yawn, shiver, eyes wide.',
+  '<b>Warm-up 1 (1.5 min):</b> L3 comes back as a listening game: play the sentence — the student taps the matching picture. The sentence words appear only AFTER they tap right. Three rounds.',
+  '<b>Warm-up 2 (1 min):</b> Now the student asks YOU: "What\'s the matter?" Act your answer big — yawn, drink, eyes wide. If you do not want to act, just point at one of the three pictures and answer with a full sentence.',
   '<b>Today\'s book:</b> Point at the page image: this lesson is We Can 2, Unit 1, pages 10–11 — phonics day: the letter sounds a and i, short and long.',
-  '<b>Mission 1 of 3:</b> Read it together — today the student will HEAR the difference: short a / long a_e, short i / long i_e. Ten seconds.',
-  '<b>Mission 2 of 3:</b> Read it together — four anchor words to say and read: apple, cape, pin, pine.',
-  '<b>Mission 3 of 3:</b> Read it together — school-style items: number 1 or 2, and add the magic e.',
-  '<b>Magic e concept (1.5 min):</b> Play the motto: "Magic e! The e makes the letter say its NAME!" Point at cap → cape. One idea only — never explain spelling rules beyond this.',
-  '<b>Short a group (2 min):</b> apple (official jingle), cap, tap. Tap a card, student says the word twice. apple and apron are anchor words — do NOT call apron "magic e".',
-  '<b>Long A group (2 min):</b> apron, cape, tape. cape/tape = magic e words; apron = "A says its name". Exaggerate the long sound: caaape.',
+  '<b>Three missions (30 sec):</b> Read the three cards together — hear it, say it, win at school. That is the whole lesson map. Do not explain more here.',
+  '<b>Magic e concept (1.5 min):</b> Play the motto on the text line: "Magic e! The e makes the letter say its NAME!" Then play cap → cape with the two small speakers. One idea only — never explain spelling rules beyond this.',
+  '<b>Short a group (2 min):</b> All three cards follow the jingle pattern: "a, a, apple / cap / tap". Tap 🔊, student repeats the pattern twice. apple = official audio; cap/tap = practice model.',
+  '<b>Long A group (2 min):</b> apron, cape, tape — pattern "A, A, ___!" (the letter NAME). cape/tape = magic e words; apron = anchor, do NOT call it magic e. Exaggerate: caaape.',
   '<b>Listen & choose · a (1.5 min):</b> Ears only — play a word, student taps SHORT or LONG. Four rounds. Wrong → replay once.',
-  '<b>Short i group (1.5 min):</b> ink (official jingle), pin, Tim. Tim is the parrot\'s NAME — names can have short i too.',
-  '<b>Long I group (1.5 min):</b> iron, pine, time. pine/time = magic e words; iron = "I says its name" anchor.',
+  '<b>Short i group (1.5 min):</b> ink (official jingle), pin, Tim — pattern "i, i, ___!". Tim is the parrot\'s NAME — names can have short i too.',
+  '<b>Long I group (1.5 min):</b> iron, pine, time — pattern "I, I, ___!". pine/time = magic e words; iron = "I says its name" anchor.',
   '<b>Listen & choose · i (1.5 min):</b> Same routine with the i words — pin, pine, Tim, time.',
   '<b>Jingle (1.5 min):</b> Official CD1 11 anchors: "A says … a, a, apple" and "I says … i, i, ink". The student only needs to join on the last two words (apple! / ink!). Participation is enough.',
-  '<b>Magic E Wand (2.5 min):</b> Six rounds. Show the base word, the wand waves — the student guesses "Changed!" or "Same!" BEFORE hearing the word. Then listen and check. Pass = 4 of 6.',
-  '<b>Recycle (1.5 min):</b> L2 ears back: cap / clap / lock / clock — listen and tap the picture. Fast, confident, no teaching.',
+  '<b>Fun Time game (2.5 min):</b> The book\'s own game, page 11: you say "I says …" — the student completes with the picture: "i, i, pine!" Then tap 🔊 to check. Four rounds, then swap roles if time allows.',
+  '<b>Recycle (1.5 min):</b> L2 ears back (book page 6): cap / clap / lock / clock — listen and tap the picture. Fast, confident, no teaching.',
   '<b>Check 1 (3 min):</b> Eight words, no help. Play a word; the student points to a sound card and says "long" or "short". Tap the card they chose. Record error type FIRST, then the level. A = 8/8 · B = 6–7 · C = 5 or fewer.',
   '<b>Repair (4 min):</b> Fixed seven steps — repair only the pairs that broke. Meaning (Arabic once) → Slow → Contrast → Model → Build → Hide help → Try again. Check 2 uses eight fresh draws.',
-  '<b>School practice 1 (1 min):</b> Number 1 for short a, 2 for long a_e. Two items, school-style — pending verification against the current workbook.',
+  '<b>School practice 1 (1 min):</b> Just like the book: the words sit inside boxes 1 and 2 — hear one word, tap its number. Two rounds: cap/cape, then pin/pine.',
   '<b>School practice 2 (1 min):</b> Missing letter: c_a_p → add e → cape; p_i_n → add e → pine. Student says the word aloud first, then taps the letter.',
   '<b>Record:</b> Set A, B, or C from Check 1/2 evidence; never award badges for page completion. Badge name for parents: Word Wizard.',
   '<b>Exit (1 min):</b> Four anchor words fast — apple, cape, pin, pine: long or short? Then send the home-review link to the parent.'
@@ -236,38 +234,66 @@ addScreen('class setup', `
   }
 }));
 
-/* ---------- S2 · warm-up 1 of 2: What's the matter? — teacher asks ---------- */
-addScreen('Warm-up 1 · I ask you', `
-  <div style="text-align:center; width:100%; max-width:860px;">
+/* ---------- S2 · warm-up 1 of 2: L3 feelings — listen & match ---------- */
+addScreen('Warm-up 1 · listen and match', `
+  <div style="text-align:center; width:100%; max-width:1000px;">
     <span class="source-badge">WARM-UP · FROM LESSON 3 · 1 OF 2</span>
-    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 6px;">I ask — you answer: "I'm ___."</div>
-    <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:22px;">أسألك وأنت تجيب بجملة كاملة</div>
-    <div style="display:flex; gap:26px; justify-content:center;">
-      ${[['hungry','#d97706'],['scared','#db4f7e']].map(([w,c])=>`
-      <div class="card" style="padding:16px; width:300px; text-align:center;">
-        <div style="display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom:10px;">
-          <button class="speaker small" data-audio="a_official_wtm.mp3" data-toast="What's the matter?"></button>
-          <span style="font-size:21px; font-weight:800; color:#463a5e;">"What's the matter?"</span>
-        </div>
-        <button class="speaker small" data-audio="a_official_ans_${w}.mp3" data-toast="You say it first!"></button>
-        <span style="font-size:23px; font-weight:800; color:${c}; margin-left:10px;">I'm ${w}.</span>
+    <div style="font-size:40px; font-weight:800; color:#3d3356; margin:14px 0 4px;">Listen — tap the matching picture!</div>
+    <div class="ar" style="font-size:19px; color:#7a8aa0; margin-bottom:18px;">استمع واضغط على الصورة الصحيحة</div>
+    <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin-bottom:16px;">
+      <button id="wm-play" class="speaker" style="width:74px; height:74px;"></button>
+      <span id="wm-round" class="card" style="padding:8px 18px; font-size:18px; font-weight:800; color:#8a6d3b;">Round 1 / 3</span>
+    </div>
+    <div style="display:flex; gap:22px; justify-content:center;">
+      ${[['hungry','ft_hungry.jpg','#d97706'],['thirsty','ft_thirsty.jpg','#2563eb'],['scared','ft_scared.jpg','#db4f7e']].map(([w,img,c])=>`
+      <div class="card wm-pic" data-w="${w}" style="cursor:pointer; padding:14px; width:280px;">
+        <img class="pic" src="${A}${img}" style="width:100%; height:175px; object-fit:contain;">
+        <div class="wm-word" style="font-size:24px; font-weight:800; color:${c}; margin-top:8px; visibility:hidden;">I'm ${w}.</div>
       </div>`).join('')}
     </div>
-  </div>`);
+  </div>`, el=>{
+  const AU={'hungry':'a_official_ans_hungry.mp3','thirsty':'a_official_ans_thirsty.mp3','scared':'a_official_ans_scared.mp3'};
+  let deck=[], di=0;
+  function deal(){ deck=['hungry','thirsty','scared'].sort(()=>Math.random()-.5); di=0; paint(); }
+  function paint(){
+    el.querySelector('#wm-round').textContent = di<3 ? ('Round '+(di+1)+' / 3') : 'Done!';
+    el.querySelectorAll('.wm-pic').forEach(p=>{ p.style.border=''; p.style.background=''; });
+  }
+  function playW(){ if (di<3) play(AU[deck[di]]); }
+  el.querySelector('#wm-play').onclick=playW;
+  el.querySelectorAll('.wm-pic').forEach(p=> p.onclick=()=>{
+    if (di>=3) return;
+    if (p.dataset.w===deck[di]){
+      sfx('sfx_correct.mp3'); p.style.border='3px solid #1f9d6c'; p.style.background='#e8f8f0';
+      p.querySelector('.wm-word').style.visibility='visible';
+      di++; later(()=>{ paint(); if(di<3){ playW(); } else { sfx('sfx_success.mp3'); toast('All three! Now read the sentences!'); } }, 900);
+    } else { sfx('sfx_wrong.mp3'); toast('Listen again!'); later(playW, 500); }
+  });
+  return { onEnter(){ deal();
+    el.querySelectorAll('.wm-word').forEach(w=> w.style.visibility='hidden');
+    later(playW, 450); } };
+});
 
 /* ---------- S3 · warm-up 2 of 2: student asks ME ---------- */
 addScreen('Warm-up 2 · you ask me', `
-  <div style="text-align:center; width:100%; max-width:860px;">
+  <div style="text-align:center; width:100%; max-width:1000px;">
     <span class="source-badge">WARM-UP · FROM LESSON 3 · 2 OF 2</span>
-    <div style="font-size:32px; font-weight:800; color:#3d3356; margin:16px 0 6px;">Now YOU ask ME!</div>
-    <div class="ar" style="font-size:18px; color:#7a8aa0; margin-bottom:22px;">الآن اسألني أنت — وسأمثّل الإجابة</div>
-    <div class="card" style="padding:26px 34px; max-width:640px; margin:0 auto;">
-      <div style="display:flex; align-items:center; gap:16px; justify-content:center;">
+    <div style="font-size:42px; font-weight:800; color:#3d3356; margin:14px 0 4px;">Your turn — ask ME!</div>
+    <div class="ar" style="font-size:19px; color:#7a8aa0; margin-bottom:16px;">الآن اسألني أنت</div>
+    <div class="card" style="padding:20px 30px; max-width:720px; margin:0 auto 14px;">
+      <div style="display:flex; align-items:center; gap:18px; justify-content:center;">
         <button class="speaker" data-audio="a_t_yourturn_ask.mp3" data-toast="Your turn — ask me!"
-          style="width:76px; height:76px; background-size:36px;"></button>
-        <div style="font-size:30px; font-weight:800; color:#463a5e;">"What<b style="color:#d94f4f;">'s</b> the matter?"</div>
+          style="width:80px; height:80px; background-size:38px;"></button>
+        <div style="font-size:42px; font-weight:800; color:#463a5e;">"What<b style="color:#d94f4f;">'s</b> the matter?"</div>
       </div>
-      <div style="margin-top:14px; font-size:19px; color:#8a6d3b; font-weight:700;">I will act the answer — watch me! 😮😨</div>
+    </div>
+    <div style="font-size:20px; color:#8a6d3b; font-weight:700; margin-bottom:10px;">I act one — you watch! (Teacher: or just point at a picture 👇)</div>
+    <div style="display:flex; gap:18px; justify-content:center;">
+      ${[['hungry','ft_hungry.jpg','#d97706'],['thirsty','ft_thirsty.jpg','#2563eb'],['scared','ft_scared.jpg','#db4f7e']].map(([w,img,c])=>`
+      <div class="card" style="padding:10px; width:195px;">
+        <img class="pic" src="${A}${img}" style="width:100%; height:118px; object-fit:contain;">
+        <div style="font-size:19px; font-weight:800; color:${c}; margin-top:6px;">I'm ${w}.</div>
+      </div>`).join('')}
     </div>
   </div>`);
 
@@ -286,54 +312,54 @@ addScreen('Today’s book', `
     </div>
   </div>`);
 
-/* ---------- S5–S7 · missions ---------- */
-addScreen('Mission 1 · long or short', `
-  <div style="text-align:center; width:100%; max-width:900px;">
-    <span class="source-badge">TODAY · MISSION 1 OF 3</span>
-    <div class="card" style="padding:26px 32px; margin-top:18px;">
-      <div style="font-size:27px; font-weight:800; color:#463a5e; line-height:1.55;">
-        Hear the difference: <b style="color:#d94f4f;">short a</b> or <b style="color:#2563eb;">long a_e</b>?
-        <b style="color:#0891b2;">short i</b> or <b style="color:#7b5ea7;">long i_e</b>?</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:14px;">استمع وميّز: صوت قصير أم طويل؟</div>
-    </div>
-  </div>`);
-
-addScreen('Mission 2 · four anchor words', `
-  <div style="text-align:center; width:100%; max-width:900px;">
-    <span class="source-badge">TODAY · MISSION 2 OF 3</span>
-    <div class="card" style="padding:26px 32px; margin-top:18px;">
-      <div style="font-size:27px; font-weight:800; color:#463a5e; margin-bottom:18px;">Say and read four anchor words:</div>
-      <div style="display:flex; gap:14px; justify-content:center;">
-        ${['apple','cape','pin','pine'].map(w=>`
-          <span class="pill" style="background:${WBY[w][2]}1f; color:${WBY[w][2]}; border:2px solid ${WBY[w][2]}; font-size:24px;">${w}</span>`).join('')}
+/* ---------- S5 · today's three missions ---------- */
+addScreen('Today · three missions', `
+  <div style="text-align:center; width:100%; max-width:1080px;">
+    <span class="source-badge">TODAY · THREE MISSIONS</span>
+    <div style="font-size:38px; font-weight:800; color:#3d3356; margin:12px 0 16px;">Today you will …</div>
+    <div style="display:flex; gap:20px; justify-content:center; align-items:stretch;">
+      <div class="card" style="width:320px; padding:20px 18px;">
+        <div style="font-size:44px;">👂</div>
+        <div style="font-size:22px; font-weight:800; color:#6a4fa3; margin:6px 0 8px;">1 · HEAR IT</div>
+        <div style="font-size:19px; font-weight:700; color:#463a5e; line-height:1.5;">short <b style="color:#d94f4f;">a</b> or long <b style="color:#2563eb;">a_e</b>?<br>short <b style="color:#0891b2;">i</b> or long <b style="color:#7b5ea7;">i_e</b>?</div>
+        <div class="ar" style="font-size:15px; color:#7a8aa0; margin-top:8px;">أميّز الصوت القصير والطويل</div>
       </div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:16px;">اقرأ وقُل الكلمات الأربع الأساسية</div>
+      <div class="card" style="width:320px; padding:20px 18px;">
+        <div style="font-size:44px;">🗣️</div>
+        <div style="font-size:22px; font-weight:800; color:#6a4fa3; margin:6px 0 8px;">2 · SAY IT</div>
+        <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+          ${['apple','cape','pin','pine'].map(w=>`
+            <span class="pill" style="background:${WBY[w][2]}1f; color:${WBY[w][2]}; border:2px solid ${WBY[w][2]}; font-size:20px;">${w}</span>`).join('')}
+        </div>
+        <div class="ar" style="font-size:15px; color:#7a8aa0; margin-top:8px;">أقرأ وأقول الكلمات الأربع</div>
+      </div>
+      <div class="card" style="width:320px; padding:20px 18px;">
+        <div style="font-size:44px;">🎯</div>
+        <div style="font-size:22px; font-weight:800; color:#6a4fa3; margin:6px 0 8px;">3 · WIN AT SCHOOL</div>
+        <div style="font-size:19px; font-weight:700; color:#463a5e; line-height:1.5;">number <b style="color:#d94f4f;">1</b> or <b style="color:#2563eb;">2</b>?<br>add the <b style="color:#d97706;">magic e</b>!</div>
+        <div class="ar" style="font-size:15px; color:#7a8aa0; margin-top:8px;">أسئلة مثل اختبار المدرسة</div>
+      </div>
     </div>
   </div>`);
 
-addScreen('Mission 3 · school style', `
-  <div style="text-align:center; width:100%; max-width:900px;">
-    <span class="source-badge">TODAY · MISSION 3 OF 3</span>
-    <div class="card" style="padding:26px 32px; margin-top:18px;">
-      <div style="font-size:27px; font-weight:800; color:#463a5e; line-height:1.55;">
-        Win the school game: number <b style="color:#d94f4f;">1</b> or <b style="color:#2563eb;">2</b> —
-        and add the <b style="color:#d97706;">magic e</b>!</div>
-      <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:14px;">أسئلة مثل اختبار المدرسة</div>
-    </div>
-  </div>`);
-
-/* ---------- S8 · Magic e concept ---------- */
+/* ---------- S6 · Magic e concept ---------- */
 addScreen('Magic e · the one idea', `
   <div style="text-align:center; width:100%; max-width:1020px;">
     <span class="source-badge">THE ONE IDEA · REMEMBER THIS</span>
     <div style="position:relative; width:940px; max-width:100%; margin:14px auto 0;">
       <img class="pic" src="${A}magic_e.jpg" style="width:100%; border-radius:16px; box-shadow:0 10px 26px rgba(74,58,110,.18);">
-      <button class="speaker" data-audio="a_t_magic_e.mp3" data-toast="Magic e! Say it with me!"
-        style="position:absolute; bottom:16px; left:16px; width:72px; height:72px; background-size:34px;
-          box-shadow:0 6px 16px rgba(74,58,110,.45); border:3px solid #fff;"></button>
     </div>
-    <div style="margin-top:14px; font-size:26px; font-weight:800; color:#3d3356;">
-      Magic <b style="color:#d97706;">e</b> makes the letter say its <b style="color:#2563eb;">NAME</b>: cap → cape</div>
+    <div style="margin-top:14px; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+      <button class="speaker small" data-audio="a_t_magic_e.mp3" data-toast="Magic e! Say it with me!"></button>
+      <span style="font-size:26px; font-weight:800; color:#3d3356;">Magic <b style="color:#d97706;">e</b> makes the letter say its <b style="color:#2563eb;">NAME</b>:</span>
+      <span style="display:inline-flex; align-items:center; gap:8px;">
+        <button class="speaker small" data-audio="a_t_w_cap.mp3" data-toast="cap — short a"></button>
+        <b style="font-size:26px; color:#d94f4f;">cap</b>
+        <span style="font-size:26px;">🪄</span>
+        <button class="speaker small" data-audio="a_t_w_cape.mp3" data-toast="cape — long A!"></button>
+        <b style="font-size:26px; color:#2563eb;">cape</b>
+      </span>
+    </div>
     <div class="ar" style="font-size:17px; color:#7a8aa0; margin-top:6px;">حرف e السحري يجعل الحرف يقول اسمه</div>
   </div>`);
 
@@ -352,7 +378,7 @@ function wordCard(w, au, badge){
     </div>`;
 }
 
-/* ---------- S9 · short a group: apple · cap · tap ---------- */
+/* ---------- S7 · short a group: apple · cap · tap ---------- */
 addScreen('Short a · apple cap tap', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">PHONICS · CD1 11 · OFFICIAL JINGLE + PRACTICE WORDS · SHORT A</span>
@@ -360,10 +386,10 @@ addScreen('Short a · apple cap tap', `
       Short <b style="color:#d94f4f;">a</b> — like <b style="color:#d94f4f;">a</b>pple!</div>
     <div style="display:flex; gap:24px; justify-content:center;">
       ${wordCard('apple','a_official_jingle_a.mp3','<div style="font-size:14px; font-weight:800; color:#24a66a; margin-top:6px;">♪ official jingle</div>')}
-      ${wordCard('cap','a_t_w_cap.mp3')}
-      ${wordCard('tap','a_t_w_tap.mp3')}
+      ${wordCard('cap','a_t_pat_cap.mp3')}
+      ${wordCard('tap','a_t_pat_tap.mp3')}
     </div>
-    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap a card → hear it → say it twice</div>
+    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap 🔊 — hear "a, a, ___!" — you say it too!</div>
   </div>`, el=>({
   onEnter(){
     el.querySelectorAll('.wc-in').forEach(c=> c.onclick=e=>{
@@ -373,18 +399,18 @@ addScreen('Short a · apple cap tap', `
   }
 }));
 
-/* ---------- S10 · long A group: apron · cape · tape ---------- */
+/* ---------- S8 · long A group: apron · cape · tape ---------- */
 addScreen('Long A · apron cape tape', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">PHONICS · PRACTICE MODEL (CD1 12 PENDING) · LONG A</span>
     <div style="font-size:24px; font-weight:800; color:#3d3356; margin:12px 0 14px;">
       Long <b style="color:#2563eb;">A</b> — the letter says its <b style="color:#2563eb;">NAME</b>!</div>
     <div style="display:flex; gap:24px; justify-content:center;">
-      ${wordCard('apron','a_t_a_says_apron.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">anchor: A says its name</div>')}
-      ${wordCard('cape','a_t_w_cape.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
-      ${wordCard('tape','a_t_w_tape.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
+      ${wordCard('apron','a_t_pat_apron.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">anchor: A says its name</div>')}
+      ${wordCard('cape','a_t_pat_cape.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
+      ${wordCard('tape','a_t_pat_tape.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
     </div>
-    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Stretch it: caaape · ta-a-ape!</div>
+    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap 🔊 — hear "A, A, ___!" — stretch it: caaape!</div>
   </div>`, el=>({
   onEnter(){
     el.querySelectorAll('.wc-in').forEach(c=> c.onclick=e=>{
@@ -431,7 +457,7 @@ addScreen('Listen · long or short (a)', `
   return { onEnter(){ deal(); later(playW, 450); } };
 });
 
-/* ---------- S12 · short i group: ink · pin · Tim ---------- */
+/* ---------- S10 · short i group: ink · pin · Tim ---------- */
 addScreen('Short i · ink pin Tim', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">PHONICS · CD1 11 · OFFICIAL JINGLE + PRACTICE WORDS · SHORT I</span>
@@ -439,10 +465,10 @@ addScreen('Short i · ink pin Tim', `
       Short <b style="color:#0891b2;">i</b> — like <b style="color:#0891b2;">i</b>nk!</div>
     <div style="display:flex; gap:24px; justify-content:center;">
       ${wordCard('ink','a_official_jingle_i.mp3','<div style="font-size:14px; font-weight:800; color:#24a66a; margin-top:6px;">♪ official jingle</div>')}
-      ${wordCard('pin','a_t_w_pin.mp3')}
-      ${wordCard('Tim','a_t_w_tim.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">the parrot\'s name!</div>')}
+      ${wordCard('pin','a_t_pat_pin.mp3')}
+      ${wordCard('Tim','a_t_pat_tim.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">the parrot\'s name!</div>')}
     </div>
-    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap a card → hear it → say it twice</div>
+    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap 🔊 — hear "i, i, ___!" — you say it too!</div>
   </div>`, el=>({
   onEnter(){
     el.querySelectorAll('.wc-in').forEach(c=> c.onclick=e=>{
@@ -452,18 +478,18 @@ addScreen('Short i · ink pin Tim', `
   }
 }));
 
-/* ---------- S13 · long I group: iron · pine · time ---------- */
+/* ---------- S11 · long I group: iron · pine · time ---------- */
 addScreen('Long I · iron pine time', `
   <div style="text-align:center; width:100%;">
     <span class="source-badge">PHONICS · PRACTICE MODEL (CD1 13 PENDING) · LONG I</span>
     <div style="font-size:24px; font-weight:800; color:#3d3356; margin:12px 0 14px;">
       Long <b style="color:#7b5ea7;">I</b> — the letter says its <b style="color:#7b5ea7;">NAME</b>!</div>
     <div style="display:flex; gap:24px; justify-content:center;">
-      ${wordCard('iron','a_t_i_says_iron.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">anchor: I says its name</div>')}
-      ${wordCard('pine','a_t_w_pine.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
-      ${wordCard('time','a_t_w_time.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
+      ${wordCard('iron','a_t_pat_iron.mp3','<div style="font-size:14px; font-weight:800; color:#8a6d3b; margin-top:6px;">anchor: I says its name</div>')}
+      ${wordCard('pine','a_t_pat_pine.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
+      ${wordCard('time','a_t_pat_time.mp3','<div style="font-size:14px; font-weight:800; color:#d97706; margin-top:6px;">✨ magic e</div>')}
     </div>
-    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Stretch it: piiine · ti-i-ime!</div>
+    <div style="margin-top:12px; font-size:17px; font-weight:700; color:#8a6d3b;">Tap 🔊 — hear "I, I, ___!" — stretch it: piiine!</div>
   </div>`, el=>({
   onEnter(){
     el.querySelectorAll('.wc-in').forEach(c=> c.onclick=e=>{
@@ -535,85 +561,81 @@ addScreen('Jingle · A says · I says', `
   }
 }));
 
-/* ---------- S16 · Magic E Wand: guess before you hear ---------- */
-addScreen('Magic E Wand · guess first!', `
-  <div style="width:100%; max-width:1000px; text-align:center;">
-    <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:8px;">
-      <span class="source-badge">MAGIC E WAND · GUESS → LISTEN → CHECK</span>
-      <span id="mw-stars" style="font-size:24px; letter-spacing:4px; color:#f59e0b;">☆☆☆☆☆☆</span>
+/* ---------- S14 · Fun Time: the book's mime game (page 11) ---------- */
+addScreen('Fun Time · mime and say', `
+  <div style="display:flex; gap:36px; align-items:center; width:100%; max-width:1160px; justify-content:center;">
+    <div style="text-align:center;">
+      <span class="source-badge">FUN TIME · BOOK PAGE 11 · PHONICS GAME (CD1 14 PENDING)</span>
+      <img class="pic" src="${A}game_mime.jpg" style="width:540px; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.18); margin-top:12px;">
+      <div style="font-size:15px; font-weight:700; color:#8a6d3b; margin-top:6px;">We Can 2 · Unit 1 · Page 11 · Fun Time</div>
     </div>
-    <div style="display:flex; gap:30px; justify-content:center; align-items:center; margin-top:10px;">
-      <div class="card" style="width:320px; padding:16px; text-align:center;">
-        <img id="mw-pic" class="pic" src="${A}w_cap.jpg" style="width:100%; height:180px; object-fit:contain;">
-        <div id="mw-word" style="font-size:30px; font-weight:800; color:#463a5e; margin-top:8px;">cap</div>
+    <div style="width:470px; text-align:center;">
+      <div style="font-size:24px; font-weight:800; color:#3d3356; line-height:1.6; margin-bottom:14px; text-align:left;">
+        1️⃣ I say: <b style="color:#6a4fa3;">"I says …"</b><br>
+        2️⃣ You finish with the picture:<br><b style="color:#7b5ea7;">"i, i, pine!"</b><br>
+        3️⃣ Tap 🔊 — check yourself!
       </div>
-      <div style="font-size:44px;">🪄</div>
-      <div style="width:380px;">
-        <div style="font-size:21px; font-weight:800; color:#3d3356; margin-bottom:12px;">Did Magic e change it?<br>
-          <span style="font-size:16px; color:#8a6d3b;">Guess FIRST — then listen!</span></div>
-        <div style="display:flex; gap:14px; margin-bottom:12px;">
-          <button id="mw-changed" style="flex:1; height:58px; border:none; border-radius:16px; cursor:pointer;
-            background:#d97706; color:#fff; font-size:21px; font-weight:800; box-shadow:0 3px 0 #b45309;">✨ Changed!</button>
-          <button id="mw-same" style="flex:1; height:58px; border:none; border-radius:16px; cursor:pointer;
-            background:#6a4fa3; color:#fff; font-size:21px; font-weight:800; box-shadow:0 3px 0 #4a3a6e;">😐 Same!</button>
+      <div class="card" style="padding:16px 18px;">
+        <div id="mg-round" style="font-size:16px; font-weight:800; color:#8a6d3b;">Round 1 / 4</div>
+        <div style="min-height:150px; display:flex; align-items:center; justify-content:center; margin:8px 0;">
+          <img id="mg-pic" class="pic" src="${A}w_pine.jpg" style="max-height:150px; max-width:100%; object-fit:contain;">
         </div>
-        <button id="mw-hear" class="pill" style="background:#f3eefb; color:#4a3a6e; font-size:18px; height:48px; cursor:pointer;">🔊 Now listen & check</button>
-        <div id="mw-ans" class="card" style="display:none; margin-top:12px; padding:12px 16px; font-size:22px; font-weight:800;"></div>
-        <div id="mw-round" class="card" style="display:inline-block; margin-top:12px; padding:6px 18px; font-size:17px; font-weight:800; color:#8a6d3b;">Round 1 / 6</div>
+        <div id="mg-line" style="font-size:27px; font-weight:800; color:#463a5e; visibility:hidden;">i, i, <b style="color:#7b5ea7;">pine</b>!</div>
+        <div style="display:flex; gap:12px; justify-content:center; margin-top:12px;">
+          <button id="mg-say" class="pill" style="background:#f3eefb; color:#4a3a6e; font-size:17px; height:46px; cursor:pointer;">🗣️ I said it!</button>
+          <button id="mg-hear" class="pill" style="background:#24a66a; color:#fff; font-size:17px; height:46px; cursor:pointer;">🔊 Hear &amp; check</button>
+        </div>
       </div>
     </div>
   </div>`, el=>{
-  /* base word shown; audio plays base or magic-e version */
-  const DECK=[['cap','cape'],['tap','tap'],['pin','pine'],['cape','cap'],['tap','tape'],['pin','pin']];
-  let di=0, stars=0, guessed=null;
+  /* book game: teacher says "I says ..." — student completes with the picture word */
+  const DECK=[['i, i','pine','w_pine.jpg','a_t_pat_pine.mp3','#7b5ea7'],
+              ['a, a','apple','w_apple.jpg','a_official_jingle_a.mp3','#d94f4f'],
+              ['I, I','time','w_time.jpg','a_t_pat_time.mp3','#7b5ea7'],
+              ['A, A','cape','w_cape.jpg','a_t_pat_cape.mp3','#2563eb']];
+  let di=0, said=false;
   function paint(){
-    const [base] = DECK[di] || ['',''];
-    el.querySelector('#mw-pic').src = A+WBY[base][4];
-    el.querySelector('#mw-word').textContent = base;
-    el.querySelector('#mw-word').style.color = '#463a5e';
-    el.querySelector('#mw-ans').style.display='none';
-    el.querySelector('#mw-round').textContent = di<6 ? ('Round '+(di+1)+' / 6') : 'Done!';
-    el.querySelector('#mw-stars').textContent = '★'.repeat(stars)+'☆'.repeat(Math.max(0,6-stars));
-    guessed=null;
+    const [snd,word,img] = DECK[di] || ['','',''];
+    el.querySelector('#mg-round').textContent = di<4 ? ('Round '+(di+1)+' / 4') : 'Done!';
+    el.querySelector('#mg-pic').src = A+img;
+    const line = el.querySelector('#mg-line');
+    line.innerHTML = snd+', <b style="color:'+DECK[di][4]+'">'+word+'</b>!';
+    line.style.visibility='hidden';
+    said=false;
   }
-  function guess(changed){ if (di<6){ guessed=changed; toast(changed?'You say: CHANGED!':'You say: SAME!'); } }
-  el.querySelector('#mw-changed').onclick=()=>guess(true);
-  el.querySelector('#mw-same').onclick=()=>guess(false);
-  el.querySelector('#mw-hear').onclick=()=>{
-    if (di>=6) return;
-    if (guessed===null){ toast('Guess first!'); return; }
-    const [base, actual] = DECK[di];
-    const changed = base!==actual;
-    const ans = el.querySelector('#mw-ans');
-    const right = guessed===changed;
-    ans.innerHTML = (changed ? '✨ It changed! → <b style="color:#2563eb;">'+actual+'</b>' : '😐 Same word: <b style="color:#6a4fa3;">'+actual+'</b>')
-      + (right ? ' <span style="color:#1f9d6c;">✓</span>' : ' <span style="color:#d94f4f;">✗</span>');
-    ans.style.display='block';
-    play(WBY[actual][5]);
-    if (right){ stars++; sfx('sfx_correct.mp3'); } else sfx('sfx_wrong.mp3');
-    el.querySelector('#mw-stars').textContent = '★'.repeat(stars)+'☆'.repeat(Math.max(0,6-stars));
-    later(()=>{ di++; if (di<6){ sfx('sfx_pop.mp3'); paint(); }
-      else { paint(); if (stars>=4) sfx('sfx_success.mp3'); toast('Wand score: '+stars+' / 6'); } }, 2400);
+  el.querySelector('#mg-say').onclick=()=>{
+    if (di>=4) return;
+    said=true; sfx('sfx_pop.mp3');
+    el.querySelector('#mg-line').style.visibility='visible';
+    toast('You said it — now hear and check!');
   };
-  return { onEnter(){ di=0; stars=0; paint(); } };
+  el.querySelector('#mg-hear').onclick=()=>{
+    if (di>=4) return;
+    if (!said){ toast('Say it first — then check!'); return; }
+    el.querySelector('#mg-line').style.visibility='visible';
+    play(DECK[di][3]);
+    later(()=>{ di++; if (di<4){ sfx('sfx_correct.mp3'); paint(); }
+      else { sfx('sfx_success.mp3'); toast('Great game! Four rounds done!'); } }, 2200);
+  };
+  return { onEnter(){ di=0; paint(); } };
 });
 
-/* ---------- S17 · recycle: cap/clap/lock/clock ears from L2 ---------- */
-addScreen('Quick ears · cap clap lock clock', `
-  <div style="text-align:center; width:100%; max-width:920px;">
-    <span class="source-badge">FROM LESSON 2 · LISTEN AND TAP</span>
+/* ---------- S15 · recycle: cap/clap/lock/clock ears from L2 (book page 6) ---------- */
+addScreen('Quick ears · Lesson 2 words', `
+  <div style="text-align:center; width:100%; max-width:960px;">
+    <span class="source-badge">FROM LESSON 2 · BOOK PAGE 6 · QUICK EARS</span>
+    <div style="font-size:30px; font-weight:800; color:#3d3356; margin:12px 0 4px;">You know these! Listen — tap the picture!</div>
     <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin:12px 0 14px;">
       <button id="rc-play" class="speaker" style="width:64px; height:64px;"></button>
       <span id="rc-round" class="card" style="padding:6px 16px; font-size:17px; font-weight:800; color:#8a6d3b;">1 / 4</span>
     </div>
     <div style="display:flex; gap:20px; justify-content:center;">
-      ${[['cap','l2_snd_cap.png'],['clap','l2_snd_clap.png'],['lock','l2_snd_lock.png'],['clock','l2_snd_clock.png']].map(([w,img])=>`
-      <div class="card rc-pic" data-w="${w}" style="cursor:pointer; padding:14px; width:200px;">
-        <img class="pic" src="${A}${img}" style="width:100%; height:130px; object-fit:contain;">
+      ${[['cap','l2_cap.jpg'],['clap','l2_clap.jpg'],['lock','l2_lock.jpg'],['clock','l2_clock.jpg']].map(([w,img])=>`
+      <div class="card rc-pic" data-w="${w}" style="cursor:pointer; padding:14px; width:205px;">
+        <img class="pic" src="${A}${img}" style="width:100%; height:135px; object-fit:contain;">
         <div style="font-size:21px; font-weight:800; color:#463a5e; margin-top:8px;">${w}</div>
       </div>`).join('')}
     </div>
-    <div style="margin-top:14px; font-size:18px; font-weight:700; color:#8a6d3b;">Listen → tap the matching picture</div>
   </div>`, el=>{
   const WORDS4=['cap','clap','lock','clock'];
   const AU={'cap':'a_t_cap.mp3','clap':'a_t_clap_word.mp3','lock':'a_t_lock.mp3','clock':'a_t_clock.mp3'};
@@ -696,8 +718,8 @@ addScreen('Check 1 · point to the sound', `
 /* ---------- S19 · fixed repair path + Check 2 ---------- */
 addScreen('Repair · Check 2', `
   <div style="display:grid; grid-template-columns:400px 1fr; gap:48px; align-items:center; width:100%; max-width:1080px;">
-    <div class="card" style="height:420px; display:flex; align-items:center; justify-content:center; padding:16px;">
-      <img src="${A}magic_e.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:14px;" alt="magic e">
+    <div class="card" style="height:420px; display:flex; align-items:center; justify-content:center; padding:16px; background:#fdf6ec;">
+      <img src="${A}magic_e.jpg" style="max-width:100%; max-height:100%; object-fit:contain; border-radius:14px;" alt="magic e">
     </div>
     <div>
       <span class="source-badge">HELP FADES → CHECK 2</span>
@@ -778,40 +800,53 @@ addScreen('Repair · Check 2', `
     el.querySelectorAll('.repair-step').forEach(b=>{b.style.background='#f3eefb';b.style.color='#4a3a6e';}); } };
 });
 
-/* ---------- S20 · school practice 1: listen and number ---------- */
+/* ---------- S18 · school practice 1: listen and number (words in the boxes) ---------- */
 addScreen('School practice 1 · number 1 or 2', `
-  <div style="width:100%; max-width:820px; text-align:center;">
+  <div style="width:100%; max-width:900px; text-align:center;">
     <span class="source-badge">SCHOOL-STYLE PRACTICE · 1 OF 2</span>
-    <div style="font-size:22px; font-weight:750; color:#3d3356; margin:14px 0 16px;">
-      Number <b style="color:#d94f4f;">1</b> for short a · number <b style="color:#2563eb;">2</b> for long a_e.
-      <span class="ar" style="font-size:16px; color:#7a8aa0;"> · استمع واختر الرقم</span></div>
-    <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin-bottom:18px;">
+    <div style="font-size:26px; font-weight:800; color:#3d3356; margin:12px 0 4px;">Listen — tap the number!</div>
+    <div class="ar" style="font-size:16px; color:#7a8aa0; margin-bottom:12px;">استمع واضغط على الرقم الصحيح</div>
+    <div style="display:flex; align-items:center; gap:16px; justify-content:center; margin-bottom:14px;">
       <button id="sn-play" class="speaker" style="width:68px; height:68px;"></button>
       <span id="sn-round" class="card" style="padding:8px 18px; font-size:18px; font-weight:800; color:#8a6d3b;">Item 1 / 2</span>
     </div>
     <div style="display:flex; gap:30px; justify-content:center;">
-      <button class="sn-pick" data-n="1" style="width:240px; height:120px; border:none; border-radius:18px; cursor:pointer;
-        background:#fdf0ec; border:3px solid #d94f4f; font-size:52px; font-weight:800; color:#d94f4f;">1</button>
-      <button class="sn-pick" data-n="2" style="width:240px; height:120px; border:none; border-radius:18px; cursor:pointer;
-        background:#eef4fd; border:3px solid #2563eb; font-size:52px; font-weight:800; color:#2563eb;">2</button>
+      <button class="sn-pick" data-n="1" style="width:290px; border:none; border-radius:18px; cursor:pointer; padding:14px;
+        background:#fdf0ec; border:3px solid #d94f4f;">
+        <span style="font-size:44px; font-weight:800; color:#d94f4f;">1</span><br>
+        <img class="pic sn-img1" src="${A}w_cap.jpg" style="height:110px; object-fit:contain; margin:6px 0;">
+        <div class="sn-word1" style="font-size:26px; font-weight:800; color:#d94f4f;">cap</div>
+      </button>
+      <button class="sn-pick" data-n="2" style="width:290px; border:none; border-radius:18px; cursor:pointer; padding:14px;
+        background:#eef4fd; border:3px solid #2563eb;">
+        <span style="font-size:44px; font-weight:800; color:#2563eb;">2</span><br>
+        <img class="pic sn-img2" src="${A}w_cape.jpg" style="height:110px; object-fit:contain; margin:6px 0;">
+        <div class="sn-word2" style="font-size:26px; font-weight:800; color:#2563eb;">cape</div>
+      </button>
     </div>
-    <div id="sn-ans" class="card" style="display:none; margin:16px auto 0; max-width:380px; padding:12px 18px;
+    <div id="sn-ans" class="card" style="display:none; margin:14px auto 0; max-width:380px; padding:12px 18px;
       font-size:24px; font-weight:800; color:#1f9d6c;"></div>
   </div>`, el=>{
-  const ITEMS=[['tap','1'],['tape','2']];
+  /* like the book: words sit inside the numbered boxes; hear one → tap its number */
+  const ITEMS=[ {w1:'cap', i1:'w_cap.jpg', w2:'cape', i2:'w_cape.jpg', au:'a_t_w_cape.mp3', ans:'2'},
+                {w1:'pin', i1:'w_pin.jpg', w2:'pine', i2:'w_pine.jpg', au:'a_t_w_pin.mp3',  ans:'1'} ];
   let di=0;
   function paint(){
+    const it = ITEMS[di] || ITEMS[0];
     el.querySelector('#sn-round').textContent = di<2 ? ('Item '+(di+1)+' / 2') : 'Done!';
+    el.querySelector('.sn-img1').src = A+it.i1; el.querySelector('.sn-word1').textContent = it.w1;
+    el.querySelector('.sn-img2').src = A+it.i2; el.querySelector('.sn-word2').textContent = it.w2;
     el.querySelector('#sn-ans').style.display='none';
+    el.querySelectorAll('.sn-pick').forEach(p=> p.style.boxShadow='');
   }
-  function playW(){ if (di<2) play(WBY[ITEMS[di][0]][5]); }
+  function playW(){ if (di<2) play(ITEMS[di].au); }
   el.querySelector('#sn-play').onclick=playW;
   el.querySelectorAll('.sn-pick').forEach(p=> p.onclick=()=>{
     if (di>=2) return;
-    if (p.dataset.n===ITEMS[di][1]){
-      sfx('sfx_correct.mp3');
+    if (p.dataset.n===ITEMS[di].ans){
+      sfx('sfx_correct.mp3'); p.style.boxShadow='0 0 0 6px #1f9d6c55';
       const ans=el.querySelector('#sn-ans');
-      ans.innerHTML = '✓ '+ITEMS[di][0]+' = '+ITEMS[di][1];
+      ans.innerHTML = '✓ number '+ITEMS[di].ans+'!';
       ans.style.display='block';
       di++; later(()=>{ paint(); if(di<2) later(playW, 500); else sfx('sfx_success.mp3'); }, 1300);
     } else { sfx('sfx_wrong.mp3'); toast('Listen again!'); later(playW, 500); }
@@ -908,10 +943,10 @@ addScreen('Exit task · Home review', `
       <div class="ar" style="font-size:16px; color:#7a8aa0; margin-bottom:16px;">أربع كلمات — طويل أم قصير؟</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
         ${['apple','cape','pin','pine'].map(w=>`
-        <button class="exit-w" data-w="${w}" style="border:none; background:#fff; border-radius:14px; padding:10px;
+        <button class="exit-w" data-w="${w}" style="border:none; background:#fff; border-radius:14px; padding:12px;
           cursor:pointer; box-shadow:0 3px 10px rgba(40,30,60,.12);">
-          <img src="${A}${WBY[w][4]}" style="width:100%; height:80px; object-fit:contain;">
-          <div style="font-size:19px; font-weight:800; color:${WBY[w][2]}; margin-top:4px;">${w}</div>
+          <img src="${A}${WBY[w][4]}" style="width:100%; height:115px; object-fit:contain;">
+          <div style="font-size:20px; font-weight:800; color:${WBY[w][2]}; margin-top:6px;">${w}</div>
         </button>`).join('')}
       </div>
       <div style="margin-top:12px; font-size:17px; color:#6e7b8b; font-weight:700;">Tap one — say "long!" or "short!" first, then hear it.</div>
