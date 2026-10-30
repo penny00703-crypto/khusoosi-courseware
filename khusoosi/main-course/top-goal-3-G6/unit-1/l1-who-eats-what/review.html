@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G6 U1L1 · After-class review</title>
+  <style>
+    :root{--ink:#143d3b;--muted:#5d7471;--teal:#087f73;--deep:#075b55;--mint:#dff4ed;--cream:#fbf8ef;--coral:#ef765f;--gold:#fff5d9;--line:#cfe1da}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif}button{font:inherit}button:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(20px,5vw,64px);background:#fff;border-bottom:1px solid var(--line)}header strong{font-size:18px}header img{width:128px;height:40px;object-fit:contain}
+    main{width:min(1000px,92vw);margin:0 auto;padding:34px 0 52px}.eyebrow{font-size:14px;font-weight:850;letter-spacing:1.6px;color:var(--coral)}h1{margin:8px 0 10px;font-size:clamp(32px,5vw,48px);line-height:1.1}.lead{margin:0 0 24px;color:var(--muted);font-size:19px}.ar{font-family:Tahoma,Arial,sans-serif;direction:rtl;text-align:right;color:var(--muted);font-size:18px}
+    .station-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:30px}.station-nav a{padding:12px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);text-align:center;text-decoration:none;font-weight:750}.station-nav a:hover{background:var(--mint)}
+    .review-section{margin-top:28px;padding-top:8px;scroll-margin-top:18px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}.section-head h2{margin:0;font-size:28px}.section-head p{margin:4px 0 0;color:var(--muted);line-height:1.45}.score{padding:8px 13px;border-radius:12px;background:var(--mint);font-weight:800;white-space:nowrap}
+    .word-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.word-card{min-width:0;padding:0;overflow:hidden;text-align:left;background:#fff;border:1px solid var(--line);border-radius:20px;cursor:pointer;color:var(--ink);box-shadow:0 8px 24px rgba(20,61,59,.05)}.word-card:hover{border-color:var(--teal);transform:translateY(-2px)}.word-card img{display:block;width:100%;height:150px;object-fit:cover}.word-copy{display:block;padding:16px}.word-copy strong{display:block;font-size:26px;color:var(--teal)}.phonetic{display:block;margin-top:3px;color:var(--muted);font-size:18px}.meaning{display:block;margin-top:8px;font-size:17px}.listen-label{display:block;margin-top:12px;font-size:14px;font-weight:800;color:var(--coral)}
+    .station-card{padding:24px;background:#fff;border:1px solid var(--line);border-radius:22px}.station-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}.station-toolbar strong{font-size:20px}.audio-button,.primary,.secondary{min-height:46px;padding:11px 17px;border:0;border-radius:12px;cursor:pointer;font-weight:800}.audio-button,.primary{background:var(--teal);color:#fff}.secondary{background:var(--mint);color:var(--deep)}button:disabled{opacity:.5;cursor:default}
+    .listening-options{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.listening-option{padding:8px;border:2px solid transparent;border-radius:16px;background:#f7fbf9;cursor:pointer}.listening-option img{display:block;width:100%;height:145px;object-fit:cover;border-radius:11px}.listening-option.correct{border-color:#4c9a62;background:#dff4df}.listening-option.wrong{border-color:#d47c68;background:#fff0ea}.feedback{min-height:26px;margin:14px 0 0;font-size:17px;font-weight:700;line-height:1.45}.feedback.correct{color:#277a46}.feedback.wrong{color:#b64d3b}
+    .speaking-stage{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center}.speaking-stage>img{width:100%;height:240px;object-fit:cover;border-radius:18px}.speaking-prompt{font-size:28px;font-weight:800;line-height:1.3}.speaking-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.speaking-model{margin-top:16px;padding:18px;border-radius:16px;background:var(--gold)}.speaking-model strong{display:block;font-size:32px;color:var(--teal)}.speaking-model[hidden]{display:none}
+    .quiz-list{display:grid;gap:14px}.quiz-card{display:grid;grid-template-columns:190px 1fr;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:20px}.quiz-card>img{width:100%;height:100%;min-height:210px;object-fit:cover}.quiz-body{min-width:0;width:100%;padding:22px}.quiz-tag{font-size:13px;font-weight:850;letter-spacing:1.2px;color:var(--coral)}.question{margin:8px 0 16px;font-size:24px;font-weight:800;line-height:1.35;overflow-wrap:break-word}.options{display:flex;flex-wrap:wrap;gap:10px}.options button{min-width:0;min-height:44px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer;font-size:18px;font-weight:700;line-height:1.35;white-space:normal}.options button.correct{background:#dff4df;border-color:#4c9a62}.options button.wrong{background:#fff0ea;border-color:#d47c68}.reset{margin-top:14px}
+    footer{text-align:center;color:var(--muted);padding:0 20px 28px}
+    main{width:min(1060px,calc(100% - 56px));padding-top:44px}.lead{line-height:1.6;margin-bottom:30px}.station-nav{gap:14px;margin-bottom:44px}.station-nav a{padding:14px 12px}.review-section{margin-top:48px}.section-head{margin-bottom:20px;gap:24px}.section-head p{max-width:680px;line-height:1.6}.word-grid{gap:20px}.word-card img{height:160px}.word-copy{padding:22px}.word-copy strong{line-height:1.25}.phonetic{line-height:1.5}.meaning{line-height:1.5}.listen-label{line-height:1.45}.station-card{padding:32px;border-radius:24px}.station-toolbar{margin-bottom:24px}.listening-options{gap:18px}.listening-option{padding:12px}.speaking-stage{gap:32px}.speaking-prompt{line-height:1.5}.speaking-actions{gap:12px;margin-top:22px}.quiz-list{gap:20px}.quiz-body{padding:28px}.question{line-height:1.5;margin-bottom:20px}.options{gap:12px}.feedback{line-height:1.55;margin-top:16px}.reset{margin-top:20px}
+    @media(max-width:760px){main{width:calc(100% - 40px);padding-top:34px}.station-nav{grid-template-columns:repeat(2,1fr)}.word-grid{grid-template-columns:repeat(2,1fr)}.word-card img{height:150px}.listening-options{grid-template-columns:repeat(2,1fr)}.speaking-stage{grid-template-columns:1fr}.speaking-stage>img{height:240px}.quiz-card{grid-template-columns:1fr}.quiz-card>img{height:180px;min-height:0}.review-section{margin-top:42px}}
+    @media(max-width:480px){header strong{font-size:14px}header img{width:104px}main{width:calc(100% - 36px);padding-top:30px}.lead{font-size:18px}.station-nav{gap:12px;margin-bottom:38px}.section-head{align-items:flex-start;flex-direction:column;gap:12px}.section-head h2{font-size:26px}.word-grid{grid-template-columns:1fr;gap:20px}.word-card img{height:200px}.word-copy{padding:22px}.word-copy strong{font-size:26px}.station-card{padding:24px}.listening-options{gap:14px}.listening-option{padding:10px}.listening-option img{height:130px}.speaking-prompt{font-size:24px}.quiz-body{padding:24px}.question{font-size:22px}.options{display:grid;grid-template-columns:1fr}.options button{width:100%}}
+  </style>
+</head>
+<body>
+<header><strong>G6 · U1L1 · Who eats what?</strong><img src="assets/logo_khusoosi.png" alt="51Talk Khusoosi"></header>
+<main>
+  <span class="eyebrow">AFTER-CLASS REVIEW · 4 STATIONS</span>
+  <h1>Listen, say, and read.</h1>
+  <p class="lead">Complete each station at your own pace. No microphone recording is needed.</p>
+  <nav class="station-nav" aria-label="Review stations"><a href="#resources">1 · Words</a><a href="#listening">2 · Listen</a><a href="#speaking">3 · Say</a><a href="#reading">4 · Read</a></nav>
+
+  <section id="resources" class="review-section">
+    <div class="section-head"><div><h2>1 · Picture vocabulary</h2><p>Tap a card to hear the word. Pictures, English, Arabic and audio stay together.</p></div></div>
+    <div class="word-grid">
+      <button class="word-card" data-audio="a_t_insect.mp3"><img src="assets/sec_01_insect.jpg" alt="Ants"><span class="word-copy"><strong>insect</strong><span class="phonetic">/ˈɪnsekt/</span><span class="meaning ar">حشرة</span><span class="listen-label">Listen and repeat</span></span></button>
+      <button class="word-card" data-audio="a_t_beetle.mp3"><img src="assets/sec_02_beetle.jpg" alt="Beetle"><span class="word-copy"><strong>beetle</strong><span class="phonetic">/ˈbiːtəl/</span><span class="meaning ar">خنفساء</span><span class="listen-label">Listen and repeat</span></span></button>
+      <button class="word-card" data-audio="a_t_butterfly.mp3"><img src="assets/sec_03_butterfly.jpg" alt="Butterfly"><span class="word-copy"><strong>butterfly</strong><span class="phonetic">/ˈbʌtərflaɪ/</span><span class="meaning ar">فراشة</span><span class="listen-label">Listen and repeat</span></span></button>
+      <button class="word-card" data-audio="a_t_tortoise.mp3"><img src="assets/sec_04_tortoise.jpg" alt="Tortoise"><span class="word-copy"><strong>tortoise</strong><span class="phonetic">/ˈtɔːrtəs/</span><span class="meaning ar">سلحفاة</span><span class="listen-label">Listen and repeat</span></span></button>
+    </div>
+  </section>
+
+  <section id="listening" class="review-section">
+    <div class="section-head"><div><h2>2 · Pure listening</h2><p>Play the word, then choose its picture. No English answer is shown.</p></div><span id="listeningScore" class="score">First try: 0 / 4</span></div>
+    <div class="station-card">
+      <div class="station-toolbar"><strong id="listeningProgress">Word 1 of 4</strong><button id="listeningAudio" class="audio-button" type="button">Play the word</button></div>
+      <div id="listeningOptions" class="listening-options"></div>
+      <p id="listeningFeedback" class="feedback" aria-live="polite"></p>
+      <button id="nextListening" class="primary" type="button" hidden>Next word</button>
+    </div>
+  </section>
+
+  <section id="speaking" class="review-section">
+    <div class="section-head"><div><h2>3 · Independent speaking</h2><p>Try first without the word. Use a model only if you need it, hide it, then say the same word again.</p></div></div>
+    <div class="station-card">
+      <div class="station-toolbar"><strong id="speakingProgress">Word 1 of 4</strong><span class="score">Self-check · no speaking score</span></div>
+      <div class="speaking-stage"><img id="speakingImage" src="assets/sec_01_insect.jpg" alt="Speaking prompt"><div><p class="speaking-prompt">Look at the picture.<br>Say the word without a model.</p><div class="speaking-actions"><button id="independentNext" class="primary" type="button">I said it · Next</button><button id="showSpeakingModel" class="secondary" type="button">I need a model</button></div><div id="speakingModel" class="speaking-model" hidden><strong id="speakingWord"></strong><span id="speakingPhonetic" class="phonetic"></span><span id="speakingMeaning" class="meaning ar"></span><div class="speaking-actions"><button id="speakingAudio" class="audio-button" type="button">Listen to the model</button><button id="hideSpeakingModel" class="secondary" type="button">Hide it · I said it again</button></div></div></div></div>
+    </div>
+  </section>
+
+  <section id="reading" class="review-section">
+    <div class="section-head"><div><h2>4 · Reading and grammar</h2><p>Read and choose. This station has no audio.</p></div><span id="readingScore" class="score">First try: 0 / 3</span></div>
+    <div class="quiz-list">
+      <article class="quiz-card" data-question="q1"><img src="assets/sec_07_sharks_fish.jpg" alt="Shark and fish"><div class="quiz-body"><span class="quiz-tag">QUESTION 1 · COMPLETE</span><p class="question">Fish ___ eaten by sharks.</p><div class="options"><button data-correct="true">are</button><button data-correct="false">is</button><button data-correct="false">eat</button></div><p class="feedback" aria-live="polite"></p></div></article>
+      <article class="quiz-card" data-question="q2"><img src="assets/sec_05_beetles_insects.jpg" alt="Beetle and insects"><div class="quiz-body"><span class="quiz-tag">QUESTION 2 · CHOOSE</span><p class="question">Which sentence is correct?</p><div class="options"><button data-correct="false">Beetles are eaten by insects.</button><button data-correct="true">Insects are eaten by beetles.</button></div><p class="feedback" aria-live="polite"></p></div></article>
+      <article class="quiz-card" data-question="q3"><img src="assets/sec_10_tortoises_plants.jpg" alt="Tortoise and plants"><div class="quiz-body"><span class="quiz-tag">QUESTION 3 · CHANGE THE START</span><p class="question">Tortoises eat plants.<br>Plants ___ ___ by tortoises.</p><div class="options"><button data-correct="false">eat</button><button data-correct="true">are eaten</button><button data-correct="false">are eat</button></div><p class="feedback" aria-live="polite"></p></div></article>
+    </div>
+    <button id="resetReading" class="secondary reset" type="button">Practise again · first-try score stays</button>
+  </section>
+</main>
+<footer>G6 U1L1 · Local review · No production submission</footer>
+<audio id="player"></audio>
+<script>
+const player=document.getElementById('player');
+function playFile(file){player.pause();player.currentTime=0;player.src='assets/'+file;player.play().catch(()=>{});}
+document.querySelectorAll('.word-card').forEach(button=>button.addEventListener('click',()=>playFile(button.dataset.audio)));
+document.querySelectorAll('.station-nav a').forEach(link=>link.addEventListener('click',()=>{player.pause();player.currentTime=0;}));
+
+const words=[
+  {key:'insect',audio:'a_t_insect.mp3',image:'sec_01_insect.jpg',phonetic:'/ˈɪnsekt/',meaning:'حشرة'},
+  {key:'beetle',audio:'a_t_beetle.mp3',image:'sec_02_beetle.jpg',phonetic:'/ˈbiːtəl/',meaning:'خنفساء'},
+  {key:'butterfly',audio:'a_t_butterfly.mp3',image:'sec_03_butterfly.jpg',phonetic:'/ˈbʌtərflaɪ/',meaning:'فراشة'},
+  {key:'tortoise',audio:'a_t_tortoise.mp3',image:'sec_04_tortoise.jpg',phonetic:'/ˈtɔːrtəs/',meaning:'سلحفاة'}
+];
+let listeningIndex=0,listeningFirst=true,listeningScore=0,listeningLocked=false;
+const optionOrders=[[0,1,2,3],[2,0,3,1],[1,3,2,0],[3,2,0,1]];
+function renderListening(){
+  listeningFirst=true;listeningLocked=false;
+  document.getElementById('listeningProgress').textContent='Word '+(listeningIndex+1)+' of 4';
+  document.getElementById('listeningFeedback').textContent='';document.getElementById('listeningFeedback').className='feedback';
+  document.getElementById('nextListening').hidden=true;
+  const options=document.getElementById('listeningOptions');options.innerHTML='';
+  optionOrders[listeningIndex].forEach(i=>{const b=document.createElement('button');b.type='button';b.className='listening-option';b.dataset.word=words[i].key;b.innerHTML='<img src="assets/'+words[i].image+'" alt="Listening picture option">';b.addEventListener('click',()=>answerListening(b));options.appendChild(b);});
+}
+document.getElementById('listeningAudio').addEventListener('click',()=>playFile(words[listeningIndex].audio));
+function answerListening(button){
+  if(listeningLocked)return;
+  const feedback=document.getElementById('listeningFeedback');
+  if(button.dataset.word===words[listeningIndex].key){
+    listeningLocked=true;if(listeningFirst)listeningScore++;
+    document.getElementById('listeningScore').textContent='First try: '+listeningScore+' / 4';
+    button.classList.add('correct');feedback.textContent=listeningFirst?'Correct on your first try.':'Correct now. Your first-try score does not change.';feedback.className='feedback correct';
+    document.querySelectorAll('.listening-option').forEach(b=>b.disabled=true);document.getElementById('nextListening').hidden=false;
+    document.getElementById('nextListening').textContent=listeningIndex===3?'Listening station complete':'Next word';
+  }else{listeningFirst=false;button.classList.add('wrong');feedback.textContent='Not yet. Listen again and choose another picture.';feedback.className='feedback wrong';}
+}
+document.getElementById('nextListening').addEventListener('click',()=>{if(listeningIndex<3){listeningIndex++;renderListening();}else{document.getElementById('nextListening').hidden=true;}});
+renderListening();
+
+let speakingIndex=0;
+function renderSpeaking(){
+  const word=words[speakingIndex];document.getElementById('speakingProgress').textContent='Word '+(speakingIndex+1)+' of 4';
+  document.getElementById('speakingImage').src='assets/'+word.image;document.getElementById('speakingModel').hidden=true;
+  document.getElementById('speakingWord').textContent=word.key;document.getElementById('speakingPhonetic').textContent=word.phonetic;document.getElementById('speakingMeaning').textContent=word.meaning;
+  document.getElementById('independentNext').textContent=speakingIndex===3?'I said it · Finish':'I said it · Next';
+}
+document.getElementById('showSpeakingModel').addEventListener('click',()=>{document.getElementById('speakingModel').hidden=false;});
+document.getElementById('speakingAudio').addEventListener('click',()=>playFile(words[speakingIndex].audio));
+document.getElementById('hideSpeakingModel').addEventListener('click',()=>{document.getElementById('speakingModel').hidden=true;document.querySelector('.speaking-prompt').innerHTML='The model is hidden.<br>Say the same word again.';});
+document.getElementById('independentNext').addEventListener('click',()=>{if(speakingIndex<3){speakingIndex++;document.querySelector('.speaking-prompt').innerHTML='Look at the picture.<br>Say the word without a model.';renderSpeaking();}else{document.querySelector('.speaking-prompt').textContent='Speaking station complete.';}});
+renderSpeaking();
+
+let readingScore=0,readingPractice=false;
+const readingAnswered=new Set(),readingFirst=new Map();
+document.querySelectorAll('[data-correct]').forEach(button=>button.addEventListener('click',()=>{
+  const card=button.closest('[data-question]'),id=card.dataset.question;if(readingAnswered.has(id))return;
+  if(!readingFirst.has(id))readingFirst.set(id,true);
+  const feedback=card.querySelector('.feedback');
+  if(button.dataset.correct==='true'){
+    const first=readingFirst.get(id);readingAnswered.add(id);if(first&&!readingPractice)readingScore++;
+    document.getElementById('readingScore').textContent='First try: '+readingScore+' / 3';button.classList.add('correct');
+    feedback.textContent=first?'Correct on your first try.':'Correct now. Your first-try score does not change.';feedback.className='feedback correct';card.querySelectorAll('[data-correct]').forEach(b=>b.disabled=true);
+  }else{readingFirst.set(id,false);button.classList.add('wrong');feedback.textContent='Not yet. Read the sentence and check who does the action.';feedback.className='feedback wrong';}
+}));
+document.getElementById('resetReading').addEventListener('click',()=>{
+  readingPractice=true;readingAnswered.clear();readingFirst.clear();
+  document.querySelectorAll('[data-question]').forEach(card=>{card.querySelectorAll('[data-correct]').forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')});const f=card.querySelector('.feedback');f.textContent='';f.className='feedback';});
+});
+</script>
+</body>
+</html>

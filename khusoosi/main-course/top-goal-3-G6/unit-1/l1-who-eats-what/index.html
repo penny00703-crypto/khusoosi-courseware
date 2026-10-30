@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G6 U1L1 · Who eats what?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="viewport" aria-label="Interactive lesson">
+    <section id="stage">
+      <header class="topbar">
+        <div class="lesson-id"><span class="dot"></span> G6 · U1L1 <strong>Who eats what?</strong></div>
+        <div class="top-actions">
+          <button id="arabicToggle" class="brand-button" aria-pressed="false">العربية</button>
+          <img class="brand-logo" src="assets/logo_khusoosi.png" alt="51Talk Khusoosi">
+          <button id="fullscreenButton" class="icon-button" aria-label="Full screen">Full screen</button>
+        </div>
+      </header>
+      <div class="progress-track"><div id="progressBar"></div></div>
+      <section id="slide" class="slide" aria-live="polite"></section>
+      <div id="toast" role="status"></div>
+      <footer class="bottombar">
+        <button id="prevButton" class="nav-button">← Previous</button>
+        <button id="gridButton" class="grid-button"><span class="grid-icon"></span><span id="pageLabel">1 / 23</span></button>
+        <button id="nextButton" class="nav-button primary">Next →</button>
+      </footer>
+    </section>
+  </main>
+  <dialog id="thumbnailDialog">
+    <div class="dialog-head"><strong>Lesson pages</strong><button id="closeDialog" class="icon-button">Close</button></div>
+    <div id="thumbnailGrid"></div>
+  </dialog>
+  <audio id="player"></audio>
+  <script src="app.js"></script>
+</body>
+</html>
