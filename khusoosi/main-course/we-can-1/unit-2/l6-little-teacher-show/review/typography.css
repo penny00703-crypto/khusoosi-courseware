@@ -1,0 +1,37 @@
+/* L13 only: local Arabic type and explicit bidirectional text boundaries. */
+@font-face{font-family:Tajawal;src:url('fonts/Tajawal-Regular.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Tajawal;src:url('fonts/Tajawal-Bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+body{font-family:Tajawal,"Geeza Pro",Arial,sans-serif;font-size:20px;line-height:1.85;direction:rtl}
+button,input{font-family:inherit;line-height:1.65}
+h1,h2,h3,p,summary{overflow-wrap:break-word}
+.en,[lang="en"],bdi[dir="ltr"],.worksheet-nav b,.section-title>b{direction:ltr;unicode-bidi:isolate;font-family:"Avenir Next",Arial,sans-serif}
+.en{letter-spacing:normal}
+.inline-en{display:inline-block;direction:ltr;unicode-bidi:isolate;font-family:"Avenir Next",Arial,sans-serif;font-size:.86em}
+.ar{direction:rtl;unicode-bidi:isolate;font-family:Tajawal,"Geeza Pro",sans-serif}
+.word-card .ar{font-size:17px;line-height:1.75;color:#29445d}
+.word-card .en{font-size:16px;line-height:1.5}
+.small,.flat-question .feedback,.preview{font-size:16px;line-height:1.8;color:#40566d}
+.worksheet-nav a{font-size:18px;line-height:1.55;padding:10px 8px}
+.worksheet-nav b{font-size:15px;line-height:1.5}
+.section-title h2{font-size:28px;line-height:1.65}
+.question-heading h3{font-size:20px;line-height:1.65}
+.question-status{font-size:16px;line-height:1.6;white-space:normal;flex-shrink:0}
+.primary,.secondary{font-size:20px;line-height:1.65;white-space:normal;height:auto}
+.resource-group h3{font-size:22px}.library-details>summary{font-size:19px;line-height:1.8}
+.today-line,.unfinished a{font-size:18px;line-height:1.8}
+.worksheet-section,.flat-question{scroll-margin-top:120px}.inline-help{scroll-margin-top:120px}
+.speak-controls{align-items:stretch}.speak-controls button{min-width:0}
+#report-status{unicode-bidi:plaintext;font-size:17px}
+.choice-num{direction:ltr;unicode-bidi:isolate;font-family:Arial,sans-serif}
+@media(max-width:600px){
+ body{font-size:19px;line-height:1.85}
+ h1{font-size:28px;line-height:1.6}
+ .worksheet-nav a{font-size:16px;padding:8px 5px}.worksheet-nav b{font-size:14px}
+ .section-title h2{font-size:23px}.section-title>b{font-size:16px}
+ .question-heading h3{font-size:18px}.question-status{font-size:14px;padding:5px 7px}
+ .primary,.secondary{font-size:18px;padding:11px 14px}
+ .small,.flat-question .feedback,.preview{font-size:16px}
+ .word-card .ar{font-size:17px}.word-card .en{font-size:15px}
+ .library-details>summary{font-size:18px}.today-line,.unfinished a{font-size:17px}
+ .worksheet-section,.flat-question,.inline-help{scroll-margin-top:155px}
+}
