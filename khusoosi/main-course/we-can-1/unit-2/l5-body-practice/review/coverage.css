@@ -1,0 +1,14 @@
+/* A small content patch to the original four-station review, not a new player. */
+.coverage-line{font-size:16px;font-weight:700;color:var(--blue)}
+.word-set summary{flex-wrap:wrap}
+.word-set summary .group-count{font-size:12px;color:#64758a;font-weight:400}
+.word-card .ar{unicode-bidi:isolate}
+.more-words{margin:12px 0;border:1px dashed #d9e6ef;padding:10px;border-radius:14px}
+.more-words summary{font-size:15px;color:var(--blue)}
+.word-card.letter .en{font-size:20px}
+.word-card .card-visual{display:flex;width:100%;height:160px;align-items:center;justify-content:center}
+.word-card.letter .card-visual{height:90px}
+.word-card .card-visual img{height:100%}
+.word-card.playing{outline:3px solid #1670e84d;outline-offset:2px}
+.word-card .card-status{font-size:12px;min-height:20px;color:var(--green)}
+@media(max-width:600px){.word-card .card-visual{height:185px}.word-card.letter .card-visual{height:100px}.word-set summary .group-count{display:block}.coverage-line{font-size:14px}}

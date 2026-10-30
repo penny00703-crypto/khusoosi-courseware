@@ -1,0 +1,19 @@
+/* Codex · 2026-10-28: task-led classroom; reserve space above navigation. */
+.workbook-task .copy{gap:12px;max-height:540px;align-self:center}
+.workbook-task .copy>*{margin:0;flex-shrink:0}
+.workbook-task h1{font-size:38px;line-height:1.12}
+.workbook-task .instruction{font-size:19px;line-height:1.35}
+.workbook-audio{display:flex;flex-direction:column;gap:7px;width:100%}
+.audio-label{font-size:12px;line-height:1.4;font-weight:750;color:var(--muted);margin:0 0 2px}
+.workbook-audio .guide{min-height:36px;font-size:18px;margin:0;line-height:1.3}
+.workbook-audio .speaker{width:29px;height:29px}
+.reading-task .copy{height:500px;justify-content:flex-start;gap:16px;padding-top:18px}
+.reading-task .copy>*{margin:0;flex-shrink:0}
+.reading-task h1{font-size:40px;line-height:1.15}
+.reading-task .instruction{font-size:20px;line-height:1.4}
+.reading-task .reading-prompt{font-size:30px;line-height:1.3;padding:16px;width:100%;min-height:72px;display:flex;align-items:center}
+.reading-task .capital-prompt{font-size:88px;line-height:1;padding:12px;width:100%;height:112px}
+.reading-task .choice-feedback{min-height:36px;font-size:18px;line-height:1.4}
+.reading-task .copy>.primary,.reading-task .copy>.outline{min-height:46px;max-width:100%}
+.alphabet-audio{position:static;margin-top:12px}
+.alphabet-wrap:has(.alphabet-audio) .book-frame{height:365px}
