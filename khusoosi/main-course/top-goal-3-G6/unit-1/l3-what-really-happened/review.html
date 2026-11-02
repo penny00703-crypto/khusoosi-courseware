@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G6 · After-class review</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+<header><strong id="lessonTitle"></strong><img src="assets/logo_khusoosi.png" alt="51Talk Khusoosi"></header>
+<main>
+  <span class="eyebrow">AFTER-CLASS REVIEW · 4 STATIONS</span>
+  <h1>Listen, say, and read.</h1>
+  <p class="lead">Complete each station at your own pace. No microphone recording is needed.</p>
+  <nav class="station-nav" aria-label="Review stations"><a href="#resources">1 · Words</a><a href="#listening">2 · Listen</a><a href="#speaking">3 · Say</a><a href="#reading">4 · Read</a></nav>
+  <section id="resources" class="review-section"><div class="section-head"><div><h2>1 · Picture vocabulary</h2><p>Tap a card to hear the word. Pictures, English, Arabic and audio stay together.</p></div></div><div id="wordGrid" class="word-grid"></div></section>
+  <section id="listening" class="review-section"><div class="section-head"><div><h2>2 · Pure listening</h2><p>Play the word, then choose its picture. No English answer is shown.</p></div><span id="listeningScore" class="score">First try: 0 / 4</span></div><div class="station-card"><div class="station-toolbar"><strong id="listeningProgress">Word 1 of 4</strong><button id="listeningAudio" class="audio-button" type="button">Play the word</button></div><div id="listeningOptions" class="listening-options"></div><p id="listeningFeedback" class="feedback" aria-live="polite"></p><button id="nextListening" class="primary" type="button" hidden>Next word</button></div></section>
+  <section id="speaking" class="review-section"><div class="section-head"><div><h2>3 · Independent speaking</h2><p>Try first without the word. Use a model only if you need it, hide it, then say the same word again.</p></div></div><div class="station-card"><div class="station-toolbar"><strong id="speakingProgress">Word 1 of 4</strong><span class="score">Self-check · no speaking score</span></div><div class="speaking-stage"><img id="speakingImage" alt="Speaking prompt"><div><p id="speakingPrompt" class="speaking-prompt">Look at the picture.<br>Say the word without a model.</p><div class="speaking-actions"><button id="independentNext" class="primary" type="button">I said it · Next</button><button id="showSpeakingModel" class="secondary" type="button">I need a model</button></div><div id="speakingModel" class="speaking-model" hidden><strong id="speakingWord"></strong><span id="speakingPhonetic" class="phonetic"></span><span id="speakingMeaning" class="meaning ar"></span><div class="speaking-actions"><button id="speakingAudio" class="audio-button" type="button">Listen to the model</button><button id="hideSpeakingModel" class="secondary" type="button">Hide it · I said it again</button></div></div></div></div></div></section>
+  <section id="reading" class="review-section"><div class="section-head"><div><h2>4 · Reading and grammar</h2><p>Read and choose. This station has no audio.</p></div><span id="readingScore" class="score">First try: 0 / 3</span></div><div id="quizList" class="quiz-list"></div><button id="resetReading" class="secondary reset" type="button">Practise again · first-try score stays</button></section>
+</main>
+<footer id="reviewFooter"></footer>
+<audio id="player"></audio>
+<script src="review-data.js"></script>
+<script src="review.js"></script>
+</body>
+</html>

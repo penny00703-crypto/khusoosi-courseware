@@ -1,0 +1,8 @@
+{
+  "name": "g6-u1l1-who-eats-what",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.cjs"
+  }
+}

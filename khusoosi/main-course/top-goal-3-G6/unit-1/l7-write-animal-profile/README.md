@@ -1,0 +1,6 @@
+# G6 U1L7 · Write an animal profile
+
+- Source: Top Goal 3, SB19 / WB133 (printed pages).
+- Twenty-three screens: preparation, 25-minute lesson flow, summary, next lesson and four-station review.
+- Self-created visuals and Samantha female-voice audio; not represented as official textbook media.
+- Review QR opens the HTTPS review page in this directory.
