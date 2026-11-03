@@ -1,0 +1,32 @@
+@font-face{font-family:LessonIPA;src:local('Arial'),local('DejaVu Sans')}
+#lesson .ar-support,#lesson .word-ar,#lesson .example-ar{font-family:Tajawal,sans-serif;direction:rtl;unicode-bidi:isolate;text-align:right;letter-spacing:0;font-weight:500}
+#lesson .ar-support{font-size:23px;line-height:1.5;color:#4e6d62;margin:6px 0 14px}
+#lesson h1{font-size:40px;margin-bottom:12px}
+.vocab-layout{display:grid;grid-template-columns:1.05fr 1fr;gap:38px;height:100%;align-items:center}
+.vocab-picture{width:450px;max-width:100%;height:450px;display:block;object-fit:contain;border-radius:24px;background:transparent;margin-inline:auto}
+.vocab-copy .word-heading{font-size:64px!important;line-height:1.08;letter-spacing:-1.5px;margin:8px 0 10px!important}
+.ipa{font-family:LessonIPA,'Arial Unicode MS',Arial,sans-serif;direction:ltr;unicode-bidi:isolate;font-size:26px;line-height:1.5;color:#526d64;letter-spacing:.5px;margin:0 0 9px}
+#lesson .word-ar{font-size:34px;line-height:1.45;color:#267465;margin:7px 0 18px}
+.example-box{background:white;border-left:4px solid #ba3268;border-radius:0 15px 15px 0;padding:13px 18px;margin-top:10px}
+.example-box .example-en{font-size:27px;line-height:1.4;margin:0 0 7px}
+#lesson .example-ar{font-size:25px;line-height:1.5;margin:0}
+.vocab-copy .actions{gap:8px;margin-top:17px}.vocab-copy .actions button{font-size:17px;padding:10px 13px;min-height:42px;gap:7px}
+.vocab-copy .eyebrow{margin-bottom:4px}.vocab-copy .ar-support{font-size:22px!important;margin-top:10px!important}
+.vocab-copy .recalled{min-height:310px;display:flex;align-items:center;justify-content:center;background:#e6f0e7;border-radius:22px;text-align:center}
+.vocab-copy .recalled h2{font-size:32px;margin:0}.vocab-copy .recalled p{text-align:center!important}
+.recall-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:18px}.recall-grid.two{grid-template-columns:repeat(2,1fr);max-width:940px;margin-inline:auto}
+.recall-tile{background:white;border:1px solid #d9e3da;border-radius:20px;padding:14px;text-align:center}
+.recall-tile img{width:100%;height:225px;object-fit:contain;display:block;border-radius:12px}.recall-grid.two img{height:250px}
+.recall-tile button{font-size:17px;padding:9px 14px;min-height:40px;margin-top:10px}.recall-answer{font-size:23px;line-height:1.4;padding:8px 10px;background:#e6f0e7;border-radius:10px;margin-top:8px}
+.recall-answer .rtl{font-size:24px;display:block}.recall-tile.recalling img{height:170px}.recall-grid.two .recall-tile.recalling img{height:185px}
+#lesson .bridge-compact h1{font-size:36px}#lesson .bridge-compact .ar-support{font-size:21px;line-height:1.4;margin-bottom:10px}
+#lesson .bridge-compact .panel{padding:16px}#lesson .bridge-compact p{font-size:21px;line-height:1.4}
+#lesson .bridge-compact .help,#lesson .bridge-compact .help p{font-size:19px;line-height:1.35}#lesson .bridge-compact .help{padding:10px 13px}
+#lesson .bridge-compact .strip>.panel{padding:12px}#lesson .bridge-compact .number{font-size:42px}#lesson .bridge-compact .strip{margin:12px 0}
+#lesson .bridge-compact .strip p{margin:5px 0}#lesson .bridge-compact .quiz{padding:12px 15px;margin-bottom:10px}
+#lesson .bridge-compact .line{font-size:23px;padding:6px 10px}.mini-ar{font:22px/1.4 Tajawal,sans-serif;direction:rtl;unicode-bidi:isolate;color:#267465;margin:5px 0}
+.task-hint{font-size:18px!important;color:#526d64}.sentence-chunks{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.sentence-chunks span{font-size:24px;background:white;border:1px solid #d9e3da;border-radius:10px;padding:10px 15px}
+#lesson .bridge-compact .paper{padding:16px}.role-cue{padding:12px 16px;border-radius:13px;background:#e6f0e7;margin-top:14px}
+.word-audio-label{font-family:Tajawal,sans-serif;font-size:18px;direction:rtl;unicode-bidi:isolate}
+.exit-cues p{margin:6px 0!important}.exit-cues .ar-support{font-size:21px!important;line-height:1.35!important;margin:2px 0 12px!important}
+.frequency-ar{font:20px/1.45 Tajawal,sans-serif;direction:rtl;unicode-bidi:isolate;text-align:right;margin-top:9px;color:#267465}
