@@ -1,0 +1,39 @@
+/* Final-state spacing: reserve room for feedback and controls. */
+.dialogue{gap:9px}.dialogue .bubble{padding:11px 18px}.dialogue .who{margin-bottom:4px}.dialogue .line{font-size:27px}.dialogue .ar{font-size:21px;line-height:1.3;margin:4px 0}.dialogue .action-strip{padding:9px 15px;margin-top:4px}.dialogue .instruction{margin:6px 0}.dialogue>.ar{margin:0}
+#lesson[data-page="9"] .name-card{padding:18px 22px}#lesson[data-page="9"] .name-card:before{margin-bottom:12px}#lesson[data-page="9"] .name{font-size:40px;margin:10px 0}#lesson[data-page="9"] .help-wrap{margin-top:8px}
+#lesson[data-page="18"] .prompt{font-size:28px;line-height:1.25;margin:8px 0}#lesson[data-page="18"] .help-wrap{margin-top:8px}#lesson[data-page="18"] .help-panel .line{font-size:26px}#lesson[data-page="18"] .action-strip{margin-top:8px;padding:9px 13px}#lesson[data-page="18"] .ar{font-size:21px;line-height:1.3;margin:4px 0}#lesson[data-page="18"] .note{margin:8px 0}#lesson[data-page="18"] .chapter{margin-bottom:5px}
+@media(max-width:650px){.dialogue .line{font-size:24px}.dialogue .ar{font-size:22px}.dialogue .bubble{padding:15px}.dialogue{gap:12px}#lesson[data-page="18"] .ar{font-size:22px}}
+@media(max-width:650px){footer{position:static}header{position:static}}
+
+/* v3: separate feedback, controls and reading area; preserve Arabic direction. */
+.line,.time,.alphabet,.round-tools,.cue-row,.reading,.write-paper{direction:ltr;unicode-bidi:isolate}
+.ar{unicode-bidi:isolate}
+#lesson[data-page="13"] .read-question,#lesson[data-page="14"] .read-question{margin:10px 0;font-size:25px}
+#lesson[data-page="13"] .feedback{font-size:19px}
+#lesson[data-page="13"] .feedback .ar{font-size:20px}
+#lesson[data-page="13"] .smallbtn,#lesson[data-page="14"] .smallbtn{margin-top:8px}
+#lesson[data-page="15"] .checklist{gap:8px}
+#lesson[data-page="15"] .checklist p{font-size:21px;padding:9px 13px}
+#lesson[data-page="15"] .checklist .ar{font-size:21px;margin:0}
+#lesson[data-page="15"] .help-panel{margin:0;padding:8px 12px}
+
+#lesson[data-page="7"] .question-block{padding:16px 20px}
+#lesson[data-page="7"] .choices{margin:6px 0;gap:8px}
+#lesson[data-page="7"] .choices button{padding:10px 14px}
+#lesson[data-page="7"] .help-panel{padding:9px 12px;margin-top:7px}
+#lesson[data-page="7"] .help-panel p{font-size:21px;line-height:1.3}
+#lesson[data-page="7"] .help-panel .ar{font-size:21px;line-height:1.3;margin:4px 0}
+#lesson[data-page="7"] .round-tools{margin-top:10px}
+#lesson[data-page="7"] .feedback{margin-top:5px;font-size:19px}
+#lesson[data-page="17"] .prompt{font-size:28px;margin:10px 0;line-height:1.2}
+#lesson[data-page="17"] .help-panel .line{font-size:25px;line-height:1.3}
+#lesson[data-page="17"] .ar{font-size:21px;line-height:1.35;margin:6px 0}
+#lesson[data-page="17"] .help-wrap{margin-top:9px}
+#lesson[data-page="17"] .help-panel{padding:10px 14px}
+#lesson[data-page="17"] .round-tools{margin-top:10px}
+
+.photo figcaption{align-self:center}
+
+/* Ruwaud official mark: preserve source ratio, no added white frame. */
+header img{width:76px;height:44px;flex-shrink:0}
+@media(max-width:650px){header img{width:60px;height:35px}}
