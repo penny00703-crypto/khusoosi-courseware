@@ -134,7 +134,7 @@ window.addEventListener('resize', fit);
   const w = $('#watermark');
   for (let y=0; y<5; y++) for (let x=0; x<4; x++){
     const sp = document.createElement('span');
-    sp.textContent = 'khusoosi · خصوصي';
+    sp.textContent = 'Ruwaud · روّاد';
     sp.style.left = (x*340 + (y%2)*120) + 'px';
     sp.style.top = (y*150 + 20) + 'px';
     w.appendChild(sp);

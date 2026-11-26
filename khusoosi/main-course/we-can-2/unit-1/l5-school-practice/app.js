@@ -184,7 +184,7 @@ function show(i){
 }
 function fit(){const s=Math.min(window.innerWidth/1280,window.innerHeight/720);$('#stage').style.transform='scale('+s+')';}
 window.addEventListener('resize',fit);
-(function(){const w=$('#watermark');for(let y=0;y<5;y++)for(let x=0;x<4;x++){const sp=document.createElement('span');sp.textContent='khusoosi · خصوصي';sp.style.left=(x*340+(y%2)*120)+'px';sp.style.top=(y*150+20)+'px';w.appendChild(sp);}})();
+(function(){const w=$('#watermark');for(let y=0;y<5;y++)for(let x=0;x<4;x++){const sp=document.createElement('span');sp.textContent='Ruwaud · روّاد';sp.style.left=(x*340+(y%2)*120)+'px';sp.style.top=(y*150+20)+'px';w.appendChild(sp);}})();
 $('#btn-ar').onclick=()=>{const on=document.body.classList.toggle('ar-on');$('#btn-ar').setAttribute('aria-pressed',on);};
 $('#btn-teacher').onclick=()=>{const on=document.body.classList.toggle('teacher-on');$('#btn-teacher').setAttribute('aria-pressed',on);};
 $('#btn-prev').onclick=()=>show(cur-1);$('#btn-next').onclick=()=>show(cur+1);$('#btn-thumbs').onclick=()=>$('#thumbs').classList.toggle('open');

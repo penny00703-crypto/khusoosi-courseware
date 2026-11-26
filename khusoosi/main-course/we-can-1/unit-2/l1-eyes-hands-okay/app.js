@@ -87,7 +87,7 @@ function fit(){ $('#stage').style.transform=`scale(${Math.min(innerWidth/1280,in
 addEventListener('resize',fit);
 
 (()=>{ const w=$('#watermark'); for(let y=0;y<5;y++)for(let x=0;x<4;x++){
-  const sp=document.createElement('span'); sp.textContent='khusoosi · خصوصي';
+  const sp=document.createElement('span'); sp.textContent='Ruwaud · روّاد';
   sp.style.left=`${x*340+(y%2)*120}px`; sp.style.top=`${y*150+20}px`; w.appendChild(sp);
 }})();
 $('#btn-ar').onclick=()=>{ if(cur>=12){toast('Arabic is hidden during independent checks');return;}
